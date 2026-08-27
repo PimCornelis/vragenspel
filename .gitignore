@@ -1,0 +1,13 @@
+# Build log — a transcript of the last run, not source.
+build_log.txt
+
+# Never let credentials into a public repository.
+*.local.json
+*.secret
+!*.example
+!*.example.*
+
+# OS / editor noise
+Thumbs.db
+desktop.ini
+.DS_Store
