@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14161c">
+<title>Vragenspel</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Only shown when the browser refuses to remember anything. Filled in by app.js. -->
+<p class="waarschuwing" id="waarschuwing" hidden></p>
+
+<header class="balk-boven">
+  <span class="voortgang" id="voortgang"></span>
+  <button class="menu-knop" id="menu-knop" type="button">Menu</button>
+</header>
+
+<main class="scherm">
+
+  <!-- The card. Full bleed: the background is the category's colour. -->
+  <article class="kaart" id="kaart">
+    <p class="tag" id="tag"></p>
+    <h1 class="vraag" id="vraag"></h1>
+    <section class="extra" id="extra" hidden></section>
+    <span class="nr" id="nr"></span>
+  </article>
+
+  <!-- Settings. Each panel replaces the card while it is open. -->
+  <section class="paneel" id="menu" hidden>
+    <h2 class="paneel-kop">Menu</h2>
+
+    <h3 class="paneel-sub">Waar heb je zin in?</h3>
+    <p class="paneel-uitleg" id="filter-uitleg"></p>
+    <div class="filter" id="filter"></div>
+
+    <h3 class="paneel-sub">Het deck</h3>
+    <p class="paneel-uitleg" id="deck-uitleg"></p>
+  </section>
+
+  <!-- Writing a new card. -->
+  <section class="paneel" id="eigen" hidden>
+    <h2 class="paneel-kop">Eigen kaart</h2>
+
+    <p class="paneel-let">
+      Let op: kaarten die later in het deck worden opgenomen, komen op een openbare
+      website te staan. Dus geen namen, geen antwoorden, en niets dat je een vreemde
+      niet zou vertellen.
+    </p>
+
+    <h3 class="paneel-sub">Categorie</h3>
+    <select class="veld" id="eigen-categorie"></select>
+
+    <h3 class="paneel-sub">De vraag</h3>
+    <textarea class="veld veld-groot" id="eigen-tekst" rows="4"
+              placeholder="Typ hier de vraag."></textarea>
+    <p class="paneel-uitleg" id="eigen-melding"></p>
+
+    <h3 class="paneel-sub">Zelfgeschreven kaarten</h3>
+    <p class="paneel-uitleg" id="eigen-uitleg"></p>
+    <div class="lijstje" id="eigen-lijst"></div>
+  </section>
+
+  <!-- The verdicts, and the block that carries them to a Claude Code session. -->
+  <section class="paneel" id="oordeel" hidden>
+    <h2 class="paneel-kop">Wat vonden we ervan</h2>
+    <p class="paneel-uitleg" id="oordeel-uitleg"></p>
+
+    <h3 class="paneel-sub">Mooie kaarten</h3>
+    <div class="lijstje" id="oordeel-mooi"></div>
+
+    <h3 class="paneel-sub">Niet meer tonen</h3>
+    <div class="lijstje" id="oordeel-niet"></div>
+
+    <h3 class="paneel-sub">Voor Claude Code</h3>
+    <p class="paneel-uitleg">
+      Deze telefoon kan niets naar de laptop schrijven. Kopieer het blok hieronder en
+      plak het in een Claude Code&nbsp;sessie; die zet het in het bestand dat buiten de
+      openbare website blijft.
+    </p>
+    <textarea class="veld veld-code" id="oordeel-blok" rows="8" readonly></textarea>
+    <p class="paneel-uitleg" id="oordeel-melding"></p>
+  </section>
+
+</main>
+
+<footer class="balk">
+  <div class="acties" id="acties"></div>
+  <div class="duimen" id="duimen"></div>
+</footer>
+
+<!-- The deck. Generated from cards.json by build_vragenspel.py; loaded as a script so
+     that double-clicking this file works exactly like the hosted site does. -->
+<script src="cards.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

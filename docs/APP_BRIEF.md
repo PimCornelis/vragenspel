@@ -3,10 +3,25 @@ type: brief
 project: vragenspel
 subject: What the browser app must do, and why
 since: 2026-08-27
-status: not built
+status: built, then superseded in part
 ---
 
 # The browser app — what it must do
+
+> **Read this first. Parts of this brief are out of date, on purpose.**
+>
+> The app was built to this brief on 2026-08-27 and changed the night after. It is now a
+> **sitting** — cards deal continuously at a terrace — rather than one card a night, and **the
+> gate is gone**. Reason 1 below, the requirement that the gate is the product, and the "one card
+> a night" rhythm no longer describe the app. `docs/DECISIONS.md` **D13** records what replaced
+> them and what that cost.
+>
+> The rest of this document still holds: what the four special categories need, no answers stored,
+> phone first, Dutch throughout, `cards.json` as the single source of truth. The section
+> "Extra cards, when they come" now argues the wrong way round — see D13's second cost.
+>
+> It is kept rather than rewritten because a brief that is edited to agree with what was built
+> stops being evidence of what was decided and why.
 
 The paper deck works. This document is the argument for building a second form of it, and the
 requirements that follow. **Read it before writing any app code.**

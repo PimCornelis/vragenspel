@@ -1,20 +1,26 @@
 """
 build_vragenspel.py - regenerate the printable deck from cards.json.
 
-    cards.json  ->  VRAGENSPEL.html
+    cards.json  ->  VRAGENSPEL.html   the printable deck
+                ->  cards.js          the same deck, for the browser app
 
 cards.json is the single source of truth for the deck. This script owns the printable
 LAYOUT only: the stylesheet, the English briefing (which does not print), and the shape
 of one card. It owns none of the deck's content. To change a question, a category colour
-or a rule, edit cards.json and run this again. Never hand-edit VRAGENSPEL.html - the next
-run overwrites it.
+or a rule, edit cards.json and run this again. Never hand-edit VRAGENSPEL.html or
+cards.js - the next run overwrites them both.
+
+Why cards.js exists. index.html has to work when it is double-clicked, and a page opened
+over file:// is not allowed to fetch() a neighbouring .json file. So the deck is emitted
+a second time as a JavaScript assignment the page can load with a <script> tag. It is
+generated, never edited - cards.json stays the only editable copy of the deck.
 
 Run it by double-clicking build_vragenspel.bat, which sits beside this file.
 Nothing here reaches the network, and nothing here runs git.
 
 Usage:
-    python build_vragenspel.py            write VRAGENSPEL.html
-    python build_vragenspel.py --check    write nothing, say whether it is up to date
+    python build_vragenspel.py            write VRAGENSPEL.html and cards.js
+    python build_vragenspel.py --check    write nothing, say whether both are up to date
 """
 
 import io
@@ -25,6 +31,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "cards.json")
 OUT = os.path.join(HERE, "VRAGENSPEL.html")
+OUT_JS = os.path.join(HERE, "cards.js")
 
 # --------------------------------------------------------------------------
 # The printable page, minus the deck. {{CARD_COUNT}} is filled in from the data,
@@ -215,31 +222,66 @@ def render(deck):
     return "".join(out)
 
 
+JS_HEAD = """/* cards.js - GENERATED FILE. Do not edit.
+
+   Written by build_vragenspel.py from cards.json, which is the only editable copy of the
+   deck. Change a question there and run the build again; anything typed into this file is
+   lost on the next run.
+
+   It exists so index.html works when it is double-clicked: a page opened over file:// may
+   not fetch() cards.json, but it may load a script. */
+
+window.VRAGENSPEL_DECK = """
+
+JS_TAIL = """;
+"""
+
+
+def render_js(deck):
+    """The same deck as a script the browser app can load over file://."""
+    check(deck)
+    body = json.dumps(deck, ensure_ascii=False, indent=2)
+    # JSON is valid JavaScript here with one exception: U+2028 and U+2029 are line
+    # terminators to a JavaScript parser but ordinary characters to a JSON one. Escape
+    # them, so a card that ever contains one cannot silently produce a broken script.
+    body = body.replace(u" ", u"\u2028").replace(u" ", u"\u2029")
+    return JS_HEAD + body + JS_TAIL
+
+
 def main(argv):
     deck = load()
     html = render(deck)
+    js = render_js(deck)
 
     if "--check" in argv:
-        try:
-            with io.open(OUT, encoding="utf-8", newline="") as f:
-                current = f.read()
-        except IOError:
-            print("VRAGENSPEL.html does not exist yet. Run without --check to write it.")
-            return 1
-        if current == html:
-            print("VRAGENSPEL.html is up to date with cards.json "
-                  "(%d cards, %d categories, %d rules)."
-                  % (len(deck["cards"]), len(deck["categories"]), len(deck["rules"])))
-            return 0
-        print("VRAGENSPEL.html DIFFERS from what cards.json produces. "
-              "Run without --check to regenerate it.")
-        return 1
+        stale = 0
+        for path, wanted in ((OUT, html), (OUT_JS, js)):
+            name = os.path.basename(path)
+            try:
+                with io.open(path, encoding="utf-8", newline="") as f:
+                    current = f.read()
+            except IOError:
+                print("%s does not exist yet. Run without --check to write it." % name)
+                stale += 1
+                continue
+            if current == wanted:
+                print("%s is up to date with cards.json." % name)
+            else:
+                print("%s DIFFERS from what cards.json produces. "
+                      "Run without --check to regenerate it." % name)
+                stale += 1
+        print("Deck: %d cards, %d categories, %d rules."
+              % (len(deck["cards"]), len(deck["categories"]), len(deck["rules"])))
+        return 1 if stale else 0
 
     with io.open(OUT, "w", encoding="utf-8", newline="") as f:
         f.write(html)
+    with io.open(OUT_JS, "w", encoding="utf-8", newline="") as f:
+        f.write(js)
 
     print("Read   : %s" % DATA)
     print("Wrote  : %s" % OUT)
+    print("Wrote  : %s" % OUT_JS)
     print("Deck   : %d cards, %d categories, %d rules"
           % (len(deck["cards"]), len(deck["categories"]), len(deck["rules"])))
     for cat in deck["categories"]:
@@ -247,9 +289,10 @@ def main(argv):
                                          sum(1 for c in deck["cards"]
                                              if c["category"] == cat["name"])))
     print("")
-    print("Check it: open VRAGENSPEL.html in a browser and press Ctrl+P. The briefing")
-    print("must not appear in the print preview; the rules card and %d numbered cards must."
+    print("Check the print deck: open VRAGENSPEL.html and press Ctrl+P. The briefing must")
+    print("not appear in the print preview; the rules card and %d numbered cards must."
           % len(deck["cards"]))
+    print("Check the app        : double-click index.html. It must deal a card, not an error.")
     return 0
 
 

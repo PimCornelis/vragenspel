@@ -178,4 +178,113 @@ testing onto the owner without saying so.
 **What was prepared instead.** [`APP_BRIEF.md`](APP_BRIEF.md) and
 [`PHASE_2_PROMPT.md`](PHASE_2_PROMPT.md).
 
-**Revisit when.** Phase 2 is done — then this entry is history.
+**Revisit when.** Phase 2 is done — then this entry is history. **It is done: 2026-08-27.**
+
+## D12 — The app loads the deck from a generated `cards.js`, not with `fetch`
+
+**Chosen 2026-08-27.** [`APP_BRIEF.md`](APP_BRIEF.md) left this open on purpose and asked for one
+answer, written down. `build_vragenspel.py` now emits `cards.js` beside `VRAGENSPEL.html`, and
+`index.html` loads it with a `<script>` tag.
+
+**Alternatives.** `fetch('cards.json')`, accepting that the app is only ever opened from its URL.
+
+**Reasoning.** A page opened over `file://` is not allowed to `fetch()` a neighbouring `.json`
+file. The `fetch` route therefore produces an app that works on the GitHub Pages site and fails
+when `index.html` is double-clicked — and that is the worse of the two failure modes, because it
+shows up on the laptop where the deck is edited and never on the phone where it is played, which
+is exactly the shape of a bug that wastes an evening. The generated-file route costs one more
+generated file in a repository that already has one, and no new habit: editing the deck already
+meant "edit `cards.json`, run the build".
+
+**The rule this creates.** **`fetch` must not appear in the app.** There is one path, and a
+second one added later would silently work in one place and break in the other.
+`CLAUDE.md`, "One correct path, no fallbacks".
+
+**Evidence.** `index.html` was rendered from a `file://` URL by headless Chrome and dumped: it
+dealt a real card with its category, question and buttons, and `localStorage` worked. Separately,
+`VRAGENSPEL.html` hashed identical before and after the generator was changed, so the printable
+page was not disturbed.
+
+**Revisit when.** Never, unless the app stops needing to work from a double-click.
+
+## D13 — The app is a sitting, not an evening ritual. The gate is gone
+
+**Chosen 2026-08-28 (Pim), the night the gated version was built.** The app deals cards
+continuously for as long as you keep tapping. There is no guess step: a card is shown whole.
+
+**Alternatives.** Keep the gate and only speed up the pacing around it; keep the gate as the
+default with a way to skip it.
+
+**Reasoning.** The intended use changed: not one card at dinner over four months, but a stack of
+cards at a terrace over a glass of wine, in the shape of the *Penguin Cards* app — pick the mood,
+one card fills the screen, swipe on. Under that use the guess step is a toll on every card, and
+the ritual it protected — read it, guess, then answer — is not the game being played any more.
+
+**What this costs, stated plainly rather than discovered later.** [`APP_BRIEF.md`](APP_BRIEF.md)
+argued the gate was *the only thing paper cannot do at all* and the first reason to build an app
+at all. That argument was correct for the game as it was then specified, and removing the gate
+removes it. What remains that paper cannot do: it deals without repeating, it retires cards you
+disliked, it runs the timers, it holds cards you wrote at the table, and it remembers all of that.
+That is a real list, but it is a weaker one, and it should be read as the honest price of the
+change rather than as a claim that nothing was lost.
+
+**The second cost.** 118 cards was four months at one a night. At a terrace it is roughly five or
+six sittings. `APP_BRIEF.md`'s "length is not free" warning was written under the old pacing and
+now points the other way: **deck size has become the binding constraint.** New cards matter more
+than they did, and they are still written where the players are known, not here.
+
+**A divergence this creates.** `cards.json`'s printed rules card still says *"Eerst gokken"* and
+*"Eén keer per avond mag ieder een kaart weigeren"*. The app now does neither. The paper deck and
+the app therefore describe different games. The rules are the author's words and were not edited
+to match — that is Pim's call to make, not a session's. **Recorded here so it is a known
+inconsistency rather than an unnoticed one.**
+
+**Revisit when.** The deck is played at a dinner table again rather than a terrace.
+
+## D14 — What they thought of the cards never enters this repository
+
+**Chosen 2026-08-28.** Thumbs up and thumbs down are kept in the browser, and travel to the
+laptop as a block of text the player copies out of the menu. A session writes them to
+`card_feedback.local.json`, which is gitignored — by the existing `*.local.json` rule and by name.
+
+**Alternatives.** A committed `card_feedback.json`; a file under `docs/`.
+
+**Reasoning.** Everything committed here is world-readable at the GitHub Pages URL whatever the
+repository's privacy setting (D5). *Which* questions a particular couple loved, and which ones
+they refused to ever see again, is a fact about those two people rather than about the deck —
+exactly what [`../CLAUDE.md`](../CLAUDE.md) says must never enter this repository. A thumbs-down on
+one specific card can say a great deal. It is also the sort of file that looks harmless enough to
+commit by reflex, which is why it is named in `.gitignore` explicitly rather than left to a glob.
+
+**Why copy-paste rather than sync.** The game is played on a phone and the repository is on a
+laptop, and there is no server between them and never will be (D9). Copy-paste is not a
+compromise here; it is the only honest mechanism available, and D10 already named it as the right
+answer for moving state between devices.
+
+**Revisit when.** Never, while the repository is public.
+
+## D15 — Cards written in the app are drafts, not deck
+
+**Chosen 2026-08-28.** The app can write new cards. They play immediately, are stored in the
+browser, and are labelled *"staan nog niet in het deck zelf"*. They enter the deck only when a
+session puts them into `cards.json` and the build is run.
+
+**Alternatives.** Let the app own its own cards permanently alongside `cards.json`; refuse to let
+the app create cards at all.
+
+**Reasoning.** A card that lives only in the app is a second store of deck content, and two
+editable copies of one deck is the exact failure the phase-1 extraction existed to remove (D3).
+Calling them drafts keeps that true: `cards.json` is still the only editable copy of *the deck*,
+and the drafts are visibly a waiting room rather than a parallel deck.
+
+**The risk, stated because it is real.** A draft that is never promoted lives only in one
+browser's `localStorage` and is lost if browser data is cleared. The app says so on the panel.
+
+**The privacy gate this creates.** A card typed at a terrace is one build away from a public
+website. The app warns about this in Dutch at the moment of typing, and **promoting drafts into
+`cards.json` requires the same name-and-personal-detail check that D5 required of the deck.** That
+check belongs to the session doing the promoting; the app cannot perform it, because it would have
+to know the names to look for and no name may exist in this repository.
+
+**Revisit when.** Drafts are routinely promoted and the waiting room is proven to work — or
+routinely ignored, which would mean the feature should be removed rather than trusted.

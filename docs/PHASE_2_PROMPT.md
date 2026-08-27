@@ -7,14 +7,25 @@ since: 2026-08-27
 
 # Phase 2 — the prompt to paste into Claude Code
 
-Open Claude Code in `C:\Users\Pim_C\Claude Code\vragenspel` and paste everything between the
-markers. **`CLAUDE.md` loads automatically** — the prompt does not repeat what is already in it.
+**Open Claude Code in `C:\Users\Pim_C\Claude Code\vragenspel`** — not in any vault folder — and
+paste everything between the markers.
+
+> **This happened once, on 2026-08-27.** The prompt was pasted into a Claude Code session rooted
+> at `Date-day Assistant`. That session refused and was right to: `cards.json` is not there, so the
+> only way to obey step 2 would have been to create the second copy the whole move exists to
+> prevent. The prompt now opens with a working-directory check so the refusal does not depend on
+> the session noticing. **`CLAUDE.md` loads automatically** — the prompt does not repeat what is already in it.
 
 **Do not paste the prose around the markers.** It is for the reader, not for Claude.
 
 <!-- PASTE FROM HERE -->
 
 ```
+FIRST, BEFORE ANYTHING ELSE: confirm you are in the right repo. The working directory must
+contain cards.json, CLAUDE.md and docs/APP_BRIEF.md. If any of the three is missing you are in
+the wrong folder — say so and stop. Do not adapt, do not create the missing files, and above all
+do not create a second copy of cards.json.
+
 PHASE 2 — build the browser app. Read docs/APP_BRIEF.md first; CLAUDE.md is already loaded and
 its five hard limits apply to everything below.
 

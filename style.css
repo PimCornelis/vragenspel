@@ -1,0 +1,442 @@
+/* Vragenspel — the browser app.
+
+   Phone first: designed and tested at 390px wide, held in one hand, at a terrace.
+   The card is full bleed — the whole screen takes the category's colour — so you can
+   tell what kind of card it is from across the table without reading anything. The
+   colour changes with a slow fade when a new card is dealt.
+
+   Every action sits in a fixed bar at the bottom, inside a thumb's reach, and is at
+   least 56px tall so it can be hit without looking. */
+
+:root{
+  /* Tells the browser this page is dark, so the parts it draws itself — the dropdown
+     list of a <select>, scrollbars, the text caret — come out dark too instead of
+     defaulting to the operating system's white. */
+  color-scheme:dark;
+
+  --cc:#7a4b2a;            /* the current category's colour; set per card from the deck */
+  --neutraal:#14161c;      /* used by the panels and by the screens without a category */
+  --op-kleur:#fdfdfb;      /* text on top of a category colour */
+  --gedempt:rgba(253,253,251,.62);
+  --zacht:rgba(253,253,251,.16);
+}
+
+*{box-sizing:border-box}
+
+html,body{height:100%}
+
+body{
+  margin:0;
+  background:var(--cc);
+  color:var(--op-kleur);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  line-height:1.45;
+  -webkit-text-size-adjust:100%;
+  transition:background-color .45s ease;
+
+  /* Full-height column: the card area scrolls, the button bar never moves. */
+  display:flex;
+  flex-direction:column;
+  min-height:100dvh;
+}
+
+/* While a panel is open the colour steps back — a panel is not a card. */
+body.paneel-open{background:var(--neutraal)}
+
+@media (prefers-reduced-motion:reduce){
+  body{transition:none}
+}
+
+/* ---- the warning strip, hidden unless something is actually wrong ---- */
+
+.waarschuwing{
+  margin:0;
+  padding:10px 16px;
+  padding-top:calc(10px + env(safe-area-inset-top));
+  background:#5a2b2b;
+  color:#ffe9e9;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.8rem;
+  line-height:1.35;
+}
+
+.waarschuwing[hidden]{display:none}
+
+/* ---- the top bar ---- */
+
+.balk-boven{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 18px 2px;
+  padding-top:calc(10px + env(safe-area-inset-top));
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.75rem;
+}
+
+.waarschuwing:not([hidden]) + .balk-boven{padding-top:10px}
+
+.voortgang{color:var(--gedempt); letter-spacing:.04em}
+
+.menu-knop{
+  border:0;
+  background:transparent;
+  color:var(--gedempt);
+  font:inherit;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  padding:8px 4px 8px 12px;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.menu-knop:active{color:var(--op-kleur)}
+
+/* ---- the card ---- */
+
+.scherm{
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
+  padding:4px 18px 8px;
+  overflow-y:auto;
+}
+
+.kaart{
+  position:relative;
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:8px 0 30px;
+}
+
+.kaart[hidden]{display:none}
+
+.tag{
+  margin:0 0 18px;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.7rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--gedempt);
+}
+
+/* The question is the page. Big, and it shrinks rather than overflowing. */
+.vraag{
+  margin:0;
+  font-size:2rem;
+  font-weight:400;
+  line-height:1.22;
+}
+
+.vraag.lang{font-size:1.6rem}
+.vraag.heellang{font-size:1.3rem}
+
+.nr{
+  position:absolute;
+  bottom:2px;
+  right:0;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.65rem;
+  color:var(--zacht);
+}
+
+/* ---- a card's extra step: the timers, the pointing countdown, an outcome ---- */
+
+.extra{
+  margin-top:24px;
+  padding-top:20px;
+  border-top:1px solid var(--zacht);
+  animation:onthul .28s ease-out both;
+}
+
+.extra[hidden]{display:none}
+
+@keyframes onthul{
+  from{opacity:0; transform:translateY(6px)}
+  to{opacity:1; transform:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .extra{animation:none}
+}
+
+.extra-kop{
+  margin:0 0 10px;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.7rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--gedempt);
+  font-weight:600;
+}
+
+.extra-lijst{margin:0; padding-left:20px; font-size:1.05rem}
+.extra-lijst li{margin-bottom:8px}
+.extra-lijst li:last-child{margin-bottom:0}
+
+.extra-tekst{margin:0; font-size:1.1rem}
+
+.aftellen{
+  margin:8px 0 0;
+  text-align:center;
+  font-size:5.5rem;
+  line-height:1.1;
+  font-variant-numeric:tabular-nums;
+}
+
+.klok{
+  margin:6px 0 0;
+  text-align:center;
+  font-size:4rem;
+  line-height:1.1;
+  font-variant-numeric:tabular-nums;
+}
+
+.beurt{
+  margin:0;
+  text-align:center;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.78rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--gedempt);
+}
+
+/* ---- the panels ---- */
+
+.paneel{
+  width:100%;
+  align-self:flex-start;
+  padding:4px 0 20px;
+}
+
+.paneel[hidden]{display:none}
+
+.paneel-kop{margin:0 0 18px; font-size:1.5rem; font-weight:400}
+
+.paneel-sub{
+  margin:22px 0 8px;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.7rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--gedempt);
+  font-weight:600;
+}
+
+.paneel-uitleg{
+  margin:0 0 10px;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.85rem;
+  color:var(--gedempt);
+  line-height:1.55;
+}
+
+/* The one thing on any panel that must not be skimmed past. */
+.paneel-let{
+  margin:0 0 6px;
+  padding:12px 14px;
+  border-left:3px solid #d98a8a;
+  background:rgba(217,138,138,.1);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.85rem;
+  line-height:1.5;
+  color:#f0d6d6;
+}
+
+.filter{display:flex; flex-wrap:wrap; gap:8px}
+
+/* A category is a toggle, not a checkbox: bigger, and hittable with a thumb. */
+.cat{
+  border:1px solid var(--zacht);
+  border-left:4px solid var(--cc);
+  border-radius:8px;
+  background:transparent;
+  color:var(--gedempt);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.85rem;
+  padding:11px 13px;
+  min-height:44px;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+.cat[aria-pressed="true"]{
+  background:var(--cc);
+  border-color:var(--cc);
+  color:var(--op-kleur);
+}
+
+/* ---- form fields, for writing a card ---- */
+
+.veld{
+  width:100%;
+  padding:13px 14px;
+  border:1px solid var(--zacht);
+  border-radius:8px;
+  background:rgba(253,253,251,.06);
+  color:var(--op-kleur);
+  font-family:inherit;
+  font-size:1.05rem;
+  min-height:50px;
+}
+
+.veld:focus{outline:2px solid var(--gedempt); outline-offset:1px}
+
+/* The open dropdown is a list the browser draws, and it does not inherit the field's
+   background — only its light text colour, which left white on white. Named explicitly
+   as well as relying on color-scheme above, because the two do not cover the same
+   browsers. */
+.veld option{
+  background-color:#1f232c;
+  color:var(--op-kleur);
+}
+
+.veld-groot{resize:vertical; line-height:1.4}
+
+.veld-code{
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:.78rem;
+  line-height:1.45;
+  resize:vertical;
+}
+
+.lijstje{display:flex; flex-direction:column; gap:8px}
+
+.regel{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:11px 13px;
+  border:1px solid var(--zacht);
+  border-left:4px solid var(--cc);
+  border-radius:8px;
+}
+
+.regel-tekst{
+  flex:1 1 auto;
+  font-size:.95rem;
+  line-height:1.4;
+}
+
+.regel-cat{
+  display:block;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.62rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--gedempt);
+  margin-bottom:4px;
+}
+
+.regel-weg{
+  flex:0 0 auto;
+  border:0;
+  background:transparent;
+  color:#d98a8a;
+  font:inherit;
+  font-size:.85rem;
+  padding:6px 2px 6px 8px;
+  min-height:40px;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* ---- the button bar ---- */
+
+.balk{
+  flex:0 0 auto;
+  padding:8px 18px 14px;
+  padding-bottom:calc(14px + env(safe-area-inset-bottom));
+}
+
+.acties{display:flex; flex-direction:column; gap:8px}
+.acties:empty{display:none}
+
+.knop{
+  display:block;
+  width:100%;
+  min-height:58px;
+  padding:15px 18px;
+  border:0;
+  border-radius:10px;
+  background:var(--op-kleur);
+  color:#1e2330;
+  font-family:inherit;
+  font-size:1.1rem;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+.knop:active{transform:translateY(1px)}
+.knop:disabled{opacity:.4; cursor:default}
+.knop:disabled:active{transform:none}
+
+/* The timer's start button: the target you must hit without looking away from the
+   person you are arguing with. */
+.knop-groot{min-height:100px; font-size:1.35rem}
+
+/* Secondary actions — present, but never competing with the main one. */
+.knop-stil{
+  background:transparent;
+  color:var(--gedempt);
+  border:1px solid var(--zacht);
+  min-height:52px;
+  font-size:1rem;
+}
+
+.knop-stil:active{color:var(--op-kleur)}
+
+.knop-waarschuwing{
+  background:transparent;
+  color:#d98a8a;
+  border:1px solid rgba(217,138,138,.4);
+  min-height:52px;
+  font-size:1rem;
+}
+
+/* ---- reviewing the deck while playing ---- */
+
+.duimen{display:flex; gap:8px; margin-top:8px}
+.duimen:empty{display:none}
+
+.duim{
+  flex:1 1 0;
+  min-height:52px;
+  padding:10px 8px;
+  border:1px solid var(--zacht);
+  border-radius:10px;
+  background:transparent;
+  color:var(--gedempt);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.85rem;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+.duim:active{transform:translateY(1px)}
+
+.duim-op[aria-pressed="true"]{
+  background:var(--op-kleur);
+  border-color:var(--op-kleur);
+  color:#1e2330;
+}
+
+.duim-neer[aria-pressed="true"]{
+  background:#d98a8a;
+  border-color:#d98a8a;
+  color:#2a1414;
+}
+
+/* A wider screen is not the target, but it should not look broken either. */
+@media (min-width:560px){
+  .scherm,.balk,.balk-boven{width:100%; max-width:520px; margin-left:auto; margin-right:auto}
+  .vraag{font-size:2.2rem}
+}

@@ -1,5 +1,6 @@
 @echo off
-REM Regenerates VRAGENSPEL.html from cards.json. Double-click this file.
+REM Regenerates VRAGENSPEL.html (the printable deck) and cards.js (the deck for the
+REM browser app) from cards.json. Double-click this file.
 REM It resolves its own folder, so it stays correct if the vault moves.
 REM Everything it prints is also written to build_log.txt beside it.
 REM It touches nothing outside this folder, reaches no network, and runs no git.

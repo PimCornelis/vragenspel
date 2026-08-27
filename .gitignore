@@ -7,6 +7,11 @@ build_log.txt
 !*.example
 !*.example.*
 
+# What the two of them liked and disliked. Matched by *.local.json above; named here as
+# well because it is the one file in this repository that is deliberately not published,
+# and a future rename must not quietly un-ignore it. See docs/DECISIONS.md D14.
+card_feedback.local.json
+
 # OS / editor noise
 Thumbs.db
 desktop.ini
