@@ -21,9 +21,13 @@ A Dutch question deck for two people, in two forms that share one source of trut
   must stay that way** (`docs/DECISIONS.md` D14). Read it before proposing deck changes.
 
 The app is a **sitting**, not an evening ritual: cards deal one after another, there is no guess
-step, and a thumb down retires a card. This replaced the original one-card-a-night design on
-2026-08-28 — `docs/DECISIONS.md` D13, which also records that the printed rules card still
-describes the older game.
+step, a thumb down retires a card, and a score runs until someone taps *Stoppen*. This replaced the
+original one-card-a-night design on 2026-08-28 — `docs/DECISIONS.md` D13 and D16, which also record
+that the printed rules card still describes the older game.
+
+**The players' names are typed on the phone and kept in `localStorage`. They are not in this
+repository and must never be put in it** — not in the code, not in a comment, not in these docs.
+The name fields default to *Speler 1* and *Speler 2*. (`docs/DECISIONS.md` D16)
 
 ## The five hard limits
 

@@ -3,38 +3,42 @@
 /* Vragenspel — the browser app.
 
    A sitting, not a ritual: cards keep coming until you stop. One card fills the screen,
-   the whole background takes the category's colour, and the only thing between you and
-   the next card is one tap.
+   the whole background takes the category's colour, and the next card is one tap away.
 
-   While you play you review the deck. A thumb up marks a card as one of the good ones;
-   a thumb down retires it and it is never dealt again. Both verdicts are carried to a
-   Claude Code session by hand, through a copy-paste block in the menu, because this
-   phone cannot write to the laptop and there is no server to put in between.
+   There are no rounds. A score runs from the moment you start until you tap Stoppen, and
+   then it says who won. The deck simply shuffles again when it has been all the way
+   round; nothing announces it, because nothing needs to.
+
+   Which cards can score is not invented here — it is what the deck's own rules card says.
+   Weet jij dit? has one right answer. Wat kies je and Onenigheid end in a minute each of
+   arguing, so they end in whoever did the convincing. Wie van ons? is a match or it is
+   not. The other five categories are conversation and score nothing, which is what keeps
+   the game quick.
 
    Nothing here stores an answer. A "Weet jij dit?" card's answer lives in a person's
-   head; the app only ever asks whether it was right and takes the player's word for it.
+   head; the app only ever asks who knew it and takes the players' word.
+
+   NAMES NEVER LEAVE THE PHONE. The two players can type their names in the menu; they
+   are kept in localStorage and appear in no file in this repository, which is public.
+   docs/DECISIONS.md D16.
 
    The deck arrives in window.VRAGENSPEL_DECK from cards.js, which build_vragenspel.py
    generates from cards.json. This file never carries a copy of a card. Cards written in
    the app are DRAFTS, kept apart from the deck until a session promotes them into
-   cards.json and the build is run — see docs/DECISIONS.md D15.
+   cards.json and the build is run — docs/DECISIONS.md D15.
 
    Written for a phone, one hand, at a terrace. */
 
 
-/* ==================================================== 1. everything in Dutch
-
-   All player-facing text is collected here, so it can be read and changed in one place
-   without reading the logic. */
+/* ==================================================== 1. everything in Dutch */
 
 var T = {
   volgende:      'Volgende kaart',
   terug:         'Terug',
   bewaar:        'Bewaar kaart',
   kopieer:       'Kopieer',
-
-  duimOp:        'Mooie kaart',
-  duimNeer:      'Niet meer tonen',
+  niemand:       'Niemand',
+  gelijk:        'Allebei',
 
   kiesMinuten:   'Naar de minuten',
   kiesKop:       'Allebei kiezen',
@@ -43,22 +47,26 @@ var T = {
 
   wieWijzen:     'Aanwijzen op drie',
   wieNu:         'Wijs!',
-  wieKop:        'En?',
-  wieRegels:     ['Wezen jullie naar dezelfde persoon? Dan klopt het.',
-                  'Wezen jullie naar elkaar? Dat is het gesprek.'],
+  wieKop:        'Wezen jullie hetzelfde?',
+  wieZelfde:     'Ja, hetzelfde',
+  wieElkaar:     'Nee, naar elkaar',
+  wieRaak:       'Dat klopt dus. Een punt voor allebei.',
+  wieMis:        'Dan is dat het gesprek.',
 
-  weetJa:        'Ja, dat klopt',
-  weetNee:       'Nee, dat klopt niet',
-  weetGoedKop:   'Een punt',
-  weetGoedTekst: 'Goed geraden.',
-  weetFoutKop:   'Geen punt',
-  weetFoutTekst: 'En een korte stilte.',
+  weetKop:       'Wie wist het?',
+  weetUitleg:    'Alleen jullie weten het goede antwoord. Het spel bewaart het niet.',
+  weetNiemand:   'Niemand wist het',
+  weetStilte:    'Geen punt, en een korte stilte.',
 
   onenigheidKop:    'Ieder een kant',
   onenigheidRegels: ['Ook als je het er eigenlijk mee eens bent.',
                      'Eén minuut per persoon.'],
 
-  spelers:       ['Speler 1', 'Speler 2'],
+  overtuigdKop:  'Wie heeft overtuigd?',
+  overtuigdGeen: 'Niemand gaf toe',
+  puntVoor:      'Een punt voor',
+  geenPunt:      'Geen punt.',
+
   start:         'Start',
   stop:          'Stop',
   tijd:          'Tijd.',
@@ -66,12 +74,18 @@ var T = {
   menu:          'Menu',
   eigenSchrijven:'Eigen kaart schrijven',
   naarOordeel:   'Wat vonden we ervan',
-  opnieuw:       'Deck opnieuw schudden',
-  opnieuwKop:    'Opnieuw schudden?',
-  opnieuwTekst:  'Alle kaarten worden weer ongezien. Wat jullie mooi vonden en wat jullie ' +
-                 'weggelegd hebben, blijft staan.',
-  opnieuwJa:     'Ja, opnieuw schudden',
-  nietsAf:       'Toch niet',
+  stoppen:       'Stoppen en de stand opmaken',
+
+  uitslagWint:   'wint',
+  uitslagGelijk: 'Gelijkspel',
+  uitslagNiets:  'Nog geen punten',
+  uitslagNietsOnder: 'Speel een paar kaarten met een streepje wedstrijd erin.',
+  uitslagOnder:  function (n) {
+    return n === 1 ? 'Na 1 kaart.' : 'Na ' + n + ' kaarten.';
+  },
+  uitslagUitleg: 'De duimen blijven staan. Alleen de punten gaan terug naar nul.',
+  verder:        'Verder spelen',
+  nieuwSpel:     'Nieuw spel, punten op nul',
 
   filterUit:     'Alles doet mee. Tik een categorie aan als je ergens geen zin in hebt.',
   filterAan:     'Alleen deze categorieën worden gedeeld:',
@@ -90,6 +104,9 @@ var T = {
   eigenWeg:      'Wissen',
   eigenNr:       'eigen',
 
+  duimOp:        'Mooie kaart',
+  duimNeer:      'Niet meer tonen',
+
   oordeelGeen:   'Nog niets beoordeeld. Gebruik de duimen onder een kaart.',
   oordeelTerug:  'Terughalen',
   oordeelGeenOp: 'Nog geen mooie kaarten aangewezen.',
@@ -97,18 +114,19 @@ var T = {
   gekopieerd:    'Gekopieerd.',
   nietGekopieerd:'Kopiëren lukte niet. Selecteer de tekst hierboven en kopieer met de hand.',
 
-  ronde:         'ronde',
+  spelerStandaard: ['Speler 1', 'Speler 2'],
+  deckStand:     function (gehad, totaal, eigen, weg) {
+    return gehad + ' van ' + totaal + ' kaarten gehad. ' +
+           eigen + ' zelfgeschreven, ' + weg + ' weggelegd.';
+  },
 
-  geenGeheugen:  'Deze browser onthoudt niets — de app werkt, maar alles wat jullie ' +
-                 'beoordelen of schrijven is weg zodra je hem sluit. Zet privémodus uit ' +
-                 'als dat niet de bedoeling is.'
+  geenGeheugen:  'Deze browser onthoudt niets — de app werkt, maar de stand, de namen ' +
+                 'en alles wat jullie beoordelen zijn weg zodra je hem sluit. Zet ' +
+                 'privémodus uit als dat niet de bedoeling is.'
 };
 
 
-/* ========================================================= 2. the saved state
-
-   localStorage, so it is per device and per browser. Play from one phone: two phones
-   means two decks that drift apart on the first evening (docs/DECISIONS.md D10). */
+/* ========================================================= 2. the saved state */
 
 var SLEUTEL = 'vragenspel';
 var TIMER_SECONDEN = 60;
@@ -119,14 +137,16 @@ var geheugenWerkt = true;
 
 function legeStand() {
   return {
-    gezien: [],                    /* ids dealt in the current pass through the deck */
-    rondes: 0,                     /* completed passes */
+    gezien: [],                    /* ids dealt since the deck was last all the way round */
     duimOp: [],                    /* ids marked as one of the good ones */
     duimNeer: [],                  /* ids retired; never dealt again */
     eigen: [],                     /* cards written here: {id, category, text} — drafts */
     volgendEigenId: EIGEN_START_ID,
     filter: [],                    /* chosen categories; empty means everything plays */
-    huidige: null                  /* id of the card on the screen */
+    huidige: null,                 /* id of the card on the screen */
+    namen: ['', ''],               /* what the two of them are called; '' means unnamed */
+    punten: [0, 0],                /* the score, this game */
+    gespeeld: 0                    /* cards played this game, for the result screen */
   };
 }
 
@@ -135,8 +155,6 @@ function laadStand() {
   try {
     opgeslagen = window.localStorage.getItem(SLEUTEL);
   } catch (e) {
-    /* Private mode, or storage switched off. The game is still playable, but nothing is
-       kept — which the player is told, rather than left to discover. */
     geheugenWerkt = false;
     return legeStand();
   }
@@ -168,11 +186,15 @@ function bewaarStand() {
   }
 }
 
+function naamVan(speler) {
+  return stand.namen[speler].trim() || T.spelerStandaard[speler];
+}
+
 
 /* ================================================== 3. the elements on the page */
 
 var waarschuwingEl = document.getElementById('waarschuwing');
-var voortgangEl = document.getElementById('voortgang');
+var standBovenEl = document.getElementById('stand-boven');
 var menuKnopEl = document.getElementById('menu-knop');
 var kaartEl = document.getElementById('kaart');
 var tagEl = document.getElementById('tag');
@@ -186,6 +208,7 @@ var menuEl = document.getElementById('menu');
 var filterEl = document.getElementById('filter');
 var filterUitlegEl = document.getElementById('filter-uitleg');
 var deckUitlegEl = document.getElementById('deck-uitleg');
+var naamEls = [document.getElementById('naam-0'), document.getElementById('naam-1')];
 
 var eigenEl = document.getElementById('eigen');
 var eigenCategorieEl = document.getElementById('eigen-categorie');
@@ -201,25 +224,110 @@ var oordeelNietEl = document.getElementById('oordeel-niet');
 var oordeelBlokEl = document.getElementById('oordeel-blok');
 var oordeelMeldingEl = document.getElementById('oordeel-melding');
 
-var PANELEN = [menuEl, eigenEl, oordeelEl];
+var uitslagEl = document.getElementById('uitslag');
+var duifGrootEl = document.getElementById('duif-groot');
+var uitslagKopEl = document.getElementById('uitslag-kop');
+var uitslagOnderEl = document.getElementById('uitslag-onder');
+var eindstandEl = document.getElementById('eindstand');
+var uitslagUitlegEl = document.getElementById('uitslag-uitleg');
+
+var PANELEN = [menuEl, eigenEl, oordeelEl, uitslagEl];
 
 var stapNu = null;      /* the card step being shown, so a panel can come back to it */
 
-/* The steps that are a card. Every other screen — nothing left to deal, shuffle again —
-   has no card under it, so it gets no verdict buttons. Filled in at the bottom of this
-   file, once the step functions exist. */
+/* The steps that are a card. Every other screen has no card under it, so it gets no
+   verdict buttons. Filled in at the bottom of this file, once the steps exist. */
 var KAARTSTAPPEN = [];
 
+var eigenCategorie = null;   /* the category chosen for a card being written */
 
-/* ===================================================== 4. drawing the screen */
+
+/* =============================================================== 4. the pigeon
+
+   Drawn here rather than loaded, because the app has no dependencies and never reaches
+   the network. The pigeon is the app's motif, chosen by Pim; it is decoration and
+   carries no name. */
+
+var SVG_NS = 'http://www.w3.org/2000/svg';
+
+function maakDuif(groot) {
+  var svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 100 100');
+  svg.setAttribute('aria-hidden', 'true');
+
+  if (groot) {
+    /* The green-to-violet sheen a pigeon's neck actually has. */
+    var defs = document.createElementNS(SVG_NS, 'defs');
+    var grad = document.createElementNS(SVG_NS, 'linearGradient');
+    grad.setAttribute('id', 'duif-glans');
+    grad.setAttribute('x1', '0'); grad.setAttribute('y1', '0');
+    grad.setAttribute('x2', '1'); grad.setAttribute('y2', '1');
+    [['0%', '#4d8f78'], ['48%', '#6d7fae'], ['100%', '#8a63ab']].forEach(function (paar) {
+      var stop = document.createElementNS(SVG_NS, 'stop');
+      stop.setAttribute('offset', paar[0]);
+      stop.setAttribute('stop-color', paar[1]);
+      grad.appendChild(stop);
+    });
+    defs.appendChild(grad);
+    svg.appendChild(defs);
+  }
+
+  var kleur = groot ? 'url(#duif-glans)' : 'currentColor';
+
+  /* In drawing order, back to front: the tail tucks behind the body, the wing sits on
+     top of it as a darker panel, and the legs are strokes rather than fills. */
+  var vormen = [
+    { rol: 'vlak', d: 'M72 52 L99 44 L98 68 L74 70 Z' },
+    { rol: 'vlak', d: 'M42 41 C62 36 79 45 80 59 C81 73 69 82 53 82 ' +
+                      'C36 82 25 73 26 60 C27 48 31 44 42 41 Z' },
+    { rol: 'vlak', cx: 35, cy: 32, r: 15 },
+    { rol: 'vlak', d: 'M21 28 L3 34 L21 40 Z' },
+    { rol: 'vleugel', d: 'M42 52 C56 48 69 54 73 63 C63 71 49 71 41 65 C37 61 38 55 42 52 Z' },
+    { rol: 'poot', d: 'M48 82 L46 95 M61 82 L63 95' }
+  ];
+
+  vormen.forEach(function (vorm) {
+    var el;
+    if (vorm.d) {
+      el = document.createElementNS(SVG_NS, 'path');
+      el.setAttribute('d', vorm.d);
+    } else {
+      el = document.createElementNS(SVG_NS, 'circle');
+      el.setAttribute('cx', vorm.cx);
+      el.setAttribute('cy', vorm.cy);
+      el.setAttribute('r', vorm.r);
+    }
+
+    if (vorm.rol === 'vleugel') {
+      el.setAttribute('fill', 'rgba(0,0,0,.18)');
+    } else if (vorm.rol === 'poot') {
+      el.setAttribute('fill', 'none');
+      el.setAttribute('stroke', kleur);
+      el.setAttribute('stroke-width', '3.4');
+      el.setAttribute('stroke-linecap', 'round');
+    } else {
+      el.setAttribute('fill', kleur);
+    }
+    svg.appendChild(el);
+  });
+
+  var oog = document.createElementNS(SVG_NS, 'circle');
+  oog.setAttribute('cx', '30'); oog.setAttribute('cy', '29');
+  oog.setAttribute('r', '2.6');
+  oog.setAttribute('fill', 'rgba(0,0,0,.55)');
+  svg.appendChild(oog);
+
+  return svg;
+}
+
+
+/* ===================================================== 5. drawing the screen */
 
 function toonWaarschuwing() {
   waarschuwingEl.textContent = T.geenGeheugen;
   waarschuwingEl.hidden = false;
 }
 
-/* The buttons in the bottom bar. Rebuilt for every step: the old buttons are removed,
-   and their click handlers go with them. */
 function toonActies(acties) {
   actiesEl.replaceChildren();
   acties.forEach(function (actie) {
@@ -235,9 +343,9 @@ function toonActies(acties) {
   });
 }
 
-/* The two verdict buttons. Present under every card, at every step of it, because an
-   opinion arrives whenever it arrives — but never on a screen that is not a card, where
-   they would silently judge whichever card happened to be dealt last. */
+/* The two verdict buttons. Under every card, at every step of it, because an opinion
+   arrives whenever it arrives — but never on a screen that is not a card, where they
+   would silently judge whichever card happened to be dealt last. */
 function toonDuimen() {
   duimenEl.replaceChildren();
   if (stand.huidige === null) return;
@@ -282,8 +390,13 @@ function toonExtraLijst(kop, regels) {
   extraEl.hidden = false;
 }
 
-function toonExtraTekst(kop, tekst) {
+function toonExtraTekst(kop, tekst, metDuif) {
   extraEl.replaceChildren();
+  if (metDuif) {
+    var duif = maakDuif(false);
+    duif.setAttribute('class', 'punt-duif');
+    extraEl.appendChild(duif);
+  }
   if (kop) extraEl.appendChild(maakKop(kop));
   var alinea = document.createElement('p');
   alinea.className = 'extra-tekst';
@@ -292,11 +405,31 @@ function toonExtraTekst(kop, tekst) {
   extraEl.hidden = false;
 }
 
-function toonVoortgang() {
-  var totaal = speelbaar().length;
-  var gezien = stand.gezien.length;
-  voortgangEl.textContent = (stand.rondes > 0 ? T.ronde + ' ' + (stand.rondes + 1) + ' · ' : '') +
-                            gezien + ' van ' + totaal;
+/* The running score, in the top bar. */
+function toonStand() {
+  standBovenEl.replaceChildren();
+  [0, 1].forEach(function (speler) {
+    if (speler === 1) {
+      var streep = document.createElement('span');
+      streep.className = 'stand-streep';
+      streep.textContent = '·';
+      standBovenEl.appendChild(streep);
+    }
+    var blok = document.createElement('span');
+    blok.className = 'stand-speler';
+
+    var naam = document.createElement('span');
+    naam.className = 'stand-naam';
+    naam.textContent = naamVan(speler);
+    blok.appendChild(naam);
+
+    var punt = document.createElement('span');
+    punt.className = 'stand-punt';
+    punt.textContent = stand.punten[speler];
+    blok.appendChild(punt);
+
+    standBovenEl.appendChild(blok);
+  });
 }
 
 /* Go to a card step. One place, so the clock is always stopped and any panel closed. */
@@ -305,7 +438,7 @@ function ga(stapFunctie) {
   stapNu = stapFunctie;
   sluitPanelen();
   kaartEl.hidden = false;
-  toonVoortgang();
+  toonStand();
   stapFunctie();
   toonDuimen();
 }
@@ -315,7 +448,6 @@ function sluitPanelen() {
   document.body.classList.remove('paneel-open');
 }
 
-/* Open one panel. The category colour steps back: a panel is not a card. */
 function openPaneel(paneel, vulFunctie, acties) {
   stopKlok();
   kaartEl.hidden = true;
@@ -323,16 +455,13 @@ function openPaneel(paneel, vulFunctie, acties) {
   paneel.hidden = false;
   document.body.classList.add('paneel-open');
   duimenEl.replaceChildren();
-  toonVoortgang();
+  toonStand();
   vulFunctie();
   toonActies(acties);
 }
 
 
-/* ============================================ 5. which cards are still available
-
-   The deck is cards.json plus whatever has been written here. Cards written here are
-   drafts and are marked as such everywhere they appear. */
+/* ============================================ 6. which cards are still available */
 
 function alleKaarten() {
   return DECK.cards.concat(stand.eigen);
@@ -350,7 +479,6 @@ function isEigen(id) {
   return id >= EIGEN_START_ID;
 }
 
-/* Everything that could still be dealt: not retired, and inside the chosen categories. */
 function speelbaar() {
   return alleKaarten().filter(function (kaart) {
     if (stand.duimNeer.indexOf(kaart.id) !== -1) return false;
@@ -365,9 +493,8 @@ function beschikbaar() {
   });
 }
 
-/* The printed deck is shuffled, so this one is too. When the deck has been all the way
-   round it shuffles again rather than stopping — at a terrace, a dead end mid-glass is
-   worse than seeing a good question a second time. */
+/* The printed deck is shuffled, so this one is too. When every card has been dealt it
+   quietly starts over — there are no rounds to announce. */
 function deel() {
   var mogelijk = beschikbaar();
 
@@ -375,19 +502,19 @@ function deel() {
     var alles = speelbaar();
     if (!alles.length) { ga(stapLeeg); return; }
     stand.gezien = [];
-    stand.rondes += 1;
     mogelijk = alles;
   }
 
   var gekozen = mogelijk[Math.floor(Math.random() * mogelijk.length)];
   stand.huidige = gekozen.id;
   if (stand.gezien.indexOf(gekozen.id) === -1) stand.gezien.push(gekozen.id);
+  stand.gespeeld += 1;
   bewaarStand();
   ga(stapKaart);
 }
 
 
-/* ================================================= 6. reviewing while playing */
+/* ================================================= 7. reviewing while playing */
 
 function wisselDuim(lijstNaam) {
   var anderNaam = lijstNaam === 'duimOp' ? 'duimNeer' : 'duimOp';
@@ -405,7 +532,6 @@ function wisselDuim(lijstNaam) {
   }
   bewaarStand();
   toonDuimen();
-  toonVoortgang();
 }
 
 function haalOordeelTerug(id, lijstNaam) {
@@ -413,14 +539,45 @@ function haalOordeelTerug(id, lijstNaam) {
   if (plek !== -1) stand[lijstNaam].splice(plek, 1);
   bewaarStand();
   vulOordeel();
-  toonVoortgang();
 }
 
 
-/* =========================================================== 7. the card's steps
+/* ============================================================== 8. the score */
 
-   No gate: the card is shown whole and the next one is one tap away. Four categories
-   still have a step of their own, because the printed rules card gives them one. */
+function geefPunt(speler) {
+  stand.punten[speler] += 1;
+  bewaarStand();
+  toonStand();
+}
+
+function geefPuntAllebei() {
+  stand.punten[0] += 1;
+  stand.punten[1] += 1;
+  bewaarStand();
+  toonStand();
+}
+
+/* One point, then the next card. Used by every category that scores. */
+var puntSpeler = 0;      /* who the point just went to, for the screen that says so */
+
+function puntKnoppen(extraKnop) {
+  var acties = [0, 1].map(function (speler) {
+    return {
+      tekst: naamVan(speler),
+      doe: function () { geefPunt(speler); puntSpeler = speler; ga(stapPuntGegeven); }
+    };
+  });
+  acties.push(extraKnop);
+  return acties;
+}
+
+function stapPuntGegeven() {
+  toonExtraTekst('', T.puntVoor + ' ' + naamVan(puntSpeler) + '.', true);
+  toonActies([{ tekst: T.volgende, doe: deel }]);
+}
+
+
+/* =========================================================== 9. the card's steps */
 
 function huidigeKaart() {
   return kaartMetId(stand.huidige);
@@ -450,6 +607,13 @@ function stapKaart() {
   nrEl.textContent = isEigen(kaart.id) ? T.eigenNr : kaart.id;
   leegExtra();
 
+  /* Restart the arrival animation. Removing the class, reading offsetWidth and adding it
+     back is the standard way to make a CSS animation play a second time: the read forces
+     the browser to apply the removal before the class returns. */
+  kaartEl.classList.remove('in');
+  void kaartEl.offsetWidth;
+  kaartEl.classList.add('in');
+
   var soort = soortVan(kaart.category);
 
   if (soort === 'kies' || soort === 'onenigheid') {
@@ -457,25 +621,36 @@ function stapKaart() {
   } else if (soort === 'wie') {
     toonActies([{ tekst: T.wieWijzen, doe: function () { ga(stapWieAftellen); } }]);
   } else if (soort === 'weet') {
-    toonActies([
-      { tekst: T.weetJa,  doe: function () { ga(stapWeetGoed); } },
-      { tekst: T.weetNee, stil: true, doe: function () { ga(stapWeetFout); } }
-    ]);
+    toonActies([{ tekst: T.weetKop, doe: function () { ga(stapWeetWie); } }]);
   } else {
     toonActies([{ tekst: T.volgende, doe: deel }]);
   }
 }
 
-/* ---- Wat kies je and Onenigheid: say it, then a minute each ---- */
+/* ---- Wat kies je and Onenigheid: say it, a minute each, then who convinced ---- */
 function stapKiezen() {
   var soort = soortVan(huidigeKaart().category);
   if (soort === 'kies') toonExtraLijst(T.kiesKop, T.kiesRegels);
   else toonExtraLijst(T.onenigheidKop, T.onenigheidRegels);
-  toonActies([{ tekst: T.start + ' · ' + T.spelers[0], groot: true,
+  toonActies([{ tekst: T.start + ' · ' + naamVan(0), groot: true,
                 doe: function () { ga(stapTimers); } }]);
 }
 
-/* ---- Wie van ons? — point on three, then read the outcome ---- */
+function stapOvertuigd() {
+  extraEl.replaceChildren(maakKop(T.overtuigdKop));
+  extraEl.hidden = false;
+  toonActies(puntKnoppen({
+    tekst: T.overtuigdGeen, stil: true,
+    doe: function () { ga(stapGeenPunt); }
+  }));
+}
+
+function stapGeenPunt() {
+  toonExtraTekst('', T.geenPunt);
+  toonActies([{ tekst: T.volgende, doe: deel }]);
+}
+
+/* ---- Wie van ons? — point on three, then a match or not ---- */
 var aftelId = null;
 
 function stapWieAftellen() {
@@ -502,23 +677,40 @@ function stapWieAftellen() {
 }
 
 function stapWieUitslag() {
-  toonExtraLijst(T.wieKop, T.wieRegels);
+  extraEl.replaceChildren(maakKop(T.wieKop));
+  extraEl.hidden = false;
+  toonActies([
+    { tekst: T.wieZelfde, doe: function () { geefPuntAllebei(); ga(stapWieRaak); } },
+    { tekst: T.wieElkaar, stil: true, doe: function () { ga(stapWieMis); } }
+  ]);
+}
+
+function stapWieRaak() {
+  toonExtraTekst('', T.wieRaak, true);
+  toonActies([{ tekst: T.volgende, doe: deel }]);
+}
+
+function stapWieMis() {
+  toonExtraTekst('', T.wieMis);
   toonActies([{ tekst: T.volgende, doe: deel }]);
 }
 
 /* ---- Weet jij dit? — self-reported, and nothing is written down ---- */
-function stapWeetGoed() {
-  toonExtraTekst(T.weetGoedKop, T.weetGoedTekst);
+function stapWeetWie() {
+  toonExtraTekst(T.weetKop, T.weetUitleg);
+  toonActies(puntKnoppen({
+    tekst: T.weetNiemand, stil: true,
+    doe: function () { ga(stapWeetNiemand); }
+  }));
+}
+
+function stapWeetNiemand() {
+  toonExtraTekst('', T.weetStilte);
   toonActies([{ tekst: T.volgende, doe: deel }]);
 }
 
-function stapWeetFout() {
-  toonExtraTekst(T.weetFoutKop, T.weetFoutTekst);
-  toonActies([{ tekst: T.volgende, doe: deel }]);
-}
 
-
-/* ===================================================== 8. the one-minute timers */
+/* ===================================================== 10. the one-minute timers */
 
 var klokId = null;
 var klokSpeler = 0;
@@ -548,7 +740,7 @@ function tekenKlok() {
 
   var beurt = document.createElement('p');
   beurt.className = 'beurt';
-  beurt.textContent = T.spelers[klokSpeler];
+  beurt.textContent = naamVan(klokSpeler);
   extraEl.appendChild(beurt);
 
   var klok = document.createElement('p');
@@ -560,9 +752,9 @@ function tekenKlok() {
   if (klokFase === 'loopt') {
     toonActies([{ tekst: T.stop, groot: true, doe: klokAfgelopen }]);
   } else if (klokSpeler === 0) {
-    toonActies([{ tekst: T.start + ' · ' + T.spelers[1], groot: true, doe: volgendeSpeler }]);
+    toonActies([{ tekst: T.start + ' · ' + naamVan(1), groot: true, doe: volgendeSpeler }]);
   } else {
-    toonActies([{ tekst: T.volgende, doe: deel }]);
+    toonActies([{ tekst: T.overtuigdKop, doe: function () { ga(stapOvertuigd); } }]);
   }
 }
 
@@ -626,7 +818,7 @@ function trilling(patroon) {
 }
 
 
-/* ==================================================== 9. nothing left to deal */
+/* ==================================================== 11. nothing left to deal */
 
 function stapLeeg() {
   document.body.style.setProperty('--cc', '#2b3038');
@@ -639,19 +831,15 @@ function stapLeeg() {
 }
 
 
-/* ============================================================ 10. the menu */
+/* ============================================================ 12. the menu */
 
-function menuActies() {
-  return [
+function openMenu() {
+  openPaneel(menuEl, vulMenu, [
     { tekst: T.terug, doe: sluitMenu },
     { tekst: T.eigenSchrijven, stil: true, doe: openEigen },
     { tekst: T.naarOordeel, stil: true, doe: openOordeel },
-    { tekst: T.opnieuw, waarschuwing: true, doe: function () { ga(stapOpnieuw); } }
-  ];
-}
-
-function openMenu() {
-  openPaneel(menuEl, vulMenu, menuActies());
+    { tekst: T.stoppen, stil: true, doe: openUitslag }
+  ]);
 }
 
 function sluitMenu() {
@@ -663,29 +851,38 @@ function meervoud(aantal, enkel, meer) {
   return aantal + ' ' + (aantal === 1 ? enkel : meer);
 }
 
-function vulMenu() {
-  filterEl.replaceChildren();
+/* One toggle per category. The same control is used for the filter here and for picking
+   a category when writing a card. */
+function vulCategorieën(houder, isAan, bijKlik) {
+  houder.replaceChildren();
   DECK.categories.forEach(function (categorie) {
-    var aan = stand.filter.indexOf(categorie.name) !== -1;
     var knop = document.createElement('button');
     knop.type = 'button';
     knop.className = 'cat';
     knop.style.setProperty('--cc', categorie.colour);
-    knop.setAttribute('aria-pressed', aan ? 'true' : 'false');
+    knop.setAttribute('aria-pressed', isAan(categorie.name) ? 'true' : 'false');
     knop.textContent = categorie.name;
-    knop.addEventListener('click', function () { wisselCategorie(categorie.name); });
-    filterEl.appendChild(knop);
+    knop.addEventListener('click', function () { bijKlik(categorie.name); });
+    houder.appendChild(knop);
   });
+}
+
+function vulMenu() {
+  naamEls.forEach(function (veld, speler) {
+    veld.value = stand.namen[speler];
+    veld.placeholder = T.spelerStandaard[speler];
+  });
+
+  vulCategorieën(filterEl,
+    function (naam) { return stand.filter.indexOf(naam) !== -1; },
+    wisselCategorie);
 
   filterUitlegEl.textContent = stand.filter.length
     ? T.filterAan + ' ' + stand.filter.join(', ') + '.'
     : T.filterUit;
 
-  deckUitlegEl.textContent =
-    meervoud(alleKaarten().length, 'kaart', 'kaarten') + ' in totaal, waarvan ' +
-    meervoud(stand.eigen.length, 'zelfgeschreven', 'zelfgeschreven') + '. ' +
-    meervoud(stand.duimNeer.length, 'kaart', 'kaarten') + ' weggelegd, ' +
-    meervoud(stand.duimOp.length, 'kaart', 'kaarten') + ' mooi gevonden.';
+  deckUitlegEl.textContent = T.deckStand(stand.gezien.length, speelbaar().length,
+                                         stand.eigen.length, stand.duimNeer.length);
 }
 
 function wisselCategorie(naam) {
@@ -694,16 +891,17 @@ function wisselCategorie(naam) {
   else stand.filter.splice(plek, 1);
   bewaarStand();
   vulMenu();
-  toonVoortgang();
+}
+
+/* Names are typed here and go no further than this phone. */
+function bewaarNaam(speler) {
+  stand.namen[speler] = naamEls[speler].value;
+  bewaarStand();
+  toonStand();
 }
 
 
-/* ================================================= 11. writing your own card
-
-   These are drafts. They play at once, but they are not in cards.json — which stays the
-   only editable copy of the deck — until a Claude Code session promotes them and the
-   build is run. The warning about the public website is on the panel itself, at the
-   moment of typing, because that is the only moment it can help. */
+/* ================================================= 13. writing your own card */
 
 function openEigen() {
   openPaneel(eigenEl, vulEigen, [
@@ -713,14 +911,11 @@ function openEigen() {
 }
 
 function vulEigen() {
-  if (!eigenCategorieEl.options.length) {
-    DECK.categories.forEach(function (categorie) {
-      var optie = document.createElement('option');
-      optie.value = categorie.name;
-      optie.textContent = categorie.name;
-      eigenCategorieEl.appendChild(optie);
-    });
-  }
+  if (!eigenCategorie) eigenCategorie = DECK.categories[0].name;
+
+  vulCategorieën(eigenCategorieEl,
+    function (naam) { return naam === eigenCategorie; },
+    function (naam) { eigenCategorie = naam; vulEigen(); });
 
   eigenUitlegEl.textContent = stand.eigen.length ? T.eigenUitleg : T.eigenGeen;
 
@@ -763,7 +958,7 @@ function bewaarEigen() {
 
   stand.eigen.push({
     id: stand.volgendEigenId,
-    category: eigenCategorieEl.value,
+    category: eigenCategorie,
     text: tekst
   });
   stand.volgendEigenId += 1;
@@ -772,7 +967,6 @@ function bewaarEigen() {
   eigenTekstEl.value = '';
   eigenMeldingEl.textContent = T.eigenBewaard;
   vulEigen();
-  toonVoortgang();
 }
 
 function verwijderEigen(id) {
@@ -784,11 +978,10 @@ function verwijderEigen(id) {
   if (stand.huidige === id) stand.huidige = null;
   bewaarStand();
   vulEigen();
-  toonVoortgang();
 }
 
 
-/* ================================================ 12. the verdicts, and the export
+/* ================================================ 14. the verdicts, and the export
 
    This phone cannot write to the laptop and there is no server between them, so the
    verdicts travel by hand: a block of text to copy into a Claude Code session, which
@@ -840,7 +1033,8 @@ function maakUitleg(tekst) {
 }
 
 /* Deck cards are identified by id — cards.json is right there beside the session that
-   reads this. Cards written here carry their full text, because nothing else has them. */
+   reads this. Cards written here carry their full text, because nothing else has them.
+   The names are deliberately NOT in this block: they never leave the phone. */
 function maakExport(opKaarten, neerKaarten) {
   function kort(kaart) {
     return isEigen(kaart.id)
@@ -871,31 +1065,65 @@ function kopieerOordeel() {
 }
 
 
-/* ======================================================= 13. shuffling again */
+/* ========================================================= 15. stopping, and who won */
 
-function stapOpnieuw() {
-  document.body.style.setProperty('--cc', '#2b3038');
-  tagEl.textContent = '';
-  vraagEl.className = 'vraag lang';
-  vraagEl.textContent = T.opnieuwKop;
-  nrEl.textContent = '';
-  toonExtraTekst('', T.opnieuwTekst);
-  toonActies([
-    { tekst: T.opnieuwJa, waarschuwing: true, doe: doeOpnieuw },
-    { tekst: T.nietsAf, stil: true, doe: openMenu }
+function openUitslag() {
+  openPaneel(uitslagEl, vulUitslag, [
+    { tekst: T.verder, doe: sluitMenu },
+    { tekst: T.nieuwSpel, stil: true, doe: nieuwSpel }
   ]);
 }
 
-function doeOpnieuw() {
-  stand.gezien = [];
-  stand.rondes = 0;
-  stand.huidige = null;
+function vulUitslag() {
+  duifGrootEl.replaceChildren(maakDuif(true));
+
+  var a = stand.punten[0];
+  var b = stand.punten[1];
+
+  if (a === 0 && b === 0) {
+    uitslagKopEl.textContent = T.uitslagNiets;
+    uitslagOnderEl.textContent = T.uitslagNietsOnder;
+  } else if (a === b) {
+    uitslagKopEl.textContent = T.uitslagGelijk;
+    uitslagOnderEl.textContent = T.uitslagOnder(stand.gespeeld);
+  } else {
+    uitslagKopEl.textContent = naamVan(a > b ? 0 : 1) + ' ' + T.uitslagWint;
+    uitslagOnderEl.textContent = T.uitslagOnder(stand.gespeeld);
+  }
+
+  eindstandEl.replaceChildren();
+  [0, 1].forEach(function (speler) {
+    var blok = document.createElement('div');
+    blok.className = 'eindstand-speler' +
+      (stand.punten[speler] > stand.punten[1 - speler] ? ' wint' : '');
+
+    var naam = document.createElement('span');
+    naam.className = 'eindstand-naam';
+    naam.textContent = naamVan(speler);
+    blok.appendChild(naam);
+
+    var punt = document.createElement('span');
+    punt.className = 'eindstand-punt';
+    punt.textContent = stand.punten[speler];
+    blok.appendChild(punt);
+
+    eindstandEl.appendChild(blok);
+  });
+
+  uitslagUitlegEl.textContent = T.uitslagUitleg;
+}
+
+/* A new game resets the score and nothing else: the verdicts on the cards are about the
+   deck, not about this evening, so they stay. */
+function nieuwSpel() {
+  stand.punten = [0, 0];
+  stand.gespeeld = 0;
   bewaarStand();
-  deel();
+  sluitMenu();
 }
 
 
-/* ============================================================= 14. starting up */
+/* ============================================================= 16. starting up */
 
 function begin() {
   stand = laadStand();
@@ -910,7 +1138,7 @@ function begin() {
 }
 
 
-/* ================================================================ 15. the deck
+/* ================================================================ 17. the deck
 
    window.VRAGENSPEL_DECK comes from cards.js, generated from cards.json by
    build_vragenspel.py. If it is not there, say what failed: an empty screen would send
@@ -925,14 +1153,22 @@ if (!DECK || !DECK.cards || !DECK.cards.length) {
     'De kaarten konden niet geladen worden: cards.js ontbreekt of is stuk. ' +
     'Draai build_vragenspel.bat opnieuw.';
 } else {
-  KAARTSTAPPEN = [stapKaart, stapKiezen, stapWieAftellen, stapWieUitslag,
-                  stapWeetGoed, stapWeetFout, stapTimers];
+  KAARTSTAPPEN = [stapKaart, stapKiezen, stapWieAftellen, stapWieUitslag, stapWieRaak,
+                  stapWieMis, stapWeetWie, stapWeetNiemand, stapOvertuigd, stapGeenPunt,
+                  stapPuntGegeven, stapTimers];
+
   DECK.categories.forEach(function (categorie) {
     KLEUREN[categorie.name] = categorie.colour;
   });
+
+  naamEls.forEach(function (veld, speler) {
+    veld.addEventListener('input', function () { bewaarNaam(speler); });
+  });
+
   menuKnopEl.addEventListener('click', function () {
-    if (menuEl.hidden && eigenEl.hidden && oordeelEl.hidden) openMenu();
+    if (PANELEN.every(function (p) { return p.hidden; })) openMenu();
     else sluitMenu();
   });
+
   begin();
 }

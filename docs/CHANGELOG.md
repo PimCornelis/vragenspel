@@ -7,6 +7,64 @@ project: vragenspel
 
 Newest at top. The *why* is the part that matters.
 
+## 2026-08-28 — A score instead of rounds, and the interface finished
+
+**What.** Rounds removed entirely. A running score, a result screen that says who won, names the
+players type on the phone, a pigeon, and a pass over the whole interface. The category dropdown
+that was white-on-white is gone rather than patched.
+
+**Rounds went because they measured the wrong thing.** The counter answered *how far through the
+deck are we* — the right question when the deck was four months of dinners, the wrong one when it
+became an evening. Pim also read *"3 van 49"* as a round being 49 cards long; it was not, it was a
+category filter left on from testing narrowing the deck to 49. Either way the counter was
+answering a question nobody was asking. The deck now simply starts over when it has been all the
+way round, and says nothing about it.
+
+**What scores, and why not everything.** Taken from the rules card in `cards.json` rather than
+invented. *Weet jij dit?* has one right answer, so it asks who knew it. *Wat kies je* and
+*Onenigheid* end in a minute each of arguing, so they ask who convinced. *Wie van ons?* is a match
+or it is not; a match is a point each. The other five categories score nothing on purpose — a
+scoring tap on all 118 cards would put a toll on every card, which is exactly the mistake the gate
+made. 54 of 118 cards can score, so an evening still produces a real result.
+
+**The names never enter this repository.** Pim gave the two players' names when asking for this.
+**Neither is in any file here** — not in the code, not in a comment, not in these
+docs. The app has two name fields, defaulting to *Speler 1* and *Speler 2*, typed on the phone and
+kept in `localStorage`. They are also left out of the *Wat vonden we ervan* export block on
+purpose, so a name cannot ride into a Claude Code session and from there into something committed.
+`CLAUDE.md` is unconditional on this and the repository is public. `DECISIONS.md` D16.
+
+**The pigeon.** Pim asked for light pigeon theming, so the furniture around the cards is one:
+slate and dove grey rather than black, a bird drawn in inline SVG on the result screen, and a
+small one beside each point scored. The winner's panel and the bird carry the green-to-violet
+sheen a pigeon's neck actually has. A motif carries no name, which is why it was allowed where a
+name was not. The card colours themselves are untouched — those belong to the deck.
+
+**The dropdown was removed, not fixed.** The category picker on the "eigen kaart" panel was a
+native `<select>`, whose open list is drawn by the browser and came out white text on white. It
+was patched first with `color-scheme:dark` and an explicit `option` rule — both kept, since they
+also fix scrollbars and the caret — but the control itself is now the same colour-coded chips the
+menu already uses. That removes the OS-drawn popup entirely, matches the rest of the app, and is a
+bigger tap target. **It also removed the one thing in this app that could not be verified from
+here**, since a native popup is drawn outside the page and never appears in a screenshot.
+
+**Other polish.** A newly dealt card animates in rather than blinking. The top bar carries the
+score instead of a counter. Long questions step down through three sizes rather than overflowing.
+Panels sit on slate rather than near-black, and the result screen is centred and typeset as an
+ending rather than another panel.
+
+**Verified.** Score starts at 0-0 with neutral names; typing names updates the top bar and the
+buttons and persists; a point on *Weet jij dit?*, a point each on a *Wie van ons?* match, and a
+point for whoever convinced after the timers all land correctly; ordinary cards offer no scoring
+tap; the result screen shows a winner, a draw, and a not-yet-started state, and *Nieuw spel* clears
+the score while leaving the thumbs, the names and the written cards alone; the chip picker sets the
+category on a saved card; the deck starts over silently with no round text anywhere in the
+interface; `index.html` still deals a card when rendered from a `file://` URL by headless Chrome.
+
+**Still untested.** Not opened on a real phone. Pointer input through the browser tool timed out
+all session, so buttons were fired through their real click handlers rather than by physical taps,
+and there are still no swipe gestures — advancing is by button.
+
 ## 2026-08-28 — The app becomes a sitting: no gate, thumbs, and cards you can write
 
 **What.** `index.html`, `style.css` and `app.js` rebuilt, hours after the entry below. The app now

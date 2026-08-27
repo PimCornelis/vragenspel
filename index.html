@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#14161c">
+<meta name="theme-color" content="#191d24">
 <title>Vragenspel</title>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -13,7 +13,8 @@
 <p class="waarschuwing" id="waarschuwing" hidden></p>
 
 <header class="balk-boven">
-  <span class="voortgang" id="voortgang"></span>
+  <!-- The running score. Built by app.js so the names can come from the phone. -->
+  <div class="stand" id="stand-boven"></div>
   <button class="menu-knop" id="menu-knop" type="button">Menu</button>
 </header>
 
@@ -30,6 +31,16 @@
   <!-- Settings. Each panel replaces the card while it is open. -->
   <section class="paneel" id="menu" hidden>
     <h2 class="paneel-kop">Menu</h2>
+
+    <h3 class="paneel-sub">Wie spelen er?</h3>
+    <p class="paneel-uitleg">
+      Alleen op deze telefoon. Namen worden nergens heen gestuurd en staan in geen enkel
+      bestand van dit spel.
+    </p>
+    <div class="namen">
+      <input class="veld" id="naam-0" type="text" maxlength="14" autocomplete="off" spellcheck="false">
+      <input class="veld" id="naam-1" type="text" maxlength="14" autocomplete="off" spellcheck="false">
+    </div>
 
     <h3 class="paneel-sub">Waar heb je zin in?</h3>
     <p class="paneel-uitleg" id="filter-uitleg"></p>
@@ -50,7 +61,7 @@
     </p>
 
     <h3 class="paneel-sub">Categorie</h3>
-    <select class="veld" id="eigen-categorie"></select>
+    <div class="filter" id="eigen-categorie"></div>
 
     <h3 class="paneel-sub">De vraag</h3>
     <textarea class="veld veld-groot" id="eigen-tekst" rows="4"
@@ -81,6 +92,15 @@
     </p>
     <textarea class="veld veld-code" id="oordeel-blok" rows="8" readonly></textarea>
     <p class="paneel-uitleg" id="oordeel-melding"></p>
+  </section>
+
+  <!-- Stopping, and who won. -->
+  <section class="paneel paneel-uitslag" id="uitslag" hidden>
+    <div class="duif-groot" id="duif-groot"></div>
+    <h2 class="uitslag-kop" id="uitslag-kop"></h2>
+    <p class="uitslag-onder" id="uitslag-onder"></p>
+    <div class="eindstand" id="eindstand"></div>
+    <p class="paneel-uitleg" id="uitslag-uitleg"></p>
   </section>
 
 </main>

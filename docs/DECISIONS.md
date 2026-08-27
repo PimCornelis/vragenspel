@@ -288,3 +288,42 @@ to know the names to look for and no name may exist in this repository.
 
 **Revisit when.** Drafts are routinely promoted and the waiting room is proven to work — or
 routinely ignored, which would mean the feature should be removed rather than trusted.
+
+## D16 — There is a score, there are no rounds, and the players' names never leave the phone
+
+**Chosen 2026-08-28 (Pim).** The deck no longer counts rounds. A score runs from the moment you
+start until you tap *Stoppen en de stand opmaken*, which says who won. The two players can type
+their names in the menu.
+
+**Alternatives.** Keep the round counter alongside the score; score every card rather than only
+the ones the rules already score; ship the names in the code.
+
+**Why rounds went.** They measured the wrong thing. The counter answered "how far through the deck
+are we" — a question that mattered when the deck was four months of dinners and stopped mattering
+when it became an evening. A score answers the question actually being asked at the table.
+
+**What scores, and why only that.** Not invented here — taken from the rules card in `cards.json`.
+*Weet jij dit?* has one right answer, so it asks who knew it. *Wat kies je* and *Onenigheid* end in
+a minute each of arguing, so they end in who did the convincing. *Wie van ons?* is a match or it is
+not; a match is a point each. The other five categories are conversation and score nothing, which
+is deliberate: a scoring tap on all 118 cards would have put a toll on every card, which is the
+mistake the gate made. Fifty-four of 118 cards can score, so a sitting still produces a real score.
+
+**THE NAMES ARE NOT IN THIS REPOSITORY, AND MUST NOT BE.** Pim gave both players' names when
+asking for this. Neither appears in any file here — not in the code, not in the docs, not in a
+comment. The name fields default to *Speler 1* and *Speler 2*, are typed on the
+phone, and are kept in `localStorage` with the rest of the state. They are also deliberately left
+out of the *Wat vonden we ervan* export block, so a name cannot ride into a Claude Code session and
+from there into a committed file.
+
+**Reasoning.** [`../CLAUDE.md`](../CLAUDE.md) is unconditional: no names, *"not the players', not
+family, not friends"*, and everything committed here is world-readable (D5). A nickname for a real
+person on a public site is exactly the thing that rule exists to stop. Typing them into the phone
+costs one moment, once, and gives the same result — the app can say *"… wint"* with the name in it
+without the name ever existing in a file.
+
+**Revisit when.** Never, while the repository is public.
+
+**On the pigeon.** It is a motif Pim asked for, and it stays: a bird carries no name. It is
+confined to `maakDuif()` in `app.js` and the sheen on the result screen, so it can be removed
+without touching anything else if it is ever unwanted.

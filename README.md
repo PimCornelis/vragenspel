@@ -65,7 +65,12 @@ file beside it.
 
 **It plays a sitting, not an evening.** One card fills the screen, the background takes the
 category's colour, and the next card is one tap away. It deals without repeating until the deck
-has been all the way round, then shuffles again.
+has been all the way round, then quietly starts over.
+
+**There is a score.** The categories whose rules already have a winner — *Weet jij dit?*,
+*Wat kies je*, *Wie van ons?* and *Onenigheid* — hand out a point; the other five are just
+conversation. Stop whenever you like and the app says who won. **Both players can type their name
+in the menu; names are kept on the phone and appear in no file in this repository.**
 
 **The app plays a different game from the paper deck.** There is no guess step and no refusal —
 the printed rules card still describes both. That is deliberate and recorded in
