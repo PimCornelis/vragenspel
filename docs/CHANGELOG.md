@@ -7,6 +7,75 @@ project: vragenspel
 
 Newest at top. The *why* is the part that matters.
 
+## 2026-08-28 (phase 3, fix) — The dates from testing can be wiped, from the phone
+
+**Asked for after D26.** Putting the deck back together deliberately leaves `gezienOp` alone — the
+date each card was last asked, which is what lets an old card say *"Dit vroegen we op ⟨datum⟩"*.
+That is right in general, but it left a specific mess: an evening spent scrolling through cards to
+test the app stamped 41 of them with that day's date, so in a year they would claim to have been
+asked then.
+
+**The menu now has a second button under *Het deck*: *Wis de datums van eerdere keren*.**
+
+**It could not be done from a session, which is the architecture working rather than failing.** The
+dates are in `localStorage` on one phone; there is no server and no path from a laptop to that data
+(D10, D9). A session can ship the button; only the owner can press it.
+
+**Two buttons, because they cost different things.** *Begin het deck opnieuw* loses nothing.
+*Wis de datums* loses something permanently, so it asks first: the confirmation names how many
+cards, says which line disappears, and says it cannot be undone, and the button bar becomes
+*Ja, wis de datums* / *Nee, laat staan* — the same shape as the memory import's question, so a
+question that costs something always looks the same. That is D26's reasoning in the other
+direction: a confirmation is spent where something is at stake, which is what keeps the one on the
+import worth reading.
+
+**The question is scrolled into view when it appears**, because the menu is long enough that
+*Het deck* sits below the fold and the bar turns red either way. A confirmation you can act on
+without being able to read it is worse than none. Found by looking at the screen rather than at the
+code.
+
+**What it leaves alone:** `gezien`, so the deck keeps its place; the thumbs; and a Tijdcapsule's own
+`geschrevenOp`, which is the card's identity rather than a record of it being dealt.
+
+**Verified.** With 41 dates, a thumb up, a thumb down and a sleeping capsule: the button appears,
+*Nee* leaves all 41 dates in place and restores the normal bar, *Ja* empties them, reports it,
+removes the button and survives a save. `gezien` (41), both thumbs and the capsule's written date
+all untouched. The *"Dit vroegen we op 15 januari 2024"* line showed on a card before the wipe and
+was gone after it. The confirmation measured on screen: fully inside the viewport. No console
+errors; deck untouched. D27.
+
+## 2026-08-28 (phase 3, fix) — The deck can be reset, and its counter stops lying under a filter
+
+**Asked from play:** what does "41 van 158 kaarten gehad" mean, and will those cards come up less
+often now?
+
+**The honest answer was worse than "less often".** `deel()` picks from `beschikbaar()` — playable
+minus seen — so a card that has been dealt is not dealt **at all** until every other playable card
+has gone; only then does `gezien` empty itself and the deck start over. An evening spent scrolling
+through cards to test the app therefore locks those cards out for a whole pass through the deck.
+
+**So the menu gained one button: *Begin het deck opnieuw*,** shown only when there is something to
+put back. It empties `gezien` and nothing else — not the thumbs, which are verdicts on the deck
+rather than on tonight, and not `gezienOp`, the date each card was last asked, which is what lets
+an old card say *"Dit vroegen we op ⟨datum⟩"*. Wiping those to fix a counter would be throwing away
+memory to tidy a number. No confirmation: nothing is lost, and a confirmation on a harmless action
+teaches you to tap through the one on the import, which is not harmless. D26.
+
+**The counter itself was wrong.** It measured `gezien.length`, which holds ids from the whole deck,
+against `speelbaar().length`, which is filtered — so narrowing the filter to *Kleine dingen*
+produced **"41 van 12 kaarten gehad."** Both numbers now come from the same pool, the one `deel()`
+actually works from.
+
+**And it now says what it means**, in a line under it: *"Een kaart die geweest is wordt niet meer
+gedeeld tot de rest ook geweest is. Daarna begint het deck vanzelf opnieuw."* The bare number
+invited exactly the reading that prompted the question.
+
+**Verified before and after.** Before: 41 seen and the filter on *Kleine dingen* gave "41 van 12".
+After, with one card also thumbed down: "41 van 157" unfiltered, "12 van 12" filtered — which
+matches `beschikbaar()` being 0 — and after the reset, "0 van 157", the button gone, `gezien`
+empty, the thumbs and all 41 dates still there. Dealing then produced six different cards and the
+counter climbed with them. No console errors; deck untouched.
+
 ## 2026-08-28 (phase 3, fix) — One card could outlive the filter, a new game and every reopen
 
 **Reported from play:** every sitting opened on the same *Kleine dingen* card, and turning that

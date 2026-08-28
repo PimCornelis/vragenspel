@@ -621,3 +621,73 @@ nobody wants a dilemma"*), and that framing is what the wrong line came from.
 
 **Revisit when.** Selecting nine categories to exclude one is annoying enough in use to be worth
 the migration.
+
+## D26 — The deck can be put back together, and the counter counts what is in play
+
+**Chosen 2026-08-28, after Pim asked what the counter meant.** A card that has been dealt is not
+dealt again *at all* until every other playable card has gone — `deel()` picks from
+`beschikbaar()`, which is `speelbaar()` minus `gezien` — and then `gezien` empties itself and the
+deck starts over silently. It was never "shown less often", and a session spent scrolling through
+cards to test the app therefore locks those cards out for a whole pass.
+
+**So the menu gained one button: *Begin het deck opnieuw*.** It empties `gezien` and nothing else.
+It is shown only when there is something to put back.
+
+**What it deliberately does not touch.** The thumbs, which are verdicts on the deck rather than on
+tonight (D16, D14). And `gezienOp`, the date each card was last asked, which is what lets an old
+card say *"Dit vroegen we op ⟨datum⟩"* (D20's private layer). Wiping those to fix a counter would
+be throwing away memory to tidy a number. **The consequence, stated because it is real:** cards
+dealt while testing carry that day's date, so in a year they will claim to have been asked then.
+That is the honest price of keeping the history in one place, and clearing a date is a separate
+decision from putting a card back in the pile.
+
+**A confirmation was not added.** Nothing is lost — the button makes cards available, it does not
+remove anything — and a confirmation on a harmless action teaches you to tap through
+confirmations, which matters because the import in D22 has a real one.
+
+**The counter was wrong, and is now measured from one pool.** It compared `gezien.length`, which
+holds ids from the whole deck, against `speelbaar().length`, which is filtered. Narrowing the
+filter to *Kleine dingen* therefore produced **"41 van 12 kaarten gehad."** Both numbers now come
+from the same pool: `speelbaar().length - beschikbaar().length` out of `speelbaar().length`, which
+is exactly what `deel()` works from.
+
+**And the counter now says what it means**, in one line under it, because "41 van 158 kaarten
+gehad" invites the reading that those cards are merely rarer.
+
+**Revisit when.** Never, unless the deck stops dealing without repeating.
+
+## D27 — The dates can be wiped, by the owner, on the phone, behind a question
+
+**Chosen 2026-08-28, at Pim's request.** D26 deliberately left `gezienOp` — the date each card was
+last asked — alone when the deck is put back together. That is still right for the general case,
+but it left a specific mess: an evening spent scrolling through cards to test the app stamped 41 of
+them with that day's date, so a year later they would claim to have been asked then. The menu now
+has a second button, *Wis de datums van eerdere keren*.
+
+**It could not be done from a session, and that is the architecture working.** The dates live in
+`localStorage` on one phone; there is no server and no path from a laptop to that data (D10, D9).
+A session can ship the button; only the owner can press it. Worth naming, because "just clean it up
+for me" is a reasonable thing to ask and the honest answer is that nobody here can reach it.
+
+**Two buttons, not one, and they do different things.** *Begin het deck opnieuw* puts every card
+back in the pile and loses nothing. *Wis de datums* loses something permanently: after it, no card
+can say when it was last asked. Folding them together would have made the harmless action carry the
+destructive one, which is how people end up wiping history to fix a counter.
+
+**So this one asks and the other does not.** The confirmation names the number of cards, says which
+line disappears, and says it cannot be undone; the button bar becomes *Ja, wis de datums* /
+*Nee, laat staan* — the same shape as the memory import's question (D22), so a question that costs
+something always looks the same. This is the reasoning of D26 applied in the other direction:
+confirmations are spent where something is at stake, which is what keeps them worth reading.
+
+**The question is scrolled into view when it appears.** The menu is long enough that *Het deck*
+sits below the fold, and the bar turns red whether or not the sentence explaining why is visible.
+A confirmation you can act on without being able to read it is worse than none.
+
+**What it does not touch.** `gezien`, so the deck keeps its place; the thumbs; and a Tijdcapsule's
+own `geschrevenOp`, which is the card's identity rather than a record of it being dealt — a capsule
+still says when it was written.
+
+**Revisit when.** Never. If wiping the dates turns out to be something done routinely rather than
+once after testing, that is evidence the year-old-card line is unwanted, not that this button needs
+changing.

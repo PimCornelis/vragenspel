@@ -129,6 +129,20 @@ var T = {
     return gehad + ' van ' + totaal + ' kaarten gehad. ' +
            eigen + ' zelfgeschreven, ' + weg + ' weggelegd.';
   },
+  deckHoe:       'Een kaart die geweest is wordt niet meer gedeeld tot de rest ook geweest ' +
+                 'is. Daarna begint het deck vanzelf opnieuw.',
+  deckOpnieuw:   'Begin het deck opnieuw',
+  deckOpnieuwKlaar: 'Het deck begint opnieuw. Alle kaarten kunnen weer gedeeld worden.',
+
+  datumsWissen:  'Wis de datums van eerdere keren',
+  datumsVraag:   function (aantal) {
+    return 'Van ' + aantal + (aantal === 1 ? ' kaart' : ' kaarten') + ' is onthouden wanneer ' +
+           'die eerder gevraagd is. Hierna weet het spel dat niet meer, en de regel ' +
+           '"Dit vroegen we op …" verdwijnt voor alle kaarten. Dit kun je niet terugdraaien.';
+  },
+  datumsJa:      'Ja, wis de datums',
+  datumsNee:     'Nee, laat staan',
+  datumsKlaar:   'De datums zijn gewist.',
 
   geenGeheugen:  'Deze browser onthoudt niets — de app werkt, maar de stand, de namen ' +
                  'en alles wat jullie beoordelen zijn weg zodra je hem sluit. Zet ' +
@@ -394,6 +408,10 @@ var menuEl = document.getElementById('menu');
 var filterEl = document.getElementById('filter');
 var filterUitlegEl = document.getElementById('filter-uitleg');
 var deckUitlegEl = document.getElementById('deck-uitleg');
+var deckHoeEl = document.getElementById('deck-hoe');
+var deckActiesEl = document.getElementById('deck-acties');
+var deckVraagEl = document.getElementById('deck-vraag');
+var deckMeldingEl = document.getElementById('deck-melding');
 var naamEls = [document.getElementById('naam-0'), document.getElementById('naam-1')];
 var opslagUitlegEl = document.getElementById('opslag-uitleg');
 var backupUitlegEl = document.getElementById('backup-uitleg');
@@ -1156,11 +1174,30 @@ var MENU_RIJEN = [
   { tekst: function () { return T.geheugen; },       doe: function () { naarGeheugen(); } }
 ];
 
+var deckMelding = '';            /* shown once, right after the deck is put back together */
+var wachtOpDatums = false;       /* the wipe below asked, and is waiting for a yes */
+
 function openMenu() {
-  openPaneel(menuEl, vulMenu, [
-    { tekst: T.terug, doe: sluitMenu },
-    { tekst: T.stoppen, stil: true, doe: openUitslag }
-  ]);
+  deckMelding = '';
+  wachtOpDatums = false;
+  toonMenu();
+}
+
+/* While the menu is asking whether to wipe the dates, the bar carries the answer — the
+   same shape the memory import uses, so a question that costs something always looks the
+   same and never hides behind a small button. */
+function toonMenu() {
+  var acties = wachtOpDatums
+    ? [{ tekst: T.datumsJa, waarschuwing: true, doe: wisDatums },
+       { tekst: T.datumsNee, stil: true, doe: function () {
+           wachtOpDatums = false;
+           deckMelding = '';
+           toonMenu();
+         } }]
+    : [{ tekst: T.terug, doe: sluitMenu },
+       { tekst: T.stoppen, stil: true, doe: openUitslag }];
+
+  openPaneel(menuEl, vulMenu, acties);
 }
 
 /* Back to the card you were on — unless it is no longer one that may be dealt, in which
@@ -1250,8 +1287,31 @@ function vulMenu() {
     ? T.filterAan + ' ' + stand.filter.join(', ') + '.'
     : T.filterUit;
 
-  deckUitlegEl.textContent = T.deckStand(stand.gezien.length, speelbaar().length,
+  /* Count what is actually in play, not everything ever dealt. `gezien` keeps ids from the
+     whole deck, so measuring it against the filtered total produced sentences like
+     "41 van 12 kaarten gehad". The two numbers now come from the same pool. */
+  var inSpel = speelbaar();
+  var nogNieuw = beschikbaar();
+
+  deckUitlegEl.textContent = T.deckStand(inSpel.length - nogNieuw.length, inSpel.length,
                                          stand.eigen.length, stand.duimNeer.length);
+  deckHoeEl.textContent = T.deckHoe;
+  deckMeldingEl.textContent = deckMelding;
+
+  /* Each only offered when there is something for it to do — a button that does nothing is
+     worse than no button. */
+  deckActiesEl.replaceChildren();
+  if (stand.gezien.length) {
+    deckActiesEl.appendChild(deckKnop(T.deckOpnieuw, beginDeckOpnieuw));
+  }
+  if (Object.keys(stand.gezienOp).length) {
+    deckActiesEl.appendChild(deckKnop(T.datumsWissen, vraagDatums));
+  }
+
+  deckVraagEl.textContent = wachtOpDatums
+    ? T.datumsVraag(Object.keys(stand.gezienOp).length)
+    : '';
+  deckVraagEl.hidden = !wachtOpDatums;
 
   menuRijenEl.replaceChildren();
   MENU_RIJEN.forEach(function (rij) {
@@ -1262,6 +1322,51 @@ function vulMenu() {
     knop.addEventListener('click', rij.doe);
     menuRijenEl.appendChild(knop);
   });
+}
+
+/* Put every card back in the pile. This is deck position only — which cards have been
+   dealt this time round — and it deliberately leaves two things alone: the thumbs, which
+   are verdicts on the deck rather than on tonight, and `gezienOp`, the date each card was
+   last asked, which is what lets an old card say when it last came up. Wiping those would
+   be throwing away memory to fix a counter. */
+function deckKnop(tekst, doe) {
+  var knop = document.createElement('button');
+  knop.type = 'button';
+  knop.className = 'knop knop-stil';
+  knop.textContent = tekst;
+  knop.addEventListener('click', doe);
+  return knop;
+}
+
+function beginDeckOpnieuw() {
+  stand.gezien = [];
+  bewaarStand();
+  deckMelding = T.deckOpnieuwKlaar;
+  vulMenu();
+}
+
+/* Wiping the dates is the one thing in this section that loses something: after it, no
+   card can say when it was last asked. So unlike putting the deck back together, it asks
+   first — a confirmation is spent where something is actually at stake, which is what
+   keeps the one on the memory import worth reading. docs/DECISIONS.md D26, D27. */
+function vraagDatums() {
+  wachtOpDatums = true;
+  deckMelding = '';
+  toonMenu();
+
+  /* Bring the question onto the screen. The menu is long enough that "Het deck" sits below
+     the fold, and the bar turns red whether or not the sentence explaining why is visible
+     — which is the one arrangement a confirmation must never be in. */
+  if (deckVraagEl.scrollIntoView) deckVraagEl.scrollIntoView({ block: 'center' });
+}
+
+function wisDatums() {
+  stand.gezienOp = {};
+  bewaarStand();
+  wachtOpDatums = false;
+  vorigeKeer = null;               /* the card on the screen stops claiming a last time */
+  deckMelding = T.datumsKlaar;
+  toonMenu();
 }
 
 function wisselCategorie(naam) {
