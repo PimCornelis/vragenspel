@@ -23,6 +23,9 @@
   <!-- The card. Full bleed: the background is the category's colour. -->
   <article class="kaart" id="kaart">
     <p class="tag" id="tag"></p>
+    <!-- Quiet lines above the question: when a Tijdcapsule was written, and when this
+         card was last asked if that was more than a year ago. Filled by app.js. -->
+    <p class="eerder" id="eerder" hidden></p>
     <h1 class="vraag" id="vraag"></h1>
     <section class="extra" id="extra" hidden></section>
     <span class="nr" id="nr"></span>
@@ -42,12 +45,73 @@
       <input class="veld" id="naam-1" type="text" maxlength="14" autocomplete="off" spellcheck="false">
     </div>
 
+    <h3 class="paneel-sub" id="diepte-menu-kop" hidden>Licht of diep</h3>
+    <p class="paneel-uitleg" id="diepte-menu-uitleg" hidden></p>
+    <div class="filter" id="diepte-menu" hidden></div>
+
     <h3 class="paneel-sub">Waar heb je zin in?</h3>
     <p class="paneel-uitleg" id="filter-uitleg"></p>
     <div class="filter" id="filter"></div>
 
     <h3 class="paneel-sub">Het deck</h3>
     <p class="paneel-uitleg" id="deck-uitleg"></p>
+
+    <h3 class="paneel-sub">Deze telefoon</h3>
+    <p class="paneel-uitleg" id="opslag-uitleg"></p>
+    <p class="paneel-uitleg" id="backup-uitleg"></p>
+
+    <h3 class="paneel-sub">Verder</h3>
+    <div class="menu-rijen" id="menu-rijen"></div>
+  </section>
+
+  <!-- The mood a sitting opens with. Only shown once the deck carries the labels. -->
+  <section class="paneel" id="start" hidden>
+    <h2 class="paneel-kop">Waar hebben jullie zin in?</h2>
+    <p class="paneel-uitleg" id="start-uitleg"></p>
+  </section>
+
+  <!-- Writing a Tijdcapsule: a card that sleeps until its date.
+       This is the private layer. Nothing here has a route into cards.json. -->
+  <section class="paneel" id="capsule" hidden>
+    <h2 class="paneel-kop">Tijdcapsule</h2>
+
+    <p class="paneel-let">
+      Een tijdcapsule gaat over jullie twee. Hij blijft op deze telefoon en in je
+      back-upbestand, en komt nooit in het deck en nooit in het blok voor Claude&nbsp;Code.
+      Schrijf alleen de vraag op, nooit het antwoord.
+    </p>
+
+    <h3 class="paneel-sub">De vraag</h3>
+    <textarea class="veld veld-groot" id="capsule-tekst" rows="4"
+              placeholder="Typ hier de vraag."></textarea>
+
+    <h3 class="paneel-sub">Wanneer mag hij terugkomen?</h3>
+    <div class="filter" id="capsule-wanneer"></div>
+    <p class="paneel-uitleg" id="capsule-melding"></p>
+
+    <h3 class="paneel-sub">Weggelegd</h3>
+    <p class="paneel-uitleg" id="capsule-uitleg"></p>
+    <div class="lijstje" id="capsule-lijst"></div>
+  </section>
+
+  <!-- The memory file: out through the share sheet, back in as a replacement. -->
+  <section class="paneel" id="geheugen" hidden>
+    <h2 class="paneel-kop">Geheugen en back-up</h2>
+    <p class="paneel-uitleg" id="geheugen-uitleg"></p>
+    <p class="paneel-uitleg" id="geheugen-backup"></p>
+    <p class="paneel-uitleg" id="geheugen-melding"></p>
+
+    <h3 class="paneel-sub">Een back-up terugzetten</h3>
+    <p class="paneel-uitleg">
+      Kies een bestand dat met de knop hieronder gemaakt is. Wat er nu op deze telefoon
+      staat wordt vervangen, niet aangevuld.
+    </p>
+    <!-- The input itself stays out of sight: its button is drawn by the browser and says
+         "Choose file" in English, which is the one thing no player may be shown. The
+         Dutch button beside it opens the same picker. -->
+    <input id="import-bestand" type="file" accept=".json,application/json" hidden>
+    <button class="knop knop-stil" id="import-knop" type="button">Kies een bestand</button>
+    <p class="paneel-let" id="geheugen-vraag" hidden></p>
   </section>
 
   <!-- Writing a new card. -->
@@ -83,6 +147,8 @@
 
     <h3 class="paneel-sub">Niet meer tonen</h3>
     <div class="lijstje" id="oordeel-niet"></div>
+
+    <p class="paneel-let" id="oordeel-capsules" hidden></p>
 
     <h3 class="paneel-sub">Voor Claude Code</h3>
     <p class="paneel-uitleg">

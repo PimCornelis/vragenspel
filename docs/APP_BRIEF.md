@@ -58,7 +58,10 @@ The first reason alone justifies the project. The rest are conveniences.
   worse version of paper. Build that first and prove it before anything else.~~
 - **[SUPERSEDED — D13]** ~~One card a night is the default rhythm, not a deck to burn through.
   The app should make dealing a second card possible and slightly deliberate.~~
-- **The four categories with their own rules** — *Wat kies je*, *Wie van ons?*, *Weet jij dit?*,
+- **[SUPERSEDED — D19, D21. There are six such categories now, not four: *Mensen kijken* and
+  *Rode vlaggen* were added on 2026-08-28 and have their own flows too. And they do not "replace
+  the guess step", because there is no guess step any more — D13.]**
+  **The four categories with their own rules** — *Wat kies je*, *Wie van ons?*, *Weet jij dit?*,
   *Onenigheid* — replace the guess step. Their card flow differs and the app must respect it.
 - **Self-reported scoring only.** For *Weet jij dit?* the app asks whether that was right and
   takes the answer. It never holds the answer itself.

@@ -166,6 +166,19 @@ body.paneel-open{background:var(--nacht)}
   color:var(--gedempt);
 }
 
+/* The quiet lines above the question — when a capsule was written, when this card was
+   last asked. They must read as a note in the margin, never as part of the question. */
+.eerder{
+  margin:-8px 0 14px;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:.82rem;
+  line-height:1.45;
+  color:var(--gedempt);
+}
+
+.eerder[hidden]{display:none}
+.eerder span{display:block}
+
 /* The question is the page. Big, and it steps down rather than overflowing. */
 .vraag{
   margin:0;
@@ -304,6 +317,10 @@ body.paneel-open{background:var(--nacht)}
 
 .filter{display:flex; flex-wrap:wrap; gap:8px}
 
+/* A display rule of ours outranks the browser's own [hidden]{display:none}, so anything
+   given a display here has to say what hidden means as well. */
+.filter[hidden]{display:none}
+
 /* A category is a toggle, not a checkbox: bigger, and hittable with a thumb. */
 .cat{
   border:1px solid var(--zacht);
@@ -325,6 +342,24 @@ body.paneel-open{background:var(--nacht)}
   border-color:var(--cc);
   color:var(--op-kleur);
 }
+
+/* The mood, and the interval a capsule sleeps for: the same toggle, but these are not
+   categories and must not borrow a category's colour. */
+.cat-diepte{border-left-color:var(--duif)}
+
+.cat-diepte[aria-pressed="true"]{
+  background:var(--duif);
+  border-color:var(--duif);
+  color:var(--op-kleur);
+}
+
+/* The way on to the other panels. Buttons, not a bar, so the bar keeps its two. */
+.menu-rijen{display:flex; flex-direction:column; gap:8px}
+.menu-rijen[hidden]{display:none}
+
+/* The file picker's own button is drawn by the browser, says "Choose file" in English and
+   cannot be restyled, so it is hidden and opened by a Dutch button instead. Nothing to
+   style here: the button is an ordinary .knop. */
 
 /* ---- form fields ---- */
 

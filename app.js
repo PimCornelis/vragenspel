@@ -27,6 +27,13 @@
    the app are DRAFTS, kept apart from the deck until a session promotes them into
    cards.json and the build is run — docs/DECISIONS.md D15.
 
+   THE PRIVATE LAYER. Tijdcapsule cards, the names, the thumbs and the dates each card was
+   last asked are facts about two real people. They live in localStorage and in a file the
+   players export for themselves, and in nothing else. A Tijdcapsule card has NO route into
+   cards.json — not a checked one, none — and both the panel that writes them and the panel
+   that promotes ordinary drafts say so in Dutch. docs/DECISIONS.md D20, and CLAUDE.md
+   hard limit 6.
+
    Written for a phone, one hand, at a terrace. */
 
 
@@ -122,7 +129,88 @@ var T = {
 
   geenGeheugen:  'Deze browser onthoudt niets — de app werkt, maar de stand, de namen ' +
                  'en alles wat jullie beoordelen zijn weg zodra je hem sluit. Zet ' +
-                 'privémodus uit als dat niet de bedoeling is.'
+                 'privémodus uit als dat niet de bedoeling is.',
+
+  /* ---- is de opslag beschermd? ---- */
+  opslagJa:       'Opslag: beschermd. Deze telefoon ruimt het spel niet zomaar op.',
+  opslagNee:      'Opslag: niet beschermd (maak af en toe een back-up).',
+  opslagOnbekend: 'Opslag: deze browser zegt er niets over (maak af en toe een back-up).',
+
+  /* ---- het geheugenbestand ---- */
+  geheugen:      'Geheugen en back-up',
+  geheugenUitleg:'Alles wat dit spel over jullie onthoudt staat op deze telefoon en ' +
+                 'nergens anders. Eén bestand is de enige kopie die je zelf in handen ' +
+                 'hebt: de gespeelde kaarten, de duimen, jullie eigen kaarten, de ' +
+                 'tijdcapsules, de namen en de stand.',
+  exportKnop:    'Bewaar een back-up',
+  exportGelukt:  'Bewaard. Kies "Bewaar in Bestanden" als je hem wilt terugvinden.',
+  exportAf:      'Afgebroken. Er is niets bewaard.',
+  exportKan:     'Deze browser kan geen bestand delen. De back-up werkt op de telefoon, ' +
+                 'in het spel dat op je beginscherm staat.',
+  exportFout:    'Bewaren lukte niet. Probeer het nog een keer.',
+
+  backupNooit:   'Nog geen back-up gemaakt.',
+  backupOp:      function (datum) { return 'Laatste back-up: ' + datum + '.'; },
+  backupOud:     function (datum) {
+    return 'Laatste back-up: ' + datum + '. Dat is meer dan twee maanden geleden.';
+  },
+
+  importGeen:    'Dit is geen geheugenbestand van dit spel.',
+  importStuk:    'Dit bestand kon niet gelezen worden.',
+  importVervang: function (datum, duimen, eigen, capsules) {
+    return 'Je zet de back-up van ' + datum + ' terug: ' +
+           meervoud(duimen, 'beoordeelde kaart', 'beoordeelde kaarten') + ', ' +
+           meervoud(eigen, 'eigen kaart', 'eigen kaarten') + ', ' +
+           meervoud(capsules, 'tijdcapsule', 'tijdcapsules') + ', de namen en de stand. ' +
+           'Alles wat nu op deze telefoon staat wordt daardoor vervangen en is dan weg.';
+  },
+  importJa:      'Ja, vervangen',
+  importNee:     'Nee, laat staan',
+  importKlaar:   'Teruggezet. Het spel speelt verder met wat er in het bestand stond.',
+
+  /* ---- Mensen kijken: de woorden van regel 12 ---- */
+  mensenKnop:    'Allebei raden',
+  mensenKop:     'Allebei raden',
+  mensenRegels:  ['Tegelijk, hardop, over iemand die je ziet.',
+                  'Er is nooit een goed antwoord.'],
+  mensenAardig:  'Wees aardig: hij hoort het niet, maar het gaat wel over een echt mens.',
+
+  /* ---- Rode vlaggen: de woorden van regel 13 ---- */
+  vlaggenKop:    'Ieder één van de twee',
+  vlaggenRegels: ['Welke zou je nog kunnen verdragen?',
+                  'Daarna één minuut om de ander te overtuigen dat hij de verkeerde koos.'],
+
+  /* ---- Tijdcapsule ---- */
+  capsule:       'Tijdcapsule schrijven',
+  capsuleCat:    'Tijdcapsule',
+  capsuleLet:    'Een tijdcapsule gaat over jullie twee. Hij blijft op deze telefoon en in ' +
+                 'je back-upbestand, en komt nooit in het deck en nooit in het blok voor ' +
+                 'Claude Code. Schrijf alleen de vraag op, nooit het antwoord.',
+  capsuleWanneer:'Wanneer mag hij terugkomen?',
+  capsuleBewaar: 'Leg hem weg',
+  capsuleLeeg:   'Typ eerst een vraag.',
+  capsuleKlaar:  function (datum) { return 'Weggelegd tot ' + datum + '.'; },
+  capsuleGeen:   'Nog geen tijdcapsules.',
+  capsuleUitleg: 'Deze kaarten slapen tot hun datum en worden dan vanzelf gedeeld.',
+  capsuleSlaapt: function (datum) { return 'slaapt tot ' + datum; },
+  capsuleSlaaptStil: 'slaapt nog — datum onbekend',
+  capsuleWakker: 'doet mee',
+  capsuleWeg:    'Wissen',
+  capsuleGeschreven: function (datum) { return 'Geschreven op ' + datum + '.'; },
+  eerderGevraagd: function (datum) {
+    return 'Dit vroegen we op ' + datum + '. Is het antwoord veranderd?';
+  },
+
+  /* ---- licht of diep ---- */
+  diepteKop:     'Waar hebben jullie zin in?',
+  diepteUitleg:  'Licht blijft aan de oppervlakte. Diep gaat door tot het ergens over gaat. ' +
+                 'Alles laat het deck kiezen.',
+  diepteNamen:   { licht: 'Licht', diep: 'Diep', alles: 'Alles' },
+  diepteNu:      function (naam) { return 'Nu: ' + naam + '.'; },
+
+  oordeelCapsules: 'Tijdcapsules staan hier niet bij en komen hier ook nooit bij te staan. ' +
+                   'Ze gaan over jullie twee, dus ze blijven op deze telefoon en in de ' +
+                   'back-up. Ze kunnen niet in het deck worden opgenomen.'
 };
 
 
@@ -130,7 +218,10 @@ var T = {
 
 var SLEUTEL = 'vragenspel';
 var TIMER_SECONDEN = 60;
-var EIGEN_START_ID = 1001;   /* clear of the deck's 1..118, which the build validates */
+var EIGEN_START_ID = 1001;     /* clear of the deck's 1..158, which the build validates */
+var CAPSULE_START_ID = 5001;   /* and clear of the drafts, so an id says what a card is */
+var OUDE_KAART_DAGEN = 365;    /* older than this and the card says when it was last asked */
+var BACKUP_OUD_DAGEN = 62;     /* two months, after which the menu mentions it */
 
 var stand = null;
 var geheugenWerkt = true;
@@ -138,15 +229,21 @@ var geheugenWerkt = true;
 function legeStand() {
   return {
     gezien: [],                    /* ids dealt since the deck was last all the way round */
+    gezienOp: {},                  /* id -> the date that card was last dealt, YYYY-MM-DD */
     duimOp: [],                    /* ids marked as one of the good ones */
     duimNeer: [],                  /* ids retired; never dealt again */
     eigen: [],                     /* cards written here: {id, category, text} — drafts */
     volgendEigenId: EIGEN_START_ID,
+    capsules: [],                  /* the private layer: {id, text, geschrevenOp, wakkerOp} */
+    volgendCapsuleId: CAPSULE_START_ID,
     filter: [],                    /* chosen categories; empty means everything plays */
+    diepte: 'alles',               /* licht | diep | alles */
     huidige: null,                 /* id of the card on the screen */
     namen: ['', ''],               /* what the two of them are called; '' means unnamed */
     punten: [0, 0],                /* the score, this game */
-    gespeeld: 0                    /* cards played this game, for the result screen */
+    gespeeld: 0,                   /* cards played this game, for the result screen */
+    laatsteExport: null,           /* date of the last back-up, YYYY-MM-DD */
+    opslagBeschermd: null          /* what navigator.storage.persist() said: true|false|null */
   };
 }
 
@@ -191,6 +288,91 @@ function naamVan(speler) {
 }
 
 
+/* ============================================================ 2b. dates
+
+   Dates are kept as plain YYYY-MM-DD strings, in the phone's own timezone. They are only
+   ever compared to each other and shown to a person, never sent anywhere, so a local date
+   is the honest one: a card written on Tuesday evening should say Tuesday. */
+
+var MAANDEN = ['januari', 'februari', 'maart', 'april', 'mei', 'juni',
+               'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
+
+function isoVan(datum) {
+  var maand = datum.getMonth() + 1;
+  var dag = datum.getDate();
+  return datum.getFullYear() +
+         '-' + (maand < 10 ? '0' : '') + maand +
+         '-' + (dag < 10 ? '0' : '') + dag;
+}
+
+function uitIso(iso) {
+  var deel = String(iso).split('-');
+  return new Date(Number(deel[0]), Number(deel[1]) - 1, Number(deel[2]));
+}
+
+function vandaag() {
+  return isoVan(new Date());
+}
+
+function plusDagen(iso, dagen) {
+  var datum = uitIso(iso);
+  datum.setDate(datum.getDate() + dagen);
+  return isoVan(datum);
+}
+
+/* Rounded, because a clock change makes one of these days 23 or 25 hours long. */
+function dagenTussen(vanIso, totIso) {
+  return Math.round((uitIso(totIso) - uitIso(vanIso)) / 86400000);
+}
+
+function datumNL(iso) {
+  var datum = uitIso(iso);
+  return datum.getDate() + ' ' + MAANDEN[datum.getMonth()] + ' ' + datum.getFullYear();
+}
+
+
+/* ================================================== 2c. asking to keep the storage
+
+   localStorage is best-effort by policy: a browser may throw it away after a stretch
+   without visits, which is exactly the wrong thing to do to a card written to sleep for a
+   year. navigator.storage.persist() asks it not to. WebKit's strongest signal for
+   granting is a web app added to the home screen, which is how this one is played — so
+   the answer is worth asking for, and worth showing rather than assuming.
+
+   It is a request, not a guarantee, and some browsers have no such API at all. Both cases
+   end in the menu saying so in Dutch, and neither may break the page.
+   docs/DECISIONS.md D20. */
+
+function onthoudOpslag(antwoord) {
+  if (stand.opslagBeschermd === antwoord) return;
+  stand.opslagBeschermd = antwoord;
+  bewaarStand();
+  if (!menuEl.hidden) vulMenu();
+}
+
+function vraagOpslag() {
+  try {
+    if (!navigator.storage || !navigator.storage.persist) {
+      onthoudOpslag(null);
+      return;
+    }
+    navigator.storage.persist().then(function (toegekend) {
+      onthoudOpslag(toegekend === true);
+    }, function () {
+      onthoudOpslag(null);
+    });
+  } catch (e) {
+    onthoudOpslag(null);
+  }
+}
+
+function opslagRegel() {
+  if (stand.opslagBeschermd === true) return T.opslagJa;
+  if (stand.opslagBeschermd === false) return T.opslagNee;
+  return T.opslagOnbekend;
+}
+
+
 /* ================================================== 3. the elements on the page */
 
 var waarschuwingEl = document.getElementById('waarschuwing');
@@ -198,6 +380,7 @@ var standBovenEl = document.getElementById('stand-boven');
 var menuKnopEl = document.getElementById('menu-knop');
 var kaartEl = document.getElementById('kaart');
 var tagEl = document.getElementById('tag');
+var eerderEl = document.getElementById('eerder');
 var vraagEl = document.getElementById('vraag');
 var extraEl = document.getElementById('extra');
 var nrEl = document.getElementById('nr');
@@ -209,6 +392,30 @@ var filterEl = document.getElementById('filter');
 var filterUitlegEl = document.getElementById('filter-uitleg');
 var deckUitlegEl = document.getElementById('deck-uitleg');
 var naamEls = [document.getElementById('naam-0'), document.getElementById('naam-1')];
+var opslagUitlegEl = document.getElementById('opslag-uitleg');
+var backupUitlegEl = document.getElementById('backup-uitleg');
+var diepteMenuEl = document.getElementById('diepte-menu');
+var diepteMenuKopEl = document.getElementById('diepte-menu-kop');
+var diepteMenuUitlegEl = document.getElementById('diepte-menu-uitleg');
+var menuRijenEl = document.getElementById('menu-rijen');
+
+var startEl = document.getElementById('start');
+var startUitlegEl = document.getElementById('start-uitleg');
+
+var capsuleEl = document.getElementById('capsule');
+var capsuleTekstEl = document.getElementById('capsule-tekst');
+var capsuleWanneerEl = document.getElementById('capsule-wanneer');
+var capsuleMeldingEl = document.getElementById('capsule-melding');
+var capsuleUitlegEl = document.getElementById('capsule-uitleg');
+var capsuleLijstEl = document.getElementById('capsule-lijst');
+
+var geheugenEl = document.getElementById('geheugen');
+var geheugenUitlegEl = document.getElementById('geheugen-uitleg');
+var geheugenBackupEl = document.getElementById('geheugen-backup');
+var geheugenMeldingEl = document.getElementById('geheugen-melding');
+var geheugenVraagEl = document.getElementById('geheugen-vraag');
+var importEl = document.getElementById('import-bestand');
+var importKnopEl = document.getElementById('import-knop');
 
 var eigenEl = document.getElementById('eigen');
 var eigenCategorieEl = document.getElementById('eigen-categorie');
@@ -221,6 +428,7 @@ var oordeelEl = document.getElementById('oordeel');
 var oordeelUitlegEl = document.getElementById('oordeel-uitleg');
 var oordeelMooiEl = document.getElementById('oordeel-mooi');
 var oordeelNietEl = document.getElementById('oordeel-niet');
+var oordeelCapsulesEl = document.getElementById('oordeel-capsules');
 var oordeelBlokEl = document.getElementById('oordeel-blok');
 var oordeelMeldingEl = document.getElementById('oordeel-melding');
 
@@ -231,7 +439,7 @@ var uitslagOnderEl = document.getElementById('uitslag-onder');
 var eindstandEl = document.getElementById('eindstand');
 var uitslagUitlegEl = document.getElementById('uitslag-uitleg');
 
-var PANELEN = [menuEl, eigenEl, oordeelEl, uitslagEl];
+var PANELEN = [menuEl, startEl, eigenEl, capsuleEl, geheugenEl, oordeelEl, uitslagEl];
 
 var stapNu = null;      /* the card step being shown, so a panel can come back to it */
 
@@ -463,8 +671,24 @@ function openPaneel(paneel, vulFunctie, acties) {
 
 /* ============================================ 6. which cards are still available */
 
+/* A capsule is only a card once its date has come. Until then it is not in the deck at
+   all, so nothing can deal it, count it or filter it. */
+function wakkereCapsules() {
+  var nu = vandaag();
+  return stand.capsules
+    .filter(function (capsule) { return dagenTussen(capsule.wakkerOp, nu) >= 0; })
+    .map(function (capsule) {
+      return {
+        id: capsule.id,
+        category: T.capsuleCat,
+        text: capsule.text,
+        geschrevenOp: capsule.geschrevenOp
+      };
+    });
+}
+
 function alleKaarten() {
-  return DECK.cards.concat(stand.eigen);
+  return DECK.cards.concat(stand.eigen, wakkereCapsules());
 }
 
 function kaartMetId(id) {
@@ -476,13 +700,28 @@ function kaartMetId(id) {
 }
 
 function isEigen(id) {
-  return id >= EIGEN_START_ID;
+  return id >= EIGEN_START_ID && id < CAPSULE_START_ID;
+}
+
+function isCapsule(id) {
+  return id >= CAPSULE_START_ID;
+}
+
+/* A card with no diepte — a draft, a capsule, or the whole deck before the labels were
+   written — always plays. The dial narrows the deck; it never empties it. */
+function magBijDiepte(kaart) {
+  if (stand.diepte === 'alles') return true;
+  if (!kaart.diepte) return true;
+  return kaart.diepte === stand.diepte;
 }
 
 function speelbaar() {
   return alleKaarten().filter(function (kaart) {
     if (stand.duimNeer.indexOf(kaart.id) !== -1) return false;
+    /* A capsule waited months to be asked; it is not held back by an evening's mood. */
+    if (isCapsule(kaart.id)) return true;
     if (stand.filter.length && stand.filter.indexOf(kaart.category) === -1) return false;
+    if (!magBijDiepte(kaart)) return false;
     return true;
   });
 }
@@ -506,8 +745,13 @@ function deel() {
   }
 
   var gekozen = mogelijk[Math.floor(Math.random() * mogelijk.length)];
+
+  /* Read the previous date before overwriting it — the card is about to say it. */
+  vorigeKeer = stand.gezienOp[gekozen.id] || null;
+
   stand.huidige = gekozen.id;
   if (stand.gezien.indexOf(gekozen.id) === -1) stand.gezien.push(gekozen.id);
+  stand.gezienOp[gekozen.id] = vandaag();
   stand.gespeeld += 1;
   bewaarStand();
   ga(stapKaart);
@@ -588,7 +832,32 @@ function soortVan(categorie) {
   if (categorie === 'Wie van ons?') return 'wie';
   if (categorie === 'Weet jij dit?') return 'weet';
   if (categorie === 'Onenigheid') return 'onenigheid';
+  if (categorie === 'Rode vlaggen') return 'vlaggen';
+  if (categorie === 'Mensen kijken') return 'mensen';
   return 'gewoon';
+}
+
+/* The quiet lines above the question: when a capsule was written, and when this card was
+   last asked if that was long enough ago to be interesting. */
+var vorigeKeer = null;      /* the date this card was dealt before, if it ever was */
+
+function toonEerder(kaart) {
+  var regels = [];
+
+  if (isCapsule(kaart.id) && kaart.geschrevenOp) {
+    regels.push(T.capsuleGeschreven(datumNL(kaart.geschrevenOp)));
+  }
+  if (vorigeKeer && dagenTussen(vorigeKeer, vandaag()) > OUDE_KAART_DAGEN) {
+    regels.push(T.eerderGevraagd(datumNL(vorigeKeer)));
+  }
+
+  eerderEl.replaceChildren();
+  regels.forEach(function (regel) {
+    var alinea = document.createElement('span');
+    alinea.textContent = regel;
+    eerderEl.appendChild(alinea);
+  });
+  eerderEl.hidden = regels.length === 0;
 }
 
 /* Long questions step down a size rather than overflowing the screen. */
@@ -602,9 +871,12 @@ function stapKaart() {
   var kaart = huidigeKaart();
   document.body.style.setProperty('--cc', KLEUREN[kaart.category]);
   tagEl.textContent = kaart.category;
+  toonEerder(kaart);
   vraagEl.className = maatVoor(kaart.text);
   vraagEl.textContent = kaart.text;
-  nrEl.textContent = isEigen(kaart.id) ? T.eigenNr : kaart.id;
+  nrEl.textContent = isCapsule(kaart.id) ? ''
+                   : isEigen(kaart.id) ? T.eigenNr
+                   : kaart.id;
   leegExtra();
 
   /* Restart the arrival animation. Removing the class, reading offsetWidth and adding it
@@ -616,8 +888,10 @@ function stapKaart() {
 
   var soort = soortVan(kaart.category);
 
-  if (soort === 'kies' || soort === 'onenigheid') {
+  if (soort === 'kies' || soort === 'onenigheid' || soort === 'vlaggen') {
     toonActies([{ tekst: T.kiesMinuten, doe: function () { ga(stapKiezen); } }]);
+  } else if (soort === 'mensen') {
+    toonActies([{ tekst: T.mensenKnop, doe: function () { ga(stapMensen); } }]);
   } else if (soort === 'wie') {
     toonActies([{ tekst: T.wieWijzen, doe: function () { ga(stapWieAftellen); } }]);
   } else if (soort === 'weet') {
@@ -627,13 +901,37 @@ function stapKaart() {
   }
 }
 
-/* ---- Wat kies je and Onenigheid: say it, a minute each, then who convinced ---- */
+/* ---- Wat kies je, Onenigheid and Rode vlaggen: say it, a minute each, then who
+       convinced. Rode vlaggen is the same shape as Wat kies je — both choose, then each
+       argues the other chose wrong — so it uses the same timer rather than a second one.
+       docs/DECISIONS.md D21. ---- */
 function stapKiezen() {
   var soort = soortVan(huidigeKaart().category);
   if (soort === 'kies') toonExtraLijst(T.kiesKop, T.kiesRegels);
+  else if (soort === 'vlaggen') toonExtraLijst(T.vlaggenKop, T.vlaggenRegels);
   else toonExtraLijst(T.onenigheidKop, T.onenigheidRegels);
   toonActies([{ tekst: T.start + ' · ' + naamVan(0), groot: true,
                 doe: function () { ga(stapTimers); } }]);
+}
+
+/* ---- Mensen kijken: both guess out loud at once, and nothing is ever right ----
+
+   So there is no scoring tap here, deliberately: a category with no right answer that
+   asked who won would be inventing one. The courtesy line from the rules card is shown
+   on the first one of the sitting and then left alone — said once is a reminder, said
+   every time is nagging. docs/DECISIONS.md D21. */
+var aardigGetoond = false;
+var aardigKaart = null;
+
+function stapMensen() {
+  var toon = !aardigGetoond || aardigKaart === stand.huidige;
+  if (toon) {
+    aardigGetoond = true;
+    aardigKaart = stand.huidige;
+  }
+  toonExtraLijst(T.mensenKop,
+    toon ? T.mensenRegels.concat([T.mensenAardig]) : T.mensenRegels);
+  toonActies([{ tekst: T.volgende, doe: deel }]);
 }
 
 function stapOvertuigd() {
@@ -823,6 +1121,8 @@ function trilling(patroon) {
 function stapLeeg() {
   document.body.style.setProperty('--cc', '#2b3038');
   tagEl.textContent = '';
+  eerderEl.replaceChildren();
+  eerderEl.hidden = true;
   vraagEl.className = 'vraag lang';
   vraagEl.textContent = T.leegKop;
   nrEl.textContent = '';
@@ -833,11 +1133,19 @@ function stapLeeg() {
 
 /* ============================================================ 12. the menu */
 
+/* The way on to the other panels is a list inside the menu rather than four more buttons
+   in the bar: the bar is where the thumb goes, and six stacked buttons on a phone push
+   the thing you actually came for off the screen. */
+var MENU_RIJEN = [
+  { tekst: function () { return T.eigenSchrijven; }, doe: function () { openEigen(); } },
+  { tekst: function () { return T.capsule; },        doe: function () { openCapsule(); } },
+  { tekst: function () { return T.naarOordeel; },    doe: function () { openOordeel(); } },
+  { tekst: function () { return T.geheugen; },       doe: function () { naarGeheugen(); } }
+];
+
 function openMenu() {
   openPaneel(menuEl, vulMenu, [
     { tekst: T.terug, doe: sluitMenu },
-    { tekst: T.eigenSchrijven, stil: true, doe: openEigen },
-    { tekst: T.naarOordeel, stil: true, doe: openOordeel },
     { tekst: T.stoppen, stil: true, doe: openUitslag }
   ]);
 }
@@ -867,11 +1175,57 @@ function vulCategorieën(houder, isAan, bijKlik) {
   });
 }
 
+/* The three moods, as the same kind of toggle a category is. */
+var DIEPTES = ['licht', 'diep', 'alles'];
+
+function vulDieptes(houder) {
+  houder.replaceChildren();
+  DIEPTES.forEach(function (sleutel) {
+    var knop = document.createElement('button');
+    knop.type = 'button';
+    knop.className = 'cat cat-diepte';
+    knop.setAttribute('aria-pressed', stand.diepte === sleutel ? 'true' : 'false');
+    knop.textContent = T.diepteNamen[sleutel];
+    knop.addEventListener('click', function () { kiesDiepte(sleutel); });
+    houder.appendChild(knop);
+  });
+}
+
+function kiesDiepte(sleutel) {
+  stand.diepte = sleutel;
+  bewaarStand();
+  if (!startEl.hidden) deel();
+  else vulMenu();
+}
+
+/* The nudge: one line, in the menu, and nowhere else. No badge and no notification —
+   a back-up you are reminded of at the table is a back-up you will not make. */
+function backupRegel() {
+  if (!stand.laatsteExport) return T.backupNooit;
+  var datum = datumNL(stand.laatsteExport);
+  return dagenTussen(stand.laatsteExport, vandaag()) > BACKUP_OUD_DAGEN
+    ? T.backupOud(datum)
+    : T.backupOp(datum);
+}
+
 function vulMenu() {
   naamEls.forEach(function (veld, speler) {
     veld.value = stand.namen[speler];
     veld.placeholder = T.spelerStandaard[speler];
   });
+
+  opslagUitlegEl.textContent = opslagRegel();
+  backupUitlegEl.textContent = backupRegel();
+
+  /* The dial is only offered once the deck actually carries the labels. Before that a
+     "diep" sitting would be an empty deck, which is a worse thing to ship than no dial. */
+  diepteMenuKopEl.hidden = !HEEFT_DIEPTE;
+  diepteMenuUitlegEl.hidden = !HEEFT_DIEPTE;
+  diepteMenuEl.hidden = !HEEFT_DIEPTE;
+  if (HEEFT_DIEPTE) {
+    diepteMenuUitlegEl.textContent = T.diepteUitleg;
+    vulDieptes(diepteMenuEl);
+  }
 
   vulCategorieën(filterEl,
     function (naam) { return stand.filter.indexOf(naam) !== -1; },
@@ -883,6 +1237,16 @@ function vulMenu() {
 
   deckUitlegEl.textContent = T.deckStand(stand.gezien.length, speelbaar().length,
                                          stand.eigen.length, stand.duimNeer.length);
+
+  menuRijenEl.replaceChildren();
+  MENU_RIJEN.forEach(function (rij) {
+    var knop = document.createElement('button');
+    knop.type = 'button';
+    knop.className = 'knop knop-stil';
+    knop.textContent = rij.tekst();
+    knop.addEventListener('click', rij.doe);
+    menuRijenEl.appendChild(knop);
+  });
 }
 
 function wisselCategorie(naam) {
@@ -927,8 +1291,10 @@ function vulEigen() {
   });
 }
 
-/* One row: the card, and the button that takes it away again. */
-function maakRegel(kaart, knopTekst, doe) {
+/* One row: the card, and the button that takes it away again. The small line above the
+   text is the category, unless the caller has something more useful to say there — a
+   sleeping capsule says when it wakes up. */
+function maakRegel(kaart, knopTekst, doe, boven) {
   var regel = document.createElement('div');
   regel.className = 'regel';
   regel.style.setProperty('--cc', KLEUREN[kaart.category] || '#5d6672');
@@ -937,7 +1303,7 @@ function maakRegel(kaart, knopTekst, doe) {
   tekst.className = 'regel-tekst';
   var cat = document.createElement('span');
   cat.className = 'regel-cat';
-  cat.textContent = kaart.category;
+  cat.textContent = boven || kaart.category;
   tekst.appendChild(cat);
   tekst.appendChild(document.createTextNode(kaart.text));
   regel.appendChild(tekst);
@@ -981,6 +1347,317 @@ function verwijderEigen(id) {
 }
 
 
+/* ============================================ 13b. the mood a sitting opens with */
+
+function openStart() {
+  openPaneel(startEl, function () {
+    startUitlegEl.textContent = T.diepteUitleg;
+  }, DIEPTES.map(function (sleutel) {
+    return {
+      tekst: T.diepteNamen[sleutel],
+      stil: sleutel === 'alles',
+      doe: function () { kiesDiepte(sleutel); }
+    };
+  }));
+}
+
+
+/* ================================================== 13c. the Tijdcapsule cards
+
+   Cards written at the table about a shared memory, which then sleep until the date
+   chosen for them. They are the private layer, and they stay in it: they live in
+   localStorage and in the exported file and nowhere else.
+
+   THERE IS NO PATH FROM HERE INTO THE DECK. A card written in the Eigen kaart panel can
+   be promoted into cards.json after a privacy check (D15); a Tijdcapsule card is exempt
+   from that path entirely, because it is a fact about two real people wearing the costume
+   of a question. It is kept out of the Claude Code block by maakExport, the panel there
+   says so in Dutch, and this panel says so before a word is typed.
+   CLAUDE.md hard limit 6, docs/DECISIONS.md D20.
+
+   The question is stored. An answer never is. */
+
+var INTERVALLEN = [
+  { sleutel: '3m',     tekst: '3 maanden', dagen: 92 },
+  { sleutel: '6m',     tekst: '6 maanden', dagen: 183 },
+  { sleutel: '1j',     tekst: '1 jaar',    dagen: 365 },
+  { sleutel: 'verras', tekst: 'Verras me', dagen: null }
+];
+
+var VERRAS_MIN = 92;      /* three months */
+var VERRAS_MAX = 730;     /* two years */
+
+var capsuleInterval = INTERVALLEN[0].sleutel;
+
+function intervalMet(sleutel) {
+  var gevonden = INTERVALLEN[0];
+  INTERVALLEN.forEach(function (soort) {
+    if (soort.sleutel === sleutel) gevonden = soort;
+  });
+  return gevonden;
+}
+
+function openCapsule() {
+  openPaneel(capsuleEl, vulCapsule, [
+    { tekst: T.capsuleBewaar, doe: bewaarCapsule },
+    { tekst: T.terug, stil: true, doe: openMenu }
+  ]);
+}
+
+function vulCapsule() {
+  capsuleWanneerEl.replaceChildren();
+  INTERVALLEN.forEach(function (soort) {
+    var knop = document.createElement('button');
+    knop.type = 'button';
+    knop.className = 'cat cat-diepte';
+    knop.setAttribute('aria-pressed', capsuleInterval === soort.sleutel ? 'true' : 'false');
+    knop.textContent = soort.tekst;
+    knop.addEventListener('click', function () {
+      capsuleInterval = soort.sleutel;
+      vulCapsule();
+    });
+    capsuleWanneerEl.appendChild(knop);
+  });
+
+  capsuleUitlegEl.textContent = stand.capsules.length ? T.capsuleUitleg : T.capsuleGeen;
+
+  var nu = vandaag();
+  capsuleLijstEl.replaceChildren();
+  stand.capsules.forEach(function (capsule) {
+    var slaapt = dagenTussen(capsule.wakkerOp, nu) < 0;
+    var kaart = { id: capsule.id, category: T.capsuleCat, text: capsule.text };
+
+    /* "Verras me" keeps its date to itself here too. Printing it in the list would give
+       away the one thing that option is for. */
+    var boven = !slaapt ? T.capsuleWakker
+              : capsule.interval === 'verras' ? T.capsuleSlaaptStil
+              : T.capsuleSlaapt(datumNL(capsule.wakkerOp));
+
+    capsuleLijstEl.appendChild(maakRegel(kaart, T.capsuleWeg, function () {
+      verwijderCapsule(capsule.id);
+    }, boven));
+  });
+}
+
+function bewaarCapsule() {
+  var tekst = capsuleTekstEl.value.trim();
+  if (!tekst) { capsuleMeldingEl.textContent = T.capsuleLeeg; return; }
+
+  var soort = intervalMet(capsuleInterval);
+  var dagen = soort.dagen === null
+    ? VERRAS_MIN + Math.floor(Math.random() * (VERRAS_MAX - VERRAS_MIN + 1))
+    : soort.dagen;
+
+  var nu = vandaag();
+  var wakker = plusDagen(nu, dagen);
+
+  stand.capsules.push({
+    id: stand.volgendCapsuleId,
+    text: tekst,
+    geschrevenOp: nu,
+    wakkerOp: wakker,
+    interval: soort.sleutel
+  });
+  stand.volgendCapsuleId += 1;
+  bewaarStand();
+
+  capsuleTekstEl.value = '';
+  /* "Verras me" is only a surprise if the date is not printed back at you. */
+  capsuleMeldingEl.textContent = soort.dagen === null
+    ? T.capsuleKlaar('later')
+    : T.capsuleKlaar(datumNL(wakker));
+  vulCapsule();
+}
+
+function verwijderCapsule(id) {
+  stand.capsules = stand.capsules.filter(function (capsule) { return capsule.id !== id; });
+  ['duimOp', 'duimNeer', 'gezien'].forEach(function (lijst) {
+    var plek = stand[lijst].indexOf(id);
+    if (plek !== -1) stand[lijst].splice(plek, 1);
+  });
+  delete stand.gezienOp[id];
+  if (stand.huidige === id) stand.huidige = null;
+  bewaarStand();
+  vulCapsule();
+}
+
+
+/* ================================================= 13d. the memory file
+
+   localStorage is best-effort and this phone is the only copy. So the whole private layer
+   goes out as one file the players keep themselves, and comes back in as a replacement
+   for what is on the phone.
+
+   ONE PATH, AND IT IS THE SHARE SHEET. The file is handed to navigator.share(), not
+   offered as a download. The game is played from a web app on the home screen, and that
+   is exactly where an iOS download has nowhere to land and nothing to show for itself;
+   the share sheet is the gesture that puts a file in Bestanden or Notities. Where sharing
+   a file is not possible the button says so in Dutch and does nothing else — there is no
+   second route, because a fallback that works on the laptop and not on the phone is a bug
+   that hides until the evening it matters. docs/DECISIONS.md D22.
+
+   REPLACE, NEVER MERGE. Two states merged is a class of bug nobody would ever find, and
+   the game is played from one phone. docs/DECISIONS.md D10. */
+
+var GEHEUGEN_MERK = 'vragenspel_geheugen';
+var geheugenMelding = '';
+var wachtOpTerugzetten = null;     /* a parsed file, waiting for a yes */
+
+function geheugenObject() {
+  return {
+    vragenspel_geheugen: 1,
+    gemaaktOp: vandaag(),
+    namen: stand.namen,
+    punten: stand.punten,
+    gespeeld: stand.gespeeld,
+    gezien: stand.gezien,
+    gezienOp: stand.gezienOp,
+    duimOp: stand.duimOp,
+    duimNeer: stand.duimNeer,
+    eigen: stand.eigen,
+    volgendEigenId: stand.volgendEigenId,
+    capsules: stand.capsules,
+    volgendCapsuleId: stand.volgendCapsuleId,
+    filter: stand.filter,
+    diepte: stand.diepte,
+    laatsteExport: stand.laatsteExport
+  };
+}
+
+function naarGeheugen() {
+  geheugenMelding = '';
+  wachtOpTerugzetten = null;
+  openGeheugen();
+}
+
+function openGeheugen() {
+  var acties = wachtOpTerugzetten
+    ? [{ tekst: T.importJa, waarschuwing: true, doe: zetTerug },
+       { tekst: T.importNee, stil: true, doe: function () {
+           wachtOpTerugzetten = null;
+           geheugenMelding = '';
+           openGeheugen();
+         } }]
+    : [{ tekst: T.exportKnop, doe: bewaarBackup },
+       { tekst: T.terug, stil: true, doe: openMenu }];
+
+  openPaneel(geheugenEl, vulGeheugen, acties);
+}
+
+function vulGeheugen() {
+  geheugenUitlegEl.textContent = T.geheugenUitleg;
+  geheugenBackupEl.textContent = backupRegel();
+  geheugenMeldingEl.textContent = geheugenMelding;
+
+  if (!wachtOpTerugzetten) {
+    geheugenVraagEl.hidden = true;
+    geheugenVraagEl.textContent = '';
+    return;
+  }
+
+  var bron = wachtOpTerugzetten;
+  geheugenVraagEl.textContent = T.importVervang(
+    bron.gemaaktOp ? datumNL(bron.gemaaktOp) : '?',
+    (bron.duimOp || []).length + (bron.duimNeer || []).length,
+    (bron.eigen || []).length,
+    (bron.capsules || []).length);
+  geheugenVraagEl.hidden = false;
+}
+
+function bewaarBackup() {
+  var naam = 'vragenspel-geheugen-' + vandaag() + '.json';
+  var tekst = JSON.stringify(geheugenObject(), null, 2);
+
+  var bestand;
+  try {
+    bestand = new File([tekst], naam, { type: 'application/json' });
+    if (!navigator.share || !navigator.canShare || !navigator.canShare({ files: [bestand] })) {
+      geheugenMelding = T.exportKan;
+      vulGeheugen();
+      return;
+    }
+  } catch (e) {
+    geheugenMelding = T.exportKan;
+    vulGeheugen();
+    return;
+  }
+
+  navigator.share({ files: [bestand] }).then(function () {
+    stand.laatsteExport = vandaag();
+    bewaarStand();
+    geheugenMelding = T.exportGelukt;
+    vulGeheugen();
+  }, function (fout) {
+    geheugenMelding = (fout && fout.name === 'AbortError') ? T.exportAf : T.exportFout;
+    vulGeheugen();
+  });
+}
+
+function kiesGeheugenBestand() {
+  var bestand = importEl.files && importEl.files[0];
+  importEl.value = '';               /* so the same file chosen twice still fires */
+  if (!bestand) return;
+
+  var lezer = new FileReader();
+  lezer.onerror = function () {
+    geheugenMelding = T.importStuk;
+    vulGeheugen();
+  };
+  lezer.onload = function () { leesGeheugen(lezer.result); };
+  lezer.readAsText(bestand);
+}
+
+function leesGeheugen(tekst) {
+  var gelezen = null;
+  try {
+    gelezen = JSON.parse(tekst);
+  } catch (e) {
+    geheugenMelding = T.importStuk;
+    vulGeheugen();
+    return;
+  }
+
+  /* Refuse anything that is not ours, out loud. A file picker will happily hand over a
+     bank statement, and a silent failure would leave someone tapping. */
+  if (!gelezen || typeof gelezen !== 'object' || gelezen[GEHEUGEN_MERK] !== 1) {
+    geheugenMelding = T.importGeen;
+    vulGeheugen();
+    return;
+  }
+
+  geheugenMelding = '';
+  wachtOpTerugzetten = gelezen;
+  openGeheugen();
+}
+
+function zetTerug() {
+  var bron = wachtOpTerugzetten;
+  wachtOpTerugzetten = null;
+
+  var nieuw = legeStand();
+  Object.keys(nieuw).forEach(function (naam) {
+    if (Object.prototype.hasOwnProperty.call(bron, naam)) nieuw[naam] = bron[naam];
+  });
+
+  /* Two things do not come out of the file. The card on the screen belonged to the
+     sitting that made the back-up, and whether this phone protects its storage is a fact
+     about this phone. */
+  nieuw.huidige = null;
+  nieuw.opslagBeschermd = stand.opslagBeschermd;
+
+  stand = nieuw;
+  bewaarStand();
+
+  aardigGetoond = false;
+  aardigKaart = null;
+  vorigeKeer = null;
+
+  geheugenMelding = T.importKlaar;
+  toonStand();
+  openGeheugen();
+}
+
+
 /* ================================================ 14. the verdicts, and the export
 
    This phone cannot write to the laptop and there is no server between them, so the
@@ -1021,6 +1698,11 @@ function vulOordeel() {
     }));
   });
 
+  /* The refusal, said out loud on the panel that promotes cards, not merely enacted by
+     leaving them out of the block. docs/DECISIONS.md D20. */
+  oordeelCapsulesEl.textContent = T.oordeelCapsules;
+  oordeelCapsulesEl.hidden = stand.capsules.length === 0;
+
   oordeelBlokEl.value = maakExport(opKaarten, neerKaarten);
   oordeelMeldingEl.textContent = '';
 }
@@ -1034,17 +1716,24 @@ function maakUitleg(tekst) {
 
 /* Deck cards are identified by id — cards.json is right there beside the session that
    reads this. Cards written here carry their full text, because nothing else has them.
-   The names are deliberately NOT in this block: they never leave the phone. */
+   The names are deliberately NOT in this block: they never leave the phone.
+
+   NEITHER ARE THE TIJDCAPSULE CARDS. This block is the route into cards.json and so onto
+   a public website; a capsule card is exempt from that route, so it is filtered out here
+   rather than trusted not to turn up. docs/DECISIONS.md D20. */
 function maakExport(opKaarten, neerKaarten) {
   function kort(kaart) {
     return isEigen(kaart.id)
       ? { eigen: true, categorie: kaart.category, tekst: kaart.text }
       : { id: kaart.id, tekst: kaart.text };
   }
+  function geenCapsule(kaart) {
+    return !isCapsule(kaart.id);
+  }
   return JSON.stringify({
     vragenspel_feedback: 1,
-    mooi: opKaarten.map(kort),
-    nietMeer: neerKaarten.map(kort),
+    mooi: opKaarten.filter(geenCapsule).map(kort),
+    nietMeer: neerKaarten.filter(geenCapsule).map(kort),
     eigenKaarten: stand.eigen.map(function (kaart) {
       return { categorie: kaart.category, tekst: kaart.text };
     })
@@ -1119,6 +1808,9 @@ function nieuwSpel() {
   stand.punten = [0, 0];
   stand.gespeeld = 0;
   bewaarStand();
+  aardigGetoond = false;
+  aardigKaart = null;
+  if (HEEFT_DIEPTE) { openStart(); return; }
   sluitMenu();
 }
 
@@ -1128,12 +1820,16 @@ function nieuwSpel() {
 function begin() {
   stand = laadStand();
   if (!geheugenWerkt) toonWaarschuwing();
+  vraagOpslag();
 
+  /* A card still on the screen means the sitting was interrupted, not ended: pick it up
+     where it was rather than asking for a mood that was already chosen. */
   if (stand.huidige !== null && kaartMetId(stand.huidige) &&
       stand.duimNeer.indexOf(stand.huidige) === -1) {
     ga(stapKaart);
     return;
   }
+  if (HEEFT_DIEPTE) { openStart(); return; }
   deel();
 }
 
@@ -1146,6 +1842,12 @@ function begin() {
 
 var DECK = window.VRAGENSPEL_DECK;
 var KLEUREN = {};          /* category name -> colour, resolved once */
+var HEEFT_DIEPTE = false;  /* does the deck carry licht/diep labels yet? */
+
+/* Tijdcapsule is not a deck category and must never become one: it is defined here so it
+   cannot appear in the filter, in the category picker for a written card, or in
+   cards.json. It only needs a colour and a name. docs/DECISIONS.md D20. */
+var CAPSULE_KLEUR = '#3b3a5c';
 
 if (!DECK || !DECK.cards || !DECK.cards.length) {
   document.body.replaceChildren();
@@ -1153,19 +1855,27 @@ if (!DECK || !DECK.cards || !DECK.cards.length) {
     'De kaarten konden niet geladen worden: cards.js ontbreekt of is stuk. ' +
     'Draai build_vragenspel.bat opnieuw.';
 } else {
-  KAARTSTAPPEN = [stapKaart, stapKiezen, stapWieAftellen, stapWieUitslag, stapWieRaak,
-                  stapWieMis, stapWeetWie, stapWeetNiemand, stapOvertuigd, stapGeenPunt,
-                  stapPuntGegeven, stapTimers];
+  KAARTSTAPPEN = [stapKaart, stapKiezen, stapMensen, stapWieAftellen, stapWieUitslag,
+                  stapWieRaak, stapWieMis, stapWeetWie, stapWeetNiemand, stapOvertuigd,
+                  stapGeenPunt, stapPuntGegeven, stapTimers];
 
   DECK.categories.forEach(function (categorie) {
     KLEUREN[categorie.name] = categorie.colour;
   });
+  KLEUREN[T.capsuleCat] = CAPSULE_KLEUR;
+
+  HEEFT_DIEPTE = DECK.cards.some(function (kaart) { return !!kaart.diepte; });
 
   naamEls.forEach(function (veld, speler) {
     veld.addEventListener('input', function () { bewaarNaam(speler); });
   });
 
+  importEl.addEventListener('change', kiesGeheugenBestand);
+  importKnopEl.addEventListener('click', function () { importEl.click(); });
+
   menuKnopEl.addEventListener('click', function () {
+    /* While the mood is being chosen there is nothing to go back to yet. */
+    if (!startEl.hidden) return;
     if (PANELEN.every(function (p) { return p.hidden; })) openMenu();
     else sluitMenu();
   });

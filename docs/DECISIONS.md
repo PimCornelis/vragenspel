@@ -443,3 +443,137 @@ interaction, which is exactly the shape of a card designed to sleep for a year.
 
 **Revisit when.** A second device genuinely needs the same memory, at which point the export file
 is already the mechanism and only the import ergonomics change.
+
+## D21 — Rode vlaggen scores, Mensen kijken does not
+
+**Chosen 2026-08-28.** *Rode vlaggen* runs the same flow as *Wat kies je* — both choose, one
+minute each to argue the other chose wrong — and therefore ends in *"Wie heeft overtuigd?"* and a
+point. *Mensen kijken* has no scoring tap anywhere in its flow.
+
+**Alternatives.** Give *Mensen kijken* a point for the closer guess; give *Rode vlaggen* no point
+and end it after the timers; write a second timer for *Rode vlaggen*.
+
+**Reasoning.** Rule 13 says *Rode vlaggen* ends in a minute of convincing, which is exactly what
+D16 already treats as scorable, so it scores for the same reason *Wat kies je* does. Rule 12 says
+of *Mensen kijken*: **"Er is nooit een goed antwoord."** A category with no right answer that asked
+who won would be inventing one, and a scoring tap on a card that cannot be scored is a toll — the
+mistake the gate made (D13). **This changes D16's list from four scoring categories to five**:
+74 of 158 cards can score.
+
+**The timer is reused, not rewritten.** *Rode vlaggen* enters `stapKiezen` and from there the
+existing `stapTimers`, which is what [`PHASE_3_PROMPT.md`](PHASE_3_PROMPT.md) asked for and what
+"one correct path" requires: two clocks would drift into two behaviours.
+
+**The courtesy line is shown once per sitting.** *"Wees aardig: hij hoort het niet, maar het gaat
+wel over een echt mens."* Said once it is a reminder; said on all twenty cards it is nagging and
+gets skimmed past, which is the failure mode for the one line in the deck that exists to be read.
+It is tied to the first *Mensen kijken* card of the sitting, so leaving the panel and coming back
+does not lose it.
+
+**The words are the rules card's words, copied, not parsed.** Both flows show the sentences of
+rules 12 and 13 verbatim, minus their markup, as strings in `app.js`. This is the pattern the app
+already used for rules 7 and 10. Splitting the rules at runtime was rejected: it makes the
+on-screen text depend on where the author happens to put a full stop, and it would break silently.
+
+**Revisit when.** The thumbs say whether a scored *Rode vlaggen* is better than an unscored one.
+
+## D22 — The memory file goes out through the share sheet, and comes back as a replacement
+
+**Chosen 2026-08-28.** One button builds the whole private layer as
+`vragenspel-geheugen-YYYY-MM-DD.json` and hands it to `navigator.share({files:[…]})`. It is **not**
+offered as a download, and there is no second route.
+
+**Alternatives.** A `Blob` and an `<a download>`, which is what
+[`PHASE_3_PROMPT.md`](PHASE_3_PROMPT.md) asked for first; or both paths, with the download tried
+and sharing as a fallback.
+
+**Reasoning.** The game is played from a web app on the iOS home screen. That is exactly the
+context where a download has nowhere visible to land — no tab, no download shelf, and no reliable
+way to find the file afterwards — while the share sheet is the platform's own gesture for *put this
+file in Bestanden or Notities*, which is where the file needs to end up. Two paths were rejected on
+the rule this repo already lives by: a fallback that works on the laptop and not on the phone is a
+bug that stays hidden until the evening it matters (D12, and `CLAUDE.md` "one correct path, no
+fallbacks").
+
+**What was not verified, stated rather than left to be discovered.** This was tested on a desktop
+browser, which has no Web Share API at all — so the *refusal* path is proven (the button says, in
+Dutch, that this browser cannot share a file) and **the working path is not**. It has not been run
+on the owner's phone from the home-screen app. If it fails there, the change is to swap the one
+`navigator.share` call for a download — not to add one beside it.
+
+**`laatsteExport` is stamped only when `share()` resolves**, never when it is cancelled, so the
+two-month nudge cannot report a back-up that was never made.
+
+**Replace, never merge.** An imported file overwrites the whole state behind a Dutch confirmation
+that names the date and the counts. Merging two states is a class of bug the owner would never find
+and does not need: the game is played from one phone (D10). Two things are deliberately not taken
+from the file — the card that was on screen when the back-up was made, and whether *this* phone's
+storage is protected.
+
+**A file that is not ours is refused out loud.** The marker is `vragenspel_geheugen: 1`; anything
+else gets a Dutch sentence rather than a silent no-op, because a file picker will happily hand over
+a bank statement.
+
+**The picker's own button is hidden.** It is drawn by the browser, says *"Choose file"*, and cannot
+be restyled or translated; a Dutch button opens it instead. D8 has no exceptions.
+
+**Revisit when.** The phone says whether the share sheet worked.
+
+## D23 — Tijdcapsule is an app-level category, and it obeys nothing
+
+**Chosen 2026-08-28.** *Tijdcapsule* is defined in `app.js` — a name and a colour — and is **not**
+a category in `cards.json`.
+
+**Alternatives.** Add it to `cards.json` with a count of zero, so the app resolves its colour the
+same way it resolves every other one.
+
+**Reasoning.** A category in `cards.json` appears in the filter and in the category picker for a
+written card. Both would create a route by which an ordinary draft could be labelled *Tijdcapsule*
+and then promoted into the deck, which is the one thing D20 forbids. Keeping the category out of
+the data means the route does not exist to be closed. Capsules also carry their own id range
+(5001+, clear of the drafts at 1001+), so an id says what a card is without consulting anything.
+
+**A due capsule ignores the category filter and the licht/diep dial.** It waited months to be
+asked; an evening's mood is not a reason to make it wait longer. Stated here because it is a
+deliberate exception to two filters that otherwise apply to everything.
+
+**Thumbs work on capsules, and stop at the phone.** A capsule can be retired like any card. It is
+filtered out of the *Wat vonden we ervan* block by id rather than trusted not to appear there, and
+the panel says in Dutch that capsules are not in the block and never will be — the refusal D20
+requires is spoken, not merely enacted.
+
+**"Verras me" keeps its date to itself**, in the confirmation and in the list of sleeping cards.
+Printing the date would give away the only thing that option is for. It picks a day between three
+months and two years.
+
+**Only the question and the dates are stored. Never an answer.** D7, and the reason the deck is
+publishable at all.
+
+**Revisit when.** The first capsule comes due — that is the only real test of it.
+
+## D24 — The light/deep dial ships before its labels, and the labels are the author's
+
+**Chosen 2026-08-28.** The dial is built: a sitting opens on a Dutch mood screen — *Licht*,
+*Diep*, *Alles* — the choice is kept, and it can be changed in the menu. **`cards.json` carries no
+`diepte` field yet**, and this session did not write one.
+
+**Reasoning.** [`PHASE_3_PROMPT.md`](PHASE_3_PROMPT.md) is explicit that the tagging is the
+author's call and must be agreed before it is committed — which cards land heavy is not a thing a
+session can know. So the mechanism ships and the data waits. The proposal was made in the same
+session: 28 *diep*, 130 *licht*, grouped by category.
+
+**The dial is offered only when the deck carries labels.** `HEEFT_DIEPTE` is read from the deck at
+load. Before the tagging lands the mood screen is not shown and the menu section is hidden, because
+a *Diep* sitting on an unlabelled deck is an empty deck — a worse thing to ship than no dial. When
+the labels land, one build turns it on and nothing else changes.
+
+**A card with no `diepte` always plays.** Drafts written in the app and Tijdcapsule cards have no
+label and are not going to acquire one; the dial narrows the deck and must never empty it.
+
+**Verified against the real proposal.** With the 28/130 tagging applied to a temporary build:
+*Licht* 130 playable, *Diep* 28, *Alles* 158, mood screen shown, menu toggle reflecting the choice.
+`cards.js` was then regenerated from `cards.json` and hashed **byte-identical to before the test**.
+
+**Revisit when.** The tagging is agreed. The honest note to carry into that conversation: on this
+session's reading the deck is mostly light, and a *Diep* sitting of 28 cards is one evening — if
+deep evenings should last longer, the fix is to promote cards, not to relabel the comic ones.

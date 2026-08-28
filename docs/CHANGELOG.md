@@ -7,6 +7,89 @@ project: vragenspel
 
 Newest at top. The *why* is the part that matters.
 
+## 2026-08-28 (phase 3) — The private layer built: a memory file, cards that sleep, two new flows
+
+**No deck change.** `cards.json` is untouched and `cards.js` was rebuilt and hashed
+**byte-identical** to before this session. Everything below is `app.js`, `index.html`, `style.css`.
+
+**Storage is asked to stay, and the answer is shown rather than assumed.**
+`navigator.storage.persist()` is called once per load, its answer is remembered, and the menu says
+*"Opslag: beschermd"* or *"Opslag: niet beschermd (maak af en toe een back-up)"* — or, where the
+browser has no such API, that it says nothing about it. All three paths are guarded; a browser
+without the API must not break the page, and does not. D20.
+
+**The memory file — the point of the phase.** One button builds the whole private layer as
+`vragenspel-geheugen-YYYY-MM-DD.json` and hands it to the **share sheet**, not to a download.
+**One path, shipped, no fallback**: the game is played from a home-screen web app, which is exactly
+where an iOS download has nowhere to land and the share sheet is the platform's own *save this
+file* gesture. **This was tested on a desktop browser, which has no Web Share API at all — so the
+refusal path is proven and the working path is not.** It still needs running on the phone. If it
+fails there the fix is to swap the one call, not to add a second route. D22.
+
+**Import replaces, it never merges.** A file is refused out loud in Dutch if it is not ours;
+otherwise a confirmation names the back-up's date and what will be overwritten, and only then does
+it replace the state. Merging two states is a bug class nobody would find, and the game is played
+from one phone (D10). The date of the last back-up sits in the menu, and after two months it says
+so — once, quietly. It is stamped only when the share actually completes, so the nudge cannot
+report a back-up that was never made.
+
+**Rode vlaggen got its flow, through the existing timer.** Both choose, then a minute each to argue
+the other chose wrong, then *"Wie heeft overtuigd?"* and a point — the same clock as *Wat kies je*,
+not a second one. **So Rode vlaggen scores**, which takes D16's scoring list from four categories
+to five: 74 of 158 cards can now score. D21.
+
+**Mensen kijken got its flow, and deliberately no score.** Rule 12 says *"Er is nooit een goed
+antwoord"*, so there is no scoring tap anywhere in it — a category that cannot be scored must not
+be asked who won. The *"wees aardig"* line shows on the first Mensen kijken card of a sitting and
+not on the rest: said once it is a reminder, said twenty times it is nagging. D21.
+
+**Tijdcapsule — cards that sleep.** Written at the table, with 3 maanden / 6 maanden / 1 jaar /
+*verras me* (a day between three months and two years, and the date is not shown, because that is
+the whole point of the option). A capsule is not in the deck at all until its date; then it is
+dealt marked as a Tijdcapsule, saying when it was written.
+
+**The gate that mattered most.** A Tijdcapsule card has **no promotion path, checked or otherwise**.
+The category is defined in `app.js` and deliberately not in `cards.json`, so it cannot be picked
+when writing an ordinary draft; capsules carry their own id range; they are filtered out of the
+*Wat vonden we ervan* block by id rather than trusted not to appear in it; and the panel says in
+Dutch that they are not in the block and never will be. **Only the question and the dates are
+stored — never an answer.** Verified: a capsule with a thumbs-up produced a Claude Code block
+containing none of its text and none of its id. `CLAUDE.md` hard limit 6, D20, D23.
+
+**Old cards say when they were last asked.** Every card's last-played date is now kept, and a card
+dealt more than a year later carries a quiet line above it: *"Dit vroegen we op ⟨datum⟩. Is het
+antwoord veranderd?"*
+
+**The light/deep dial is built; the tagging is not committed.** A sitting opens on *Licht / Diep /
+Alles*, changeable in the menu. `cards.json` has no `diepte` field yet **on purpose** — which cards
+land heavy is the author's call, so the tagging was proposed for correction rather than written.
+Until it lands, the dial is not offered at all, because a *Diep* sitting on an unlabelled deck is
+an empty deck. Proposal: **28 diep, 130 licht**. D24.
+
+**The menu was rearranged rather than grown.** The four panels moved out of the button bar into a
+list inside the menu; six stacked buttons on a phone push the thing you came for off the screen.
+
+**One English string removed.** The file picker's native *"Choose file"* button is hidden behind a
+Dutch button — D8 has no exceptions, and that text is one a player reads.
+
+**Verified, at 375px, against stated expectations before each run.** `persist()` returned false on
+the test browser and the menu said so, and the answer was stored. Export: filename
+`vragenspel-geheugen-2026-08-28.json`, every field of the private layer present under the marker
+`vragenspel_geheugen: 1`, and on a browser that cannot share, the Dutch refusal rather than
+silence. Import: a foreign file and a broken file each refused in Dutch; a real file confirmed with
+its date and counts, then replaced the state exactly, dropped the other sitting's current card, and
+kept this phone's storage answer. Rode vlaggen ran end to end through `stapTimers` to a point.
+Mensen kijken offered only *Volgende kaart*, with the courtesy line on the first card and not the
+second. All four capsule intervals produced the right wake dates (+92, +183, +365, and 396 days for
+*verras me*), a sleeping capsule was absent from the playable deck, and a due one dealt correctly
+with its written date and no card number. The dial, tested against a temporary tagged build:
+130 / 28 / 158 playable. `cards.js` then rebuilt and hashed identical. Existing flows —
+*Weet jij dit?*, *Wie van ons?*, plain cards, the result screen — all still correct. No `fetch`
+anywhere in the app.
+
+**Not done, and not silently:** the export has not been run on the owner's phone, and the diepte
+tagging is a proposal awaiting his corrections.
+
 ## 2026-08-28 (later still) — Deck to 158 cards; the private layer fenced before it is built
 
 **Deck.** Two categories added, **Mensen kijken** (20, `#4a5a6b`) and **Rode vlaggen** (20,
