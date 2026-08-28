@@ -1,7 +1,7 @@
 # Vragenspel
 
-A Dutch question deck for two people — 118 cards in 9 categories — in two forms that share one
-source of truth: a printable paper deck, and a browser app for the phone.
+A Dutch question deck for two people — 158 cards in 11 categories — played on a phone at a table.
+One card at a time, no accounts, no server, nothing leaves the browser.
 
 ## The mechanic
 
@@ -22,6 +22,8 @@ if you agree, one minute each).
 
 | Category | Cards |
 | --- | --- |
+| Mensen kijken | 20 |
+| Rode vlaggen | 20 |
 | Vroeger | 20 |
 | Wat kies je | 20 |
 | Kleine dingen | 12 |
@@ -43,19 +45,20 @@ self-reported.
 | File | Purpose |
 | --- | --- |
 | `cards.json` | The deck. **The only editable copy** — everything else is generated from it |
-| `build_vragenspel.py` | Regenerates the printable page from `cards.json` |
+| `build_vragenspel.py` | Regenerates `cards.js` from `cards.json` |
 | `build_vragenspel.bat` | Double-click launcher for the above; writes `build_log.txt` beside it |
-| `VRAGENSPEL.html` | The printable deck. **Generated — do not edit by hand** |
 | `cards.js` | The deck for the app. **Generated — do not edit by hand** |
 | `index.html`, `style.css`, `app.js` | The browser app |
 | `card_feedback.local.json` | What we thought of the cards. **Gitignored — never published** |
 | `CLAUDE.md` | Rules for any Claude Code session working in this repo |
 | `docs/` | Decisions, changelog, and the brief for the browser app |
 
-## Printing
+## The printable deck was retired
 
-Open `VRAGENSPEL.html` in a browser and press Ctrl + P. The rules card and the 118 numbered cards
-print; the design briefing at the top does not.
+Until 2026-08-28 the same `cards.json` also produced a printable paper deck. It was retired because
+the app and the paper deck had drifted into describing two different games — the paper rules card
+still taught a guess-first game the app no longer plays. One game, one place. See
+[`docs/DECISIONS.md`](docs/DECISIONS.md) D17.
 
 ## The browser app
 
@@ -97,4 +100,4 @@ header first, because the pacing it specifies has since been replaced.
 ## Tech
 
 Vanilla HTML, CSS and JavaScript. No framework, no build step, no dependencies, no server, no
-accounts, no analytics. Python 3 is needed only to regenerate the printable page.
+accounts, no analytics. Python 3 is needed only to regenerate `cards.js` after editing the deck.

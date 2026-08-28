@@ -12,9 +12,9 @@ window.VRAGENSPEL_DECK = {
   "meta": {
     "title": "Vragenspel",
     "language": "nl",
-    "extracted_from": "VRAGENSPEL.html",
+    "extracted_from": "VRAGENSPEL.html (retired 2026-08-28)",
     "extracted": "2026-08-27",
-    "card_count": 118
+    "card_count": 158
   },
   "categories": [
     {
@@ -61,6 +61,16 @@ window.VRAGENSPEL_DECK = {
       "name": "Onenigheid",
       "colour": "#8a4a1e",
       "count": 10
+    },
+    {
+      "name": "Mensen kijken",
+      "colour": "#4a5a6b",
+      "count": 20
+    },
+    {
+      "name": "Rode vlaggen",
+      "colour": "#8a2b2b",
+      "count": 20
     }
   ],
   "rules": [
@@ -74,7 +84,9 @@ window.VRAGENSPEL_DECK = {
     "<strong>Bij <em>Wie van ons?</em> wijzen jullie tegelijk.</strong> Aanwijzen op drie. Wijzen jullie naar dezelfde persoon, dan klopt het. Wijzen jullie naar elkaar, dan is dat het gesprek.",
     "<strong>Bij <em>Weet jij dit?</em> is er één goed antwoord.</strong> Goed is een punt, fout is geen punt en een korte stilte.",
     "<strong>Bij <em>Onenigheid</em> kiest ieder een kant</strong> — ook als je het er eigenlijk mee eens bent. Eén minuut per persoon.",
-    "Klaar wanneer jullie klaar zijn. Leg de mooiste kaart apart."
+    "Klaar wanneer jullie klaar zijn. Leg de mooiste kaart apart.",
+    "<strong>Bij <em>Mensen kijken</em> raden jullie allebei</strong> — tegelijk, hardop, over iemand die je ziet. Er is nooit een goed antwoord. Wees aardig: hij hoort het niet, maar het gaat wel over een echt mens.",
+    "<strong>Bij <em>Rode vlaggen</em> kiest ieder één van de twee</strong> — welke zou je nog kunnen verdragen? Daarna één minuut om de ander te overtuigen dat hij de verkeerde koos."
   ],
   "cards": [
     {
@@ -666,6 +678,206 @@ window.VRAGENSPEL_DECK = {
       "id": 118,
       "category": "Onenigheid",
       "text": "Wie van ons heeft gelijk over de thermostaat?"
+    },
+    {
+      "id": 119,
+      "category": "Mensen kijken",
+      "text": "Kies allebei stiekem dezelfde persoon in het zicht. Wat is zijn of haar beroep? Aftellen, dan tegelijk zeggen."
+    },
+    {
+      "id": 120,
+      "category": "Mensen kijken",
+      "text": "Welke tafel gaat als eerste weg? Zet er allebei iets op in."
+    },
+    {
+      "id": 121,
+      "category": "Mensen kijken",
+      "text": "De laatste die binnenkwam: waar komt hij vandaan en waar gaat hij daarna heen?"
+    },
+    {
+      "id": 122,
+      "category": "Mensen kijken",
+      "text": "Kies een stel in het zicht. Hoe lang zijn ze al samen — en waar zie je dat aan?"
+    },
+    {
+      "id": 123,
+      "category": "Mensen kijken",
+      "text": "Wat drinkt de persoon aan de tafel links van ons, en waarom juist dat?"
+    },
+    {
+      "id": 124,
+      "category": "Mensen kijken",
+      "text": "Iemand hier kijkt op zijn telefoon. Wie is er aan de andere kant?"
+    },
+    {
+      "id": 125,
+      "category": "Mensen kijken",
+      "text": "Wie hier lijkt het meest op hoe jij was op je twintigste?"
+    },
+    {
+      "id": 126,
+      "category": "Mensen kijken",
+      "text": "Zoek de vrolijkste persoon in het zicht. Waar zie je het aan?"
+    },
+    {
+      "id": 127,
+      "category": "Mensen kijken",
+      "text": "Kies een hond en zijn baasje. Wie lijkt op wie, en op welk punt?"
+    },
+    {
+      "id": 128,
+      "category": "Mensen kijken",
+      "text": "Welke twee mensen hier zouden verrassend goed bij elkaar passen?"
+    },
+    {
+      "id": 129,
+      "category": "Mensen kijken",
+      "text": "Wat zit er in de tas van iemand hier dat er absoluut niet in hoort?"
+    },
+    {
+      "id": 130,
+      "category": "Mensen kijken",
+      "text": "Iemand hier heeft vandaag iets te vieren. Wie is het, en wat is het?"
+    },
+    {
+      "id": 131,
+      "category": "Mensen kijken",
+      "text": "Wie hier is voor het eerst in deze stad? Wat verraadt hem?"
+    },
+    {
+      "id": 132,
+      "category": "Mensen kijken",
+      "text": "Welk gesprek aan een andere tafel zou je willen horen? Verzin de eerste zin."
+    },
+    {
+      "id": 133,
+      "category": "Mensen kijken",
+      "text": "Kies iemand. Welke muziek staat er nu in zijn hoofd?"
+    },
+    {
+      "id": 134,
+      "category": "Mensen kijken",
+      "text": "Hoe lang werkt de bediening hier al, en vindt hij het leuk?"
+    },
+    {
+      "id": 135,
+      "category": "Mensen kijken",
+      "text": "Wie hier heeft de meest bijzondere week achter de rug?"
+    },
+    {
+      "id": 136,
+      "category": "Mensen kijken",
+      "text": "Iemand loopt net weg met haast. Verzin in één zin waarom."
+    },
+    {
+      "id": 137,
+      "category": "Mensen kijken",
+      "text": "Kies iemand die alleen zit. Wacht hij op iemand, of is dit precies wat hij wilde?"
+    },
+    {
+      "id": 138,
+      "category": "Mensen kijken",
+      "text": "Welke persoon hier zou jij het liefst een uur spreken? En ik?"
+    },
+    {
+      "id": 139,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: altijd drie kwartier te laat, of altijd een half uur te vroeg?"
+    },
+    {
+      "id": 140,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: nooit terugbellen, of onaangekondigd videobellen?"
+    },
+    {
+      "id": 141,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: lege pakken terugzetten in de koelkast, of de vaatwasser half ingeruimd laten staan?"
+    },
+    {
+      "id": 142,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: hard bellen in de trein, of daar iets eten dat enorm ruikt?"
+    },
+    {
+      "id": 143,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: het einde van een serie verklappen, of stiekem vooruitkijken zonder jou?"
+    },
+    {
+      "id": 144,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: niet tegen verliezen kunnen, of je expres laten winnen?"
+    },
+    {
+      "id": 145,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: spraakberichten van vier minuten, of altijd alleen “ok”?"
+    },
+    {
+      "id": 146,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: bij ruzie weglopen, of er meteen drie uur over willen praten?"
+    },
+    {
+      "id": 147,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: verjaardagen vergeten, of cadeaus geven die duidelijk voor zichzelf zijn?"
+    },
+    {
+      "id": 148,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: elke vakantie tot op het uur plannen, of niks boeken en “we zien wel”?"
+    },
+    {
+      "id": 149,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: acht keer de wekker uitslaan, of om vijf uur opstaan en herrie maken?"
+    },
+    {
+      "id": 150,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: te dicht op de auto voor je rijden, of twintig te langzaam op de linkerbaan?"
+    },
+    {
+      "id": 151,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: jouw verhalen navertellen alsof ze van hem zijn, of ze onderbreken om details te verbeteren?"
+    },
+    {
+      "id": 152,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: van jouw bord eten zonder vragen, of altijd precies hetzelfde bestellen als jij?"
+    },
+    {
+      "id": 153,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: alles meezingen en vals, of de muziek uitzetten zodra jij meezingt?"
+    },
+    {
+      "id": 154,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: veertig tabbladen open hebben, of alles sluiten en alles kwijt zijn?"
+    },
+    {
+      "id": 155,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: op elk feest hetzelfde verhaal vertellen, of geen enkel verhaal hebben?"
+    },
+    {
+      "id": 156,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: tegen de televisie praten, of tijdens de film op je telefoon zitten en dan vragen wat er gebeurde?"
+    },
+    {
+      "id": 157,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: overal een anekdote over hebben die net niet klopt, of elke anekdote van jou corrigeren?"
+    },
+    {
+      "id": 158,
+      "category": "Rode vlaggen",
+      "text": "Wat is erger: nooit een keuze maken in een restaurant, of hem in vier seconden maken en er de hele avond spijt van hebben?"
     }
   ]
 };

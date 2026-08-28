@@ -16,3 +16,12 @@ card_feedback.local.json
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Files a session removed. Claude cannot delete inside a connected folder, so a removal is
+# a move into here and the owner empties it. Never committed.
+_to_delete/
+
+# The memory export: Tijdcapsule cards, names, thumbs, own cards — the private layer in a file.
+# Never committed, and never quoted from. See docs/DECISIONS.md D20.
+vragenspel-geheugen*.json
+*-geheugen-*.json

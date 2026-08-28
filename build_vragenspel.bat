@@ -1,6 +1,6 @@
 @echo off
-REM Regenerates VRAGENSPEL.html (the printable deck) and cards.js (the deck for the
-REM browser app) from cards.json. Double-click this file.
+REM Regenerates cards.js (the deck the browser app loads) from cards.json.
+REM Double-click this file. The printable deck was retired on 2026-08-28.
 REM It resolves its own folder, so it stays correct if the vault moves.
 REM Everything it prints is also written to build_log.txt beside it.
 REM It touches nothing outside this folder, reaches no network, and runs no git.

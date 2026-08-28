@@ -7,6 +7,91 @@ project: vragenspel
 
 Newest at top. The *why* is the part that matters.
 
+## 2026-08-28 (later still) — Deck to 158 cards; the private layer fenced before it is built
+
+**Deck.** Two categories added, **Mensen kijken** (20, `#4a5a6b`) and **Rode vlaggen** (20,
+`#8a2b2b`), with a rule each appended to the rules card. 118 → **158 cards, 11 categories, 13
+rules**. `cards.js` rebuilt. `DECISIONS.md` D19.
+
+**Why these two.** Deck size had become the binding constraint at terrace pacing. *Mensen kijken*
+answers come from the room rather than the deck, so the same card plays differently every time —
+the only category here with unbounded reuse, and the only one that needs the terrace it is played
+on. *Rode vlaggen* is a dilemma in the shape of *Wat kies je*, the best-performing existing
+category: both choose, then a minute of arguing. Domestic and comic on purpose, and **about nobody
+real** — which is both the privacy rule and the reason they are funny rather than pointed.
+
+**Its courtesy rule is in the rules card, not in a comment.** *Wees aardig: hij hoort het niet,
+maar het gaat wel over een echt mens.* A category built on inventing lives for strangers needs
+that said once, inside the game.
+
+**The card texts are self-contained**, so the deck ships ahead of the app work — both categories
+deal correctly today as ordinary cards.
+
+**The private layer was fenced before a line of it exists**, which is the whole of L20 applied on
+purpose rather than after the fact. `CLAUDE.md` gained a **sixth hard limit**: Tijdcapsule cards,
+the names, the thumbs and the memory export are facts about two people, they live on the phone and
+in an exported file, and there is no path — coded or manual — that moves them into `cards.json`,
+into a committed file, or into a session that could reach one. A Tijdcapsule card is **not
+promotable to the deck at all**: not "checked more carefully", exempt from D15's promotion path
+entirely. `.gitignore` now covers `vragenspel-geheugen*.json`, and `CLAUDE.md` says a session
+handed such a file reads what it needs and **quotes nothing** from it. `DECISIONS.md` D20.
+
+**Why a file and not just the browser.** Storage on iOS is best-effort by policy and can be evicted
+after a period without interaction — which is precisely the shape of a card designed to sleep for a
+year. `navigator.storage.persist()` plus the home-screen web app is the strongest request the
+platform allows, and it is still a request. So the file is the record and the phone is the working
+copy. Retrieved 2026-08-28: [WebKit storage
+policy](https://webkit.org/blog/14403/updates-to-storage-policy/) and [MDN
+`persist()`](https://developer.mozilla.org/en-US/docs/Web/API/StorageManager/persist).
+
+**Prepared, not built.** [`PHASE_3_PROMPT.md`](PHASE_3_PROMPT.md) — persistent storage, export and
+import of the memory file, the two new category flows, Tijdcapsule cards, and a light/deep dial
+whose tagging is proposed for review rather than committed, because which cards land heavy is the
+author's call.
+
+**Verified.** 158 unique ids, 1–158 contiguous; `meta.card_count` matches; no card carries an
+`answer` key; `--check` reports `cards.js` current; `cards.js` parses as JSON and yields 158 cards;
+zero name hits in `cards.json` or `cards.js`.
+
+## 2026-08-28 (later) — Printable deck retired; the brief frozen; a name taken off a public page
+
+**A review session, not a build session.** Nothing about how the app plays changed.
+
+**The printable deck is retired.** `build_vragenspel.py` no longer emits `VRAGENSPEL.html`; the
+layout templates are deleted and the script went from 300 lines to 140. `cards.json` → `cards.js`
+is the only build output now. **Why now:** the entry below left the paper rules card teaching
+*"Eerst gokken"* and one refusal per evening, which the app has not done since the entry beneath
+that. A known inconsistency is fine in a document and is a defect in a deck someone reads aloud at
+a table. Pim's call. `DECISIONS.md` D17.
+
+**Evidence it broke nothing.** `cards.js` was copied before the rewrite and compared after:
+**byte-identical**. The deck the app loads did not move. `VRAGENSPEL.html` is in `_to_delete/`
+rather than deleted — Claude cannot delete in a connected folder — and `_to_delete/` is gitignored.
+
+**`APP_BRIEF.md` is now marked HISTORY, and superseded passages are marked where they are
+written.** The top banner was correct and complete, and three sections below it the body still read
+*"The gate is the product… build that first"* as a live requirement. A reader absorbs a requirement
+where it is written, not where it is corrected. Six passages now carry `[SUPERSEDED — D13]` or
+similar at the line. **It was not rewritten into agreement** — the argument in its own banner for
+keeping it as evidence is right, and is now `DECISIONS.md` D18 with a matching rule in `CLAUDE.md`.
+`CLAUDE.md` also now names itself and `DECISIONS.md` as the current requirements.
+
+**A name came off a public page.** `CLAUDE.md` said *"Pim is a mechanical engineer, not a software
+engineer — he will not debug this."* True, written in a private planning session, and then
+published under his own GitHub handle. It now reads *"the owner"*, as do the two other mentions in
+that file. **`docs/` keeps his name**: the changelog and decisions are the record of who decided
+what, and editing the record to tidy it is worse than the exposure. Julie's name remains at zero
+everywhere, which is the invariant that actually matters.
+
+**Verified after all of it.** `build_vragenspel.py --check` reports `cards.js` current; zero of the
+118 card texts appear in `app.js`, `index.html` or `style.css`; the app makes no network call of
+any kind; `card_feedback.local.json` is absent from `.git/index`; and the name scan over every file
+in the repository returns zero for every name except the owner's own GitHub handle in his own URLs.
+
+**Not done, and named rather than left implied.** The app still has no way to save the feedback
+block to a file — Pim asked for a save option and it is app work, so it belongs in a Claude Code
+session, not here. And there are still no swipe gestures.
+
 ## 2026-08-28 — A score instead of rounds, and the interface finished
 
 **What.** Rounds removed entirely. A running score, a result screen that says who won, names the

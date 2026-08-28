@@ -327,3 +327,119 @@ without the name ever existing in a file.
 **On the pigeon.** It is a motif Pim asked for, and it stays: a bird carries no name. It is
 confined to `maakDuif()` in `app.js` and the sheen on the result screen, so it can be removed
 without touching anything else if it is ever unwanted.
+
+## D17 — The printable deck is retired
+
+**Chosen 2026-08-28 (Pim), after a review found the two forms had drifted.** `build_vragenspel.py`
+no longer emits `VRAGENSPEL.html`, its layout templates are gone, and the generated page is staged
+in `_to_delete/` for deletion by hand. `cards.json` → `cards.js` is now the only build output.
+
+**The evidence that forced it.** The app stopped being the guess-first game on 2026-08-28 (D13),
+but `cards.json`'s rules card was deliberately left as the author's words. So rule 2 still read
+*"Eerst gokken"* and rule 6 still gave *"één keer per avond een kaart weigeren"* — a printed deck
+was teaching a game the app does not play. D13 recorded that as a known inconsistency, which was
+right at the time. **It is only tolerable in a document. In a deck someone reads aloud at a table
+it is a defect**, because the rules card is player-facing and nothing warns the reader.
+
+**Alternatives.** Rewrite the rules card to match the app — rejected because the rules are the
+author's words and rewriting them to chase the app is a session making a call that is Pim's, and
+because it leaves two artefacts to keep in step forever. Keep both and live with the drift —
+rejected: that is the state that produced this decision.
+
+**What is kept, and why the rules stay in `cards.json`.** The eleven rules stay in the data. Four
+of them define how the special categories play and the app reads them for its scoring
+(D16). They are deck content, not printable-page content.
+
+**The honest consequence.** Any deck already printed still exists on paper and still teaches the
+original guess-first game. Retiring the generator does not un-print it. That is fine — that deck
+*is* the original game, and it can be played as one.
+
+**Evidence the change broke nothing.** `cards.js` was hashed before the rewrite and rebuilt after:
+**byte-identical**. The deck the app loads did not move. `build_vragenspel.py` went from 300 lines
+to 140.
+
+**Revisit when.** Someone wants paper again — at which point the rules card is the first thing to
+settle, not the last.
+
+## D18 — A superseded brief is annotated at the line, never rewritten
+
+**Chosen 2026-08-28.** When a decision reverses something [`APP_BRIEF.md`](APP_BRIEF.md) argues
+for, the passage is marked in place — `[SUPERSEDED — D<n>]` — in the same change. The brief is
+never edited into agreement with what was built.
+
+**Alternatives.** Rewrite the brief to match the app — rejected, and the reason is the good one
+already argued in the brief's own banner: a brief edited to agree with what shipped stops being
+evidence of what was decided and why, which is the only reason to keep it. Rely on the top banner
+alone — rejected on measurement: on 2026-08-28 the banner was correct and complete, and the body
+three sections down still read *"The gate is the product… build that first"* as a live
+requirement. **A reader absorbs a requirement where it is written, not where it is corrected.**
+
+**What changed alongside.** `CLAUDE.md` now names itself and `DECISIONS.md` as the current
+requirements and sends sessions to the brief for history only. Its frontmatter says `status:
+HISTORY`.
+
+**Revisit when.** The brief has more superseded passages than live ones — at that point it is
+wholly history and the annotations stop earning their keep.
+
+## D19 — Two categories added, and why these two
+
+**Chosen 2026-08-28 (Pim).** The deck goes from 118 to **158 cards**: **Mensen kijken** (20,
+`#4a5a6b`) and **Rode vlaggen** (20, `#8a2b2b`), with a rule for each appended to the rules card.
+
+**The problem they solve.** At terrace pacing 118 cards was five or six sittings, and every retired
+card shrank it. Deck size had become the binding constraint (D13). Forty more ordinary questions
+would have bought two more sittings.
+
+**Why *Mensen kijken* is worth more than its twenty cards.** Its answers come from the room, not
+from the deck, so the same card plays differently every time it is dealt. It is the only category
+here with genuinely unbounded reuse, and it is the only one that could not exist on paper *or* on a
+phone at home — it needs the terrace the app is played on.
+
+**Its one rule is a courtesy, and it is in the rules card on purpose.** *Wees aardig: hij hoort het
+niet, maar het gaat wel over een echt mens.* A category built on inventing lives for strangers
+needs that said out loud once, in the game, rather than assumed.
+
+**Why *Rode vlaggen* is a dilemma, not a list.** Every card is *"wat is erger: X of Y"* and both
+players choose, then argue for a minute — the same shape as *Wat kies je*, which is the
+best-performing existing category. They are deliberately domestic and comic: wekkers, vaatwassers,
+spraakberichten. **None of them is about a real person**, which is both a privacy rule and the
+reason they are funny rather than pointed.
+
+**The card texts are self-contained.** Each reads as an ordinary card and plays correctly before
+the app knows anything about the new categories, so the deck could ship ahead of the app work.
+
+**Revisit when.** The thumbs say which of the forty are working. Write the next batch from
+`card_feedback.local.json`, not from imagination.
+
+## D20 — The private layer, and the file that carries it
+
+**Chosen 2026-08-28 (Pim).** The app grows a memory that is deliberately *not* in this repository:
+**Tijdcapsule cards** — cards written at the table about a shared memory, *"Wat aten we het meest
+in Puglia?"*, *"Wat gebeurde er die nacht in Thailand?"* — which lie dormant and resurface after a
+chosen interval. Alongside them: the players' names, the thumbs, and the cards written in the app.
+
+**Where it lives.** `localStorage` on one phone, plus an **exported file** the players keep
+themselves. `navigator.storage.persist()` is requested on load and the home-screen web app is the
+strongest signal WebKit uses when granting it — but persistence is best-effort by policy, so the
+file is the record and the phone is the working copy. Retrieved 2026-08-28:
+[WebKit, Updates to Storage Policy](https://webkit.org/blog/14403/updates-to-storage-policy/),
+[MDN, `StorageManager.persist()`](https://developer.mozilla.org/en-US/docs/Web/API/StorageManager/persist).
+
+**Why a Tijdcapsule card can never become a deck card.** *"Wat gaven we voor je twintigste?"* is a
+fact about two named people wearing the costume of a question. D15 lets a card written in the app
+be promoted into `cards.json` after a privacy check; **a Tijdcapsule card is exempt from that path
+entirely** — not "checked more carefully", not promotable. The app must refuse it and so must any
+session. `CLAUDE.md` hard limit 6.
+
+**Why the export file is gitignored by pattern and never quoted.** It is the same content in a
+form that can be dragged into a repo folder by accident, or pasted into a session and from there
+into a changelog. Both are covered: `vragenspel-geheugen*.json` is ignored, and `CLAUDE.md` says
+plainly that a session handed one reads what it needs and quotes nothing.
+
+**Alternatives.** Keep the memory cards in `cards.json` and make the repo private — rejected, that
+un-does D1 and D5 and kills the Pages site. A backend — rejected, D9. Rely on `localStorage`
+alone — rejected on evidence: best-effort storage can be evicted after a period without
+interaction, which is exactly the shape of a card designed to sleep for a year.
+
+**Revisit when.** A second device genuinely needs the same memory, at which point the export file
+is already the mechanism and only the import ergonomics change.

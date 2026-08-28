@@ -245,7 +245,7 @@ var eigenCategorie = null;   /* the category chosen for a card being written */
 /* =============================================================== 4. the pigeon
 
    Drawn here rather than loaded, because the app has no dependencies and never reaches
-   the network. The pigeon is the app's motif, chosen by Pim; it is decoration and
+   the network. The pigeon is the app's motif, chosen by the owner; it is decoration and
    carries no name. */
 
 var SVG_NS = 'http://www.w3.org/2000/svg';
