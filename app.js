@@ -94,7 +94,10 @@ var T = {
   verder:        'Verder spelen',
   nieuwSpel:     'Nieuw spel, punten op nul',
 
-  filterUit:     'Alles doet mee. Tik een categorie aan als je ergens geen zin in hebt.',
+  /* Tapping a category SELECTS it: only what is lit up gets dealt. The old wording here
+     said "tik aan waar je geen zin in hebt", which told you to do the exact opposite of
+     what the button does — tap Kleine dingen to be rid of it and you got nothing else. */
+  filterUit:     'Alles doet mee. Tik aan waar je zin in hebt; dan doen alleen die mee.',
   filterAan:     'Alleen deze categorieën worden gedeeld:',
 
   leegKop:       'Niets meer te delen',
@@ -732,6 +735,16 @@ function beschikbaar() {
   });
 }
 
+/* May the card on the screen still be there? Asked in exactly one place, because the two
+   routes that put a card back — reopening the app, and closing a panel — used to ask a
+   weaker question ("does it exist, and is it not thumbed down?") and so kept handing back
+   a card whose category had just been switched off. One card would then survive every
+   filter change and every new game. */
+function magNog(id) {
+  if (id === null) return false;
+  return speelbaar().some(function (kaart) { return kaart.id === id; });
+}
+
 /* The printed deck is shuffled, so this one is too. When every card has been dealt it
    quietly starts over — there are no rounds to announce. */
 function deel() {
@@ -1150,8 +1163,10 @@ function openMenu() {
   ]);
 }
 
+/* Back to the card you were on — unless it is no longer one that may be dealt, in which
+   case switching a category off while looking at it does what it looks like it does. */
 function sluitMenu() {
-  if (stand.huidige !== null && kaartMetId(stand.huidige)) ga(stapNu || stapKaart);
+  if (magNog(stand.huidige)) ga(stapNu || stapKaart);
   else deel();
 }
 
@@ -1802,12 +1817,17 @@ function vulUitslag() {
   uitslagUitlegEl.textContent = T.uitslagUitleg;
 }
 
-/* A new game resets the score and nothing else: the verdicts on the cards are about the
-   deck, not about this evening, so they stay. */
+/* A new game resets the score and lets go of the card that was on the screen, so it opens
+   on a fresh deal rather than continuing the sitting that was just stopped. What it does
+   NOT reset: the verdicts, which are about the deck rather than about this evening, and
+   which cards have been dealt this time round the deck — starting over there would deal
+   back the cards you looked at ten minutes ago. */
 function nieuwSpel() {
   stand.punten = [0, 0];
   stand.gespeeld = 0;
+  stand.huidige = null;
   bewaarStand();
+  stapNu = null;
   aardigGetoond = false;
   aardigKaart = null;
   if (HEEFT_DIEPTE) { openStart(); return; }
@@ -1824,8 +1844,7 @@ function begin() {
 
   /* A card still on the screen means the sitting was interrupted, not ended: pick it up
      where it was rather than asking for a mood that was already chosen. */
-  if (stand.huidige !== null && kaartMetId(stand.huidige) &&
-      stand.duimNeer.indexOf(stand.huidige) === -1) {
+  if (magNog(stand.huidige)) {
     ga(stapKaart);
     return;
   }

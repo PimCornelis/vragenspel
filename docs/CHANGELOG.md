@@ -7,6 +7,44 @@ project: vragenspel
 
 Newest at top. The *why* is the part that matters.
 
+## 2026-08-28 (phase 3, fix) — One card could outlive the filter, a new game and every reopen
+
+**Reported from play:** every sitting opened on the same *Kleine dingen* card, and turning that
+category off did not shake it loose.
+
+**The cause was one thing in three places.** `stand.huidige` is restored when the app reopens and
+when a panel closes. Both routes checked only that the card existed and was not thumbed down —
+neither consulted the category filter or the licht/diep dial. And `nieuwSpel()` zeroed the score
+without letting go of `huidige`, so *Nieuw spel, punten op nul* handed back the very card, and the
+very step, the sitting had just been stopped on. Together that let one card survive a filter
+change, a new game and every reopen indefinitely.
+
+**Fixed with one predicate, not three patches.** `magNog(id)` is built on `speelbaar()`, so the
+filter, the dial and the thumbs are honoured in exactly one place; both restore routes call it.
+`nieuwSpel()` now clears `huidige`. Switching a category off while looking at one of its cards
+replaces the card, which is the point rather than a side effect. *Verder spelen* still returns to
+the same card, because there it is still allowed. D25.
+
+**A new game keeps `gezien`**, the record of which cards have gone this time round the deck —
+resetting it would deal back the cards from ten minutes ago, and the deck already starts over by
+itself when it is exhausted (D13). The verdicts stay too, per D16.
+
+**A second defect, found while reproducing the first.** The filter's opening line said *"Tik een
+categorie aan als je ergens geen zin in hebt"* — tap what you do **not** want. Tapping selects, and
+only selected categories are dealt, which the next line already stated correctly. The instruction
+therefore told a player to do the exact opposite of what the button does: tap *Kleine dingen* to be
+rid of it and it becomes the only thing dealt. Now: *"Tik aan waar je zin in hebt; dan doen alleen
+die mee."* The filter's meaning is unchanged — a list of what plays, not a list of what is banned —
+because flipping it would silently invert any filter already saved on the phone.
+
+**Reproduced before it was fixed, and each case checked after.** With card 21 on screen and
+*Kleine dingen* excluded: before, *Nieuw spel* left card 21 in place and reopening brought it back;
+after, both deal a fresh card from an allowed category, and switching a category off mid-card
+replaces it. Unchanged and re-checked: an interrupted sitting still resumes its card, a
+thumbed-down card is still not restored, a menu round trip in the middle of a timer still returns
+to the same step on the same card, *Verder spelen* still continues the same card, and a fully
+retired deck still ends on *"Niets meer te delen"*. No console errors; deck untouched.
+
 ## 2026-08-28 (phase 3) — The private layer built: a memory file, cards that sleep, two new flows
 
 **No deck change.** `cards.json` is untouched and `cards.js` was rebuilt and hashed

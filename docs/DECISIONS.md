@@ -577,3 +577,47 @@ label and are not going to acquire one; the dial narrows the deck and must never
 **Revisit when.** The tagging is agreed. The honest note to carry into that conversation: on this
 session's reading the deck is mostly light, and a *Diep* sitting of 28 cards is one evening — if
 deep evenings should last longer, the fix is to promote cards, not to relabel the comic ones.
+
+## D25 — The card on the screen is restored only while it is still allowed
+
+**Chosen 2026-08-28, from a bug Pim found in play:** every sitting opened on the same
+*Kleine dingen* card, and switching that category off did not get rid of it.
+
+**The cause, which was one thing in three places.** `stand.huidige` — the id of the card on the
+screen — is restored when the app is reopened and when a panel is closed. Both routes asked a
+weaker question than they should have: *does this card exist, and is it not thumbed down?* Neither
+consulted the category filter or the licht/diep dial. And `nieuwSpel()` zeroed the score but never
+let go of `huidige`, so *Nieuw spel, punten op nul* handed back the card — and the step — the
+sitting had just been stopped on. One card could therefore survive a filter change, a new game and
+every reopen, indefinitely.
+
+**The fix.** One predicate, `magNog(id)`, built on `speelbaar()`, used by both restore routes. The
+filter, the dial and the thumbs are now honoured in exactly one place, so a fourth restore route
+added later cannot get this wrong differently. `nieuwSpel()` clears `huidige`.
+
+**What a new game does and does not reset.** It resets the score and lets go of the current card.
+It keeps the verdicts — they are about the deck, not about this evening (D16) — and it keeps
+`gezien`, the record of which cards have been dealt this time round the deck. Resetting `gezien`
+was rejected: it would deal back the cards you looked at ten minutes ago, and the deck already
+starts over by itself when it has been all the way round (D13).
+
+**Switching a category off while looking at one of its cards now replaces the card.** That is the
+point of the fix rather than a side effect of it: the alternative is a control that visibly does
+nothing until the next tap. *Verder spelen* still returns to the same card, because there the card
+is still allowed and continuing is what the button says.
+
+**A second defect, found while reproducing the first.** The filter's opening line read *"Tik een
+categorie aan als je ergens geen zin in hebt"* — tap what you do **not** want. Tapping a category
+selects it, and only selected categories are dealt, which the second line already said
+correctly (*"Alleen deze categorieën worden gedeeld"*). So the instruction told a player to do the
+exact opposite of what the button does: tap *Kleine dingen* to be rid of it, and it becomes the
+only thing you get. The line now says *"Tik aan waar je zin in hebt; dan doen alleen die mee."*
+
+**Not changed: the filter stays a list of what plays, not a list of what is banned.** Flipping the
+meaning would silently invert every filter already saved on the phone, and the rest of the app —
+the second line, the empty-deck message — is already written for it. Named here because
+[`APP_BRIEF.md`](APP_BRIEF.md) frames the feature the other way round (*"for the evenings when
+nobody wants a dilemma"*), and that framing is what the wrong line came from.
+
+**Revisit when.** Selecting nine categories to exclude one is annoying enough in use to be worth
+the migration.
