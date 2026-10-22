@@ -907,3 +907,138 @@ skipped, and only he can run it.
 
 **Revisit when.** The phone says whether the download worked. If it did not, the next step is not a
 second route — it is to find out what Chrome did with it.
+
+## D31 — Forty dilemmas, written to three engines, and the register widens
+
+**Chosen 2026-10-22 (owner).** The deck goes from 178 to **218 cards**: forty more *Wat kies je*
+(179–218). No other category changed, and no existing card was touched, reworded or renumbered.
+*Wat kies je* is now 70 cards, the largest category in the deck.
+
+**Where they came from.** The owner asked for Reddit-style dilemmas — *would you rather*, *what
+if*, the Dutch *dinsdagdilemma*. **Reddit itself was unreachable from the session** (direct requests
+are refused and the browser pane blocks the domain), so nothing was read there first-hand. The
+usable sources were secondary write-ups on what makes a *would you rather* thread work, the Dutch
+*Dilemma op Dinsdag* archive for its format, and the deck's own data.
+
+**No card was copied, translated or adapted from either source.** All forty are written here, to
+the patterns rather than from the text. This matters because the repo is public: lifting someone's
+list into it is both a copyright problem and a worse card. One draft was discarded during writing
+because it had landed close to an existing *Dilemma op Dinsdag* entry.
+
+**What `card_feedback.local.json` contributed, without any of it ending up here.** D19's *Revisit
+when* said to write the next batch from that file rather than from imagination, and that is what
+happened. **What the file actually says stays in the file** — which cards the two of them loved or
+put away is a fact about them, not about the deck (D14). What follows are the design rules derived
+from it, stated as rules about cards.
+
+**The three engines a dilemma can run on.**
+
+1. **The cursed gift** — two attractive powers, each ruined by an ironic catch. The argument is
+   about which defect you could live with. **The strongest of the three**, and eighteen of the
+   forty use it.
+2. **The absurd lesser evil** — two burdens, pick one. This is *Dilemma op Dinsdag*'s whole format.
+   Seventeen of the forty.
+3. **The comic trade-off** — a choice that reveals something without getting heavy. Five.
+
+**The rule that decides whether engine 2 works, and it is the useful finding.** A two-burden
+dilemma is funny when the burden is **absurd** and dead when the burden is a **real loss**.
+Identical structure, opposite result: a card about squeaking shoes is a game, a card about never
+walking again is grief wearing the same grammar. Engine 2 was used here only with absurd burdens.
+The general guidance agrees from the other direction: if one option is clearly better the argument
+collapses, so each side needs its own upside and its own drawback.
+
+**The register widens, deliberately.** The owner was asked how far into the absurd to go and chose
+to **allow mild gross-out** — smells, sneezing, sweat, damp clothes. Nothing explicit, nothing
+cruel, and nothing about a real person, which is D19's privacy point and still absolute. This is a
+change of voice for the deck and is recorded as one rather than slipped in.
+
+**They are shorter on purpose.** The new forty average **92 characters** against 112 for the
+existing *Wat kies je* and 140 for the batch of that morning (D28). Nineteen of the old thirty
+exceed 95 characters, which drops the question to the app's smallest type. A dilemma that has to be
+read twice is not funny the second time.
+
+**And deliberately varied in form**, because D28's lesson is one batch away. Of this morning's ten
+*Rode vlaggen*, eight opened on the same construction. These forty mix the comma form
+(*"X, of Y?"*) with the two-sentence form (*"X. Of Y."*), and no opening is used more than a few
+times.
+
+**Alternatives.** Put them in *Rode vlaggen* — rejected: D28 already warned that category was
+becoming a template. Expand *Wat als* — not taken now, though it is the smallest category at 8
+cards and is **open reflection, not a dilemma at all**, which is a real gap someone should look at.
+Ten cards as a trial — rejected by the owner in favour of forty.
+
+**Verified.** The build accepts the deck; ids run 1–218 with no gap; `meta.card_count` and the
+category count both updated; cards 1–178 byte-identical field for field. In a browser at 390 px all
+forty deal, render, and carry the *Allebei kiezen* instruction, three buttons and two thumbs. The
+longest new card (124 characters) fits on a phone screen with room left.
+
+**Revisit when.** The thumbs say which of the three engines is carrying the batch — and whether the
+wider register was a good idea or a passing mood.
+
+## D32 — The deck's centre of gravity moves to the dilemma, and *Wat als* comes off the floor
+
+**Chosen 2026-10-22 (owner).** Thirty-nine more cards, ids 219–257: thirty-seven *Wat kies je* and
+two *Wat als*. Written and approved by the owner and appended unchanged. The deck is **257 cards**.
+No existing card was touched, reworded, removed or renumbered, and nothing in `app.js`,
+`index.html` or `style.css` changed — this was content only.
+
+**What it does to the deck, which is the part worth recording.** *Wat kies je* is now **107 of 257
+cards — 42% of the deck**, up from 32% this morning and from 19% before today. Counting *Rode
+vlaggen* and *Onenigheid*, **more than half of every sitting is now a two-option choice.** That is
+the intended direction and it was chosen deliberately, but it is a change in *what the game is*,
+not merely in how long it lasts: the deck opened as a mixed box of questions about a shared past
+and now leans on the dilemma as its main engine. Recorded so that a later session reading
+"deck size is the binding constraint" (D13) does not mistake this for growth alone.
+
+**Alternatives.** Spread the batch across the thinner categories — *Verhalen*, *Wij*, *Kleine
+dingen*, all at 12 — which would have kept the mix closer to the original and is the obvious
+counter-argument to the paragraph above. Rejected by the owner: the dilemmas are what the sittings
+actually run on, and a category is not worth padding for the sake of a ratio. Hold the batch until
+more verdicts exist. Rejected: the cards were already written and approved.
+
+***Wat als* comes off the floor, and keeps its shape.** It had been stuck at the 8 cards it was
+created with — the smallest category in the deck — and it is **not a dilemma category**: its cards
+are open reflection with no choice in them. The two new ones keep that. **257 is not even a
+question.** It tells the two of them to do something to each other and then swap: a wish, and the
+other invents the catch. That is a card shape the deck did not have.
+
+**Which is a quiet confirmation of D29.** Phase 4 took the game mechanics out of the app that same
+day, on the principle that the players run the game and the app only shows the card. Card 257 is
+that principle used deliberately: a game, carried entirely by a sentence on a card, with the app
+doing nothing but displaying it and offering the same three buttons as everywhere else. The
+machinery left the code and came back as text, which is what D29 said should happen.
+
+**Checked before appending, because it would have been a silent failure.** *Wat als* has no flow
+that assumes two options: `soortVan` returns `gewoon` for it, `AANWIJZINGEN` has no `gewoon` entry,
+and nothing anywhere in the app inspects a card's text. Both new cards deal as bare cards with the
+standard footer, verified in a browser against the existing cards 57 and 58.
+
+**Provenance, and a departure from D19 worth naming.** D19's *Revisit when* said to write the next
+batch from `card_feedback.local.json` rather than from imagination. D31 did exactly that. **This
+batch did not** — it came from external would-you-rather compilations and from r/WouldYouRather,
+at the owner's direction and with the cards written by him. That is his call to make and it is
+recorded as a choice rather than an oversight. What the feedback file says still stays in the
+feedback file (D14).
+
+**reddit.com cannot be reached from a Claude Code session, and this is the workaround.** The JSON
+API answers 403; the HTML is a client-side shell titled *"Welcome to Reddit"* containing no posts;
+and the one tool that could execute its JavaScript is blocked by policy. Ids 250–257 therefore come
+from **PDFs the owner saved by hand on 2026-10-22** — the post *"Ultimate list of would you rather
+and hypothetical questions"* and the subreddit's top-of-all-time page. **A future session should not
+waste a turn re-discovering this.** The remaining cards come from public compilations, retrieved
+the same day; the list is in the changelog entry.
+
+**The card-length ceiling has been reached.** Card 221 is **206 characters**, the longest in the
+deck, past the previous maximum of 173. `maatVoor` has three sizes and the smallest covers
+everything over 95, so a card this long gets no further help from the layout. At 390 px it fits
+without clipping and without pushing the footer off screen — but it is at the edge, and the next
+card longer than this one will not be. **If cards keep growing, the fix is a fourth size, not a
+longer card.**
+
+**No `diepte` field was added.** Every card in the batch is *licht* except **253**, which is the one
+deep card; that is written down in the changelog for whoever lands D24's tagging. Adding the field
+now would put data in the deck that nothing reads.
+
+**Revisit when.** The thumbs say whether a deck that is 42% dilemma is better or merely longer —
+and whether *Wat als*, now that it has been touched for the first time, is worth a batch of its own
+rather than two cards carried in on the back of another category.

@@ -14,7 +14,7 @@ window.VRAGENSPEL_DECK = {
     "language": "nl",
     "extracted_from": "VRAGENSPEL.html (retired 2026-08-28)",
     "extracted": "2026-08-27",
-    "card_count": 178
+    "card_count": 257
   },
   "categories": [
     {
@@ -40,12 +40,12 @@ window.VRAGENSPEL_DECK = {
     {
       "name": "Wat als",
       "colour": "#4a4a2b",
-      "count": 8
+      "count": 10
     },
     {
       "name": "Wat kies je",
       "colour": "#8a5a1e",
-      "count": 30
+      "count": 107
     },
     {
       "name": "Weet jij dit?",
@@ -978,6 +978,401 @@ window.VRAGENSPEL_DECK = {
       "id": 178,
       "category": "Rode vlaggen",
       "text": "Een collega reageert op elke mail met 'zie hieronder', of op alles met een duimpje, ook op slecht nieuws?"
+    },
+    {
+      "id": 179,
+      "category": "Wat kies je",
+      "text": "Je kunt elk slot openen, maar alleen met je neus. Of je vindt altijd je sleutels, nooit je telefoon."
+    },
+    {
+      "id": 180,
+      "category": "Wat kies je",
+      "text": "Je staat op geen enkele foto meer, of je staat op elke foto die iemand maakt. Ook die van vreemden."
+    },
+    {
+      "id": 181,
+      "category": "Wat kies je",
+      "text": "Je kunt ademen onder water, maar alleen in soep. Of je kunt vliegen, maar alleen als je niest."
+    },
+    {
+      "id": 182,
+      "category": "Wat kies je",
+      "text": "Alles wat je opschrijft komt uit, maar niemand kan je handschrift lezen. Of je schrijft prachtig en er klopt niets van."
+    },
+    {
+      "id": 183,
+      "category": "Wat kies je",
+      "text": "Je begrijpt elke taal, maar antwoordt altijd in rijm. Of je spreekt alles perfect, maar fluisterend."
+    },
+    {
+      "id": 184,
+      "category": "Wat kies je",
+      "text": "Je kunt dieren roepen, maar er komen alleen meeuwen. Of alle dieren komen, maar pas een week later."
+    },
+    {
+      "id": 185,
+      "category": "Wat kies je",
+      "text": "Je vindt altijd een parkeerplek, maar net te klein. Of je past overal in en vergeet waar je stond."
+    },
+    {
+      "id": 186,
+      "category": "Wat kies je",
+      "text": "Je kunt iedereen aan het lachen maken, maar nooit expres. Of je bent nooit grappig en weet precies waarom."
+    },
+    {
+      "id": 187,
+      "category": "Wat kies je",
+      "text": "Je snoeren knopen nooit meer, maar je veters gaan elk uur los. Of precies andersom."
+    },
+    {
+      "id": 188,
+      "category": "Wat kies je",
+      "text": "Je vindt het juiste woord altijd, maar pas een dag later. Of meteen, maar in de verkeerde taal."
+    },
+    {
+      "id": 189,
+      "category": "Wat kies je",
+      "text": "Je koffie is altijd precies goed, maar je drinkt hem altijd te laat. Of hij is lauw en je drinkt hem meteen."
+    },
+    {
+      "id": 190,
+      "category": "Wat kies je",
+      "text": "Je kunt elke deur vanaf de bank op slot doen, maar nooit open. Of je weet altijd of hij dicht is, maar pas 's nachts."
+    },
+    {
+      "id": 191,
+      "category": "Wat kies je",
+      "text": "Je kunt tien minuten terug, maar alleen om iets kwijt te raken. Of tien minuten vooruit, maar alleen in de rij."
+    },
+    {
+      "id": 192,
+      "category": "Wat kies je",
+      "text": "Je wordt altijd wakker voor de wekker, twee uur te vroeg. Of je slaapt perfect uit en bent altijd te laat."
+    },
+    {
+      "id": 193,
+      "category": "Wat kies je",
+      "text": "Je kunt alles repareren behalve wat van jou is. Of alles van jou blijft heel en de rest gaat stuk in je handen."
+    },
+    {
+      "id": 194,
+      "category": "Wat kies je",
+      "text": "Je herkent elk liedje aan een halve noot, maar weet nooit de titel. Of je weet elke titel en hoort nooit welk nummer het is."
+    },
+    {
+      "id": 195,
+      "category": "Wat kies je",
+      "text": "Je hebt altijd genoeg geld op zak, maar alleen in koperen muntjes. Of nooit geld, maar altijd iemand die rijdt."
+    },
+    {
+      "id": 196,
+      "category": "Wat kies je",
+      "text": "Je kunt elk gesprek afbreken zonder dat het raar is, of elk gesprek beginnen maar nooit stoppen."
+    },
+    {
+      "id": 197,
+      "category": "Wat kies je",
+      "text": "Je moet elk telefoongesprek staand voeren, of je mag nooit meer als eerste ophangen."
+    },
+    {
+      "id": 198,
+      "category": "Wat kies je",
+      "text": "Je niest elke keer dat iemand je naam zegt, of je hikt zodra je gaat zitten."
+    },
+    {
+      "id": 199,
+      "category": "Wat kies je",
+      "text": "Je ruikt altijd licht naar soep, of je hoort overal heel zachtjes een accordeon."
+    },
+    {
+      "id": 200,
+      "category": "Wat kies je",
+      "text": "Alles wat je eet is lauw, of alles wat je drinkt bruist. Ook water. Ook melk."
+    },
+    {
+      "id": 201,
+      "category": "Wat kies je",
+      "text": "Je moet elke trap hardop tellen, of je mag nooit meer twee treden tegelijk."
+    },
+    {
+      "id": 202,
+      "category": "Wat kies je",
+      "text": "Je schoenen piepen altijd, of je jas ritselt zo hard dat niemand je verstaat."
+    },
+    {
+      "id": 203,
+      "category": "Wat kies je",
+      "text": "Je moet alles wat je weggooit bedanken, of alles wat je koopt uitzwaaien bij de kassa."
+    },
+    {
+      "id": 204,
+      "category": "Wat kies je",
+      "text": "Je kunt alleen nog zittend drinken, of alleen nog staand eten."
+    },
+    {
+      "id": 205,
+      "category": "Wat kies je",
+      "text": "Elke leugen laat je haar een centimeter groeien, of elke stilte je nagels."
+    },
+    {
+      "id": 206,
+      "category": "Wat kies je",
+      "text": "Je moet elke ochtend koud water over je hoofd, of elke avond een kwartier stil buiten staan."
+    },
+    {
+      "id": 207,
+      "category": "Wat kies je",
+      "text": "Je zweet alleen uit je linkerhand, of je oor wordt rood zodra iemand over je praat."
+    },
+    {
+      "id": 208,
+      "category": "Wat kies je",
+      "text": "Alles wat je aanhebt zit een maat te ruim, of alles past precies maar voelt klam."
+    },
+    {
+      "id": 209,
+      "category": "Wat kies je",
+      "text": "Je moet voor elke deur even kloppen. Ook thuis. Of je mag nooit meer kloppen, nergens."
+    },
+    {
+      "id": 210,
+      "category": "Wat kies je",
+      "text": "Bij elke maaltijd zit er een erwt te veel in, of er ontbreekt precies één ingrediënt."
+    },
+    {
+      "id": 211,
+      "category": "Wat kies je",
+      "text": "Je moet alles twee keer zeggen, of je mag alles maar één keer horen."
+    },
+    {
+      "id": 212,
+      "category": "Wat kies je",
+      "text": "Elke keer dat je lacht gaat het licht uit, of elke keer dat je gaapt gaat de radio aan."
+    },
+    {
+      "id": 213,
+      "category": "Wat kies je",
+      "text": "Je kunt nooit meer iets opentrekken, alleen opendraaien. Of andersom, en dat geldt ook voor blikjes."
+    },
+    {
+      "id": 214,
+      "category": "Wat kies je",
+      "text": "Je weet altijd wat iemand van je vindt, of niemand weet ooit wat jij van hem vindt."
+    },
+    {
+      "id": 215,
+      "category": "Wat kies je",
+      "text": "Iedereen vertelt jou altijd de waarheid, of iedereen gelooft altijd wat jij zegt."
+    },
+    {
+      "id": 216,
+      "category": "Wat kies je",
+      "text": "Je mag één dag per jaar alles zeggen wat je denkt, of elke dag één zin die je meteen vergeet."
+    },
+    {
+      "id": 217,
+      "category": "Wat kies je",
+      "text": "Je bent altijd de eerste die aankomt, of altijd de laatste die weggaat."
+    },
+    {
+      "id": 218,
+      "category": "Wat kies je",
+      "text": "Je krijgt altijd gelijk, maar pas als iedereen weg is. Of nooit gelijk, maar altijd applaus."
+    },
+    {
+      "id": 219,
+      "category": "Wat kies je",
+      "text": "Je woont samen met een spook dat elke dag heerlijk voor je kookt, maar alleen om drie uur 's nachts. Of met een spook dat je hele huis schoonhoudt, maar daarbij keihard zingt."
+    },
+    {
+      "id": 220,
+      "category": "Wat kies je",
+      "text": "Je kunt in het echt kopiëren en plakken, maar alleen dingen kleiner dan een theekopje. Of je kunt in het echt iets ongedaan maken, maar alleen het laatste dat je zei."
+    },
+    {
+      "id": 221,
+      "category": "Wat kies je",
+      "text": "Je hebt een onzichtbare rugzak waar alles in past en die niks weegt, maar hij geeft dingen terug in willekeurige volgorde. Of je jaszak geeft je altijd precies wat je nodig hebt, maar maar één ding per dag."
+    },
+    {
+      "id": 222,
+      "category": "Wat kies je",
+      "text": "Je krijgt elke dag gratis lunch, maar het is elke dag precies hetzelfde broodje. Of je krijgt elke dag het lievelingseten van degene die naast je zit, wie dat ook is."
+    },
+    {
+      "id": 223,
+      "category": "Wat kies je",
+      "text": "Al jullie meningsverschillen worden voortaan beslist met steen-papier-schaar, of met verstoppertje."
+    },
+    {
+      "id": 224,
+      "category": "Wat kies je",
+      "text": "Je speelt een avond Jenga tegen bouwkundigen, of een avond Monopoly tegen bankiers."
+    },
+    {
+      "id": 225,
+      "category": "Wat kies je",
+      "text": "Je krijgt een gewoon paard dat je aan iedereen mag laten zien, of een vliegende eenhoorn waar je nooit iets over mag vertellen."
+    },
+    {
+      "id": 226,
+      "category": "Wat kies je",
+      "text": "Je wordt eerste van tien, of tweede van vijftig?"
+    },
+    {
+      "id": 227,
+      "category": "Wat kies je",
+      "text": "Je kunt alleen nog achteruit lopen, of je moet overal naartoe huppelen."
+    },
+    {
+      "id": 228,
+      "category": "Wat kies je",
+      "text": "Je moet elke ruimte binnenkomen met een radslag, of elke ruimte verlaten met een diepe buiging."
+    },
+    {
+      "id": 229,
+      "category": "Wat kies je",
+      "text": "Je draagt elke werkdag een cape, of elke werkdag een kroon."
+    },
+    {
+      "id": 230,
+      "category": "Wat kies je",
+      "text": "Alle deuren in je leven worden gordijnen, of alle stoelen worden skippyballen."
+    },
+    {
+      "id": 231,
+      "category": "Wat kies je",
+      "text": "Je mag je voortaan alleen nog verplaatsen op rolschaatsen, of op een tandem met de ander achterop."
+    },
+    {
+      "id": 232,
+      "category": "Wat kies je",
+      "text": "Je draagt overal zwemvliezen, of overal ovenwanten."
+    },
+    {
+      "id": 233,
+      "category": "Wat kies je",
+      "text": "Je hebt een steen als huisdier die af en toe iets zegt, of een cactus die soms een stukje verschuift — en je ziet het nooit gebeuren."
+    },
+    {
+      "id": 234,
+      "category": "Wat kies je",
+      "text": "Je spiegelbeeld loopt altijd vijf seconden achter, of het doet af en toe iets anders dan jij."
+    },
+    {
+      "id": 235,
+      "category": "Wat kies je",
+      "text": "Je wenkbrauwen laten altijd eerlijk zien wat je denkt, of je lach klinkt precies als een kazoo."
+    },
+    {
+      "id": 236,
+      "category": "Wat kies je",
+      "text": "Je kunt toveren, maar alleen kleine dingen: koude koffie warm maken, een verloren sok terugvinden. Of je krijgt één grote spreuk, één keer in je leven."
+    },
+    {
+      "id": 237,
+      "category": "Wat kies je",
+      "text": "Er groeit snoep in je tuin in plaats van planten, of je koelkast ligt altijd vol met je lievelingssnacks, maar alleen 's nachts."
+    },
+    {
+      "id": 238,
+      "category": "Wat kies je",
+      "text": "Je kunt jezelf zo klein maken als een mier, of zo groot als een flat — maar nooit iets ertussenin."
+    },
+    {
+      "id": 239,
+      "category": "Wat kies je",
+      "text": "Je wordt wereldberoemd om een dansje dat je per ongeluk deed, of om een woord dat je verkeerd uitsprak."
+    },
+    {
+      "id": 240,
+      "category": "Wat kies je",
+      "text": "Je kunt met een vingerknip elk liedje in de buurt veranderen, of je klapt in je handen en er staan drie warme taco's voor je."
+    },
+    {
+      "id": 241,
+      "category": "Wat kies je",
+      "text": "Je kunt eekhoorns besturen met je gedachten, of je kunt iedereen op commando laten niezen."
+    },
+    {
+      "id": 242,
+      "category": "Wat kies je",
+      "text": "Je bent 's ochtends in één seconde klaar om de deur uit te gaan, of 's avonds in één seconde klaar om te slapen."
+    },
+    {
+      "id": 243,
+      "category": "Wat kies je",
+      "text": "Je blaft zachtjes elke keer dat je een kat ziet, of je miauwt elke keer dat je een hond ziet."
+    },
+    {
+      "id": 244,
+      "category": "Wat kies je",
+      "text": "Al je berichten gaan voortaan per postduif, of je typt alles op een typemachine."
+    },
+    {
+      "id": 245,
+      "category": "Wat kies je",
+      "text": "Je eet alles met stokjes, of je drinkt alles door een rietje. Ook soep."
+    },
+    {
+      "id": 246,
+      "category": "Wat kies je",
+      "text": "Je moet iedereen begroeten met een knuffel, of iedereen met een high five. Ook je baas."
+    },
+    {
+      "id": 247,
+      "category": "Wat kies je",
+      "text": "Je huis heeft een glijbaan in plaats van een trap, of een trampoline in plaats van een bed."
+    },
+    {
+      "id": 248,
+      "category": "Wat kies je",
+      "text": "Er verschijnen altijd ondertitels onder je als je praat, of je stem loopt altijd net niet gelijk met je mond."
+    },
+    {
+      "id": 249,
+      "category": "Wat kies je",
+      "text": "Je mag één keer zwemmen in een zwembad vol pudding, of in een zwembad vol marshmallows."
+    },
+    {
+      "id": 250,
+      "category": "Wat kies je",
+      "text": "Je krijgt een leger van duizend trouwe kabouters, of je boodschappen worden de rest van je leven voor je gedaan."
+    },
+    {
+      "id": 251,
+      "category": "Wat kies je",
+      "text": "Je moet elke keer dat je een wc binnenloopt worstelen met een geit, of elke ochtend voor het ontbijt met een kangoeroe."
+    },
+    {
+      "id": 252,
+      "category": "Wat kies je",
+      "text": "Het is een jaar lang altijd midden in de nacht en daarna weer normaal, of het is vanaf nu voor altijd midden op de dag."
+    },
+    {
+      "id": 253,
+      "category": "Wat kies je",
+      "text": "Blije momenten worden nog blijer, of verdrietige momenten worden minder verdrietig."
+    },
+    {
+      "id": 254,
+      "category": "Wat kies je",
+      "text": "Je wint honderd miljoen en het hele land ziet het live op tv, of tien miljoen en niemand komt het ooit te weten."
+    },
+    {
+      "id": 255,
+      "category": "Wat kies je",
+      "text": "Je weet alles wat in een boek staat door het alleen aan te raken, of je kunt elke vaardigheid na één keer een filmpje kijken."
+    },
+    {
+      "id": 256,
+      "category": "Wat als",
+      "text": "Twee van je vingers kunnen elke vloeistof geven die je maar wilt. Welke twee vingers, en welke twee vloeistoffen?"
+    },
+    {
+      "id": 257,
+      "category": "Wat als",
+      "text": "Doe een wens, zo groot als je wilt. De ander verzint het addertje. Daarna andersom."
     }
   ]
 };

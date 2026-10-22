@@ -7,6 +7,95 @@ project: vragenspel
 
 Newest at top. The *why* is the part that matters.
 
+## 2026-10-22 — Thirty-nine more cards: 37 *Wat kies je* and the first new *Wat als* since the start
+
+**The deck goes from 218 to 257**: ids 219–257, written and approved by the owner and appended
+here unchanged. *Wat kies je* goes 70 → 107 and *Wat als* 8 → 10. `cards.js` regenerated. Nothing
+in `app.js`, `index.html` or `style.css` was touched — this is content only.
+
+**Why, beyond the count.** Deck size is the binding constraint at terrace pacing (D13), and the
+dilemma categories are what a sitting actually runs on. This batch also puts the first two cards
+into *Wat als* since the deck was created: that category had been stuck at 8, the smallest in the
+deck, and it is open reflection rather than a two-option choice. 256 and 257 keep that shape — 257
+is not even a question, it is an instruction for a game the two of them play to each other.
+
+**Confirmed before appending:** *Wat als* has no flow in the app that assumes a dilemma. `soortVan`
+returns `gewoon` for it, `AANWIJZINGEN` has no entry for `gewoon`, and nothing anywhere inspects a
+card's text for options. Those cards deal as bare cards with the standard three buttons, exactly
+like the eight already there. Verified in a browser against cards 57 and 58.
+
+**Provenance.** Dutch adaptations, rewritten rather than translated word for word, and each checked
+for overlap against cards 1–218 — no exact duplicate and no card sharing three or more distinctive
+words with an existing one.
+
+- **Ids 250–257** come from r/WouldYouRather: the post *"Ultimate list of would you rather and
+  hypothetical questions"* and the subreddit's top-of-all-time page, read from PDFs the owner saved
+  on 2026-10-22. **reddit.com is not reachable from a Claude session** — the JSON API answers 403,
+  the HTML is a client-side shell titled *"Welcome to Reddit"* with no posts in it, and the one tool
+  that could run its JavaScript is blocked by policy. Hence the PDFs.
+- **The rest** come from public would-you-rather compilations, retrieved 2026-10-22:
+  wouldyouratherquiz.com/best-reddit, signals.sh/blog/best-would-you-rather-questions-on-reddit,
+  everyrandom.com/would-you-rather/funny, iambored.blog/blog/would-you-rather-questions,
+  partyandbeyond.com/would-you-rather-questions-funny, theloveboy.com/would-you-rather-questions.
+
+**What this does to the deck's shape, stated rather than discovered later.** *Wat kies je* is now
+**107 of 257 cards — 42% of the deck**, up from 32%. A sitting will feel markedly more like a run
+of dilemmas than it did yesterday. That is the intended direction, but it is a change in what the
+game is, not only in how long it lasts.
+
+**Card 221 is now the longest card in the deck at 206 characters**, past the previous maximum of
+173. The app has only three type sizes and the smallest covers everything over 95, so a card this
+long gets no further help. Checked at 390 px: it fits without clipping and without pushing the
+footer off screen, but it is at the edge of what the layout holds.
+
+**For whoever lands D24's tagging.** Every card in this batch is *licht* except **253**
+(*"Blije momenten worden nog blijer…"*), which is the one deep card. No `diepte` field was added
+now, because nothing reads it yet.
+
+## 2026-10-22 — Forty dilemmas, and the register widens
+
+**The deck goes from 178 to 218**: forty more *Wat kies je* (179-218), which makes it the largest
+category at 70. Nothing else changed — no card reworded, removed or renumbered — and `cards.js`
+was regenerated.
+
+**Asked for as Reddit inspiration, built from something better.** Reddit was unreachable from the
+session: direct requests are refused and the browser pane blocks the domain, so nothing was read
+there first-hand. What was usable: secondary write-ups on why *would you rather* threads work, the
+Dutch *Dilemma op Dinsdag* archive for its format, and the deck's own feedback file, which D19
+said to use for exactly this.
+
+**Nothing was copied from either source.** All forty are original Dutch written to the patterns,
+not translated from a list. The repo is public, and lifting someone's questions into it would be
+both a copyright problem and a worse card. One draft was thrown away mid-writing for landing too
+close to an existing Dinsdagdilemma.
+
+**Three engines, and the rule that decides whether one of them works.** A dilemma runs on a cursed
+gift (two powers, each with an ironic catch), an absurd lesser evil (two burdens), or a comic
+trade-off. The finding worth keeping: **a two-burden card is funny when the burden is absurd and
+dead when it is a real loss.** Same grammar, opposite result. Squeaking shoes is a game; never
+walking again is grief. So engine 2 was used here only with absurd burdens.
+
+**The register widens on purpose.** Mild gross-out is now allowed — smells, sneezing, sweat, damp
+clothes. Nothing explicit, nothing cruel, and still nothing about a real person. That is a change
+of voice for the deck, so D31 records it as one rather than letting it arrive unannounced.
+
+**Shorter and more varied, because the last two batches were neither.** The new forty average 92
+characters against 112 for the existing *Wat kies je* and 140 for this morning's batch; 19 of the
+old 30 are long enough to drop to the app's smallest type. And where eight of this morning's ten
+*Rode vlaggen* opened on one construction, these mix forms deliberately. D28's lesson was one
+batch old.
+
+**What the feedback file contributed stays in the feedback file.** It shaped every rule above, and
+none of what it actually says is in this repository. Which cards they loved or put away is a fact
+about them (D14).
+
+**A gap noted, not filled.** *Wat als* is the smallest category at 8 cards, and it is open
+reflection rather than a dilemma — there is no choice in any of them. Worth a batch of its own.
+
+**Verified.** Build accepts the deck, ids 1-218 with no gap, counts updated, cards 1-178 identical
+field for field. At 390 px all forty deal and render with their instruction, three buttons and two
+thumbs; the longest (124 characters) fits with room left.
+
 ## 2026-10-22 — The back-up button never worked; it is a download now
 
 **Found by using it.** Tapping *Bewaar een back-up* in Chrome on the phone showed *"Bewaren lukte
