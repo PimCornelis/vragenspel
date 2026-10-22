@@ -26,6 +26,13 @@ status: HISTORY. Not the current requirements. See ../CLAUDE.md and DECISIONS.md
 > phone first, Dutch throughout, `cards.json` as the single source of truth. The section
 > "Extra cards, when they come" now argues the wrong way round — see D13's second cost.
 >
+> **A second change, 2026-10-22: the game mechanics went too.** No timers, no countdown, no beep,
+> no per-category flows. A card is shown, one of the players reads it aloud, and the footer offers
+> a point for either player or *Overslaan*. `docs/DECISIONS.md` **D29**. So the sentence above —
+> *"what the four special categories need"* — no longer holds either. Reason 3, the
+> four-categories requirement, the self-reported-scoring line and *"a card with a timer"* are each
+> marked at the line where they appear.
+>
 > It is kept rather than rewritten because a brief that is edited to agree with what was built
 > stops being evidence of what was decided and why.
 
@@ -46,7 +53,12 @@ The first reason alone justifies the project. The rest are conveniences.
    not, the pacing is now a sitting.]** Remember where you are. One card a night at dinner makes
    118 cards about four months. On paper that needs someone to remember which cards are spent. The app knows it
    is a new day and deals the next unseen card.
-3. **Run the timers.** *Wat kies je* and *Onenigheid* both specify one minute per person, and
+3. **[SUPERSEDED — D29. The timers were removed on 2026-10-22, at the owner's request. Nobody
+   holds a phone stopwatch mid-argument because the app no longer times anything: *Wat kies je*
+   and *Onenigheid* show their instruction as a line of text and the players run the minute
+   themselves, or do not. This was reason 3 of 5 for building an app at all, and removing it
+   leaves the list shorter — the honest price, recorded in D29 rather than discovered later.]**
+   **Run the timers.** *Wat kies je* and *Onenigheid* both specify one minute per person, and
    nobody is going to hold a phone stopwatch mid-argument.
 4. **[SUPERSEDED — D13. There is no refusal limit in the app; a card is retired instead.]**
    Count the refusals. One refusal per evening per player is currently enforced by honesty.
@@ -61,9 +73,17 @@ The first reason alone justifies the project. The rest are conveniences.
 - **[SUPERSEDED — D19, D21. There are six such categories now, not four: *Mensen kijken* and
   *Rode vlaggen* were added on 2026-08-28 and have their own flows too. And they do not "replace
   the guess step", because there is no guess step any more — D13.]**
+  **[ALSO SUPERSEDED — D29. As of 2026-10-22 no category has a card flow at all. The app
+  respects nothing: six categories show their rule as a quiet line of text under the question,
+  and the players run it. "The app must respect it" was the argument for building the flows, and
+  it is the argument this change reverses.]**
   **The four categories with their own rules** — *Wat kies je*, *Wie van ons?*, *Weet jij dit?*,
   *Onenigheid* — replace the guess step. Their card flow differs and the app must respect it.
-- **Self-reported scoring only.** For *Weet jij dit?* the app asks whether that was right and
+- **[PARTLY SUPERSEDED — D29. The app no longer asks. With the same three buttons under every
+  card, a point for either player already *is* the self-report, and a *Weet jij dit?* card now
+  says nothing on screen at all — the owner's call, 2026-10-22. The second sentence is
+  untouched and is not negotiable: D7, and CLAUDE.md hard limit 2.]**
+  **Self-reported scoring only.** For *Weet jij dit?* the app asks whether that was right and
   takes the answer. It never holds the answer itself.
 - **Phone first.** One hand, at a dinner table, at that screen width.
 - **Dutch for every word a player sees.**
@@ -94,6 +114,10 @@ page. **Pick one, write down which, and do not leave both paths in the code.**
 
 **[SUPERSEDED — D13. This now points the wrong way: at terrace pacing 118 cards is five or six
 sittings, and every retired card shrinks it. Deck size is the binding constraint, not a risk.]**
+
+**[ALSO SUPERSEDED — D29, on "a card with a timer". The app runs no timer as of 2026-10-22, so a
+card that needed one could not be dealt. A category that only works on a screen is no longer a
+thing this app can offer.]**
 
 **Length is not free.** 118 cards is already about four months of one a night. Doubling it does
 not double the value; it makes the good cards rarer. **New categories that only work on a screen**

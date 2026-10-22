@@ -199,7 +199,7 @@ body.paneel-open{background:var(--nacht)}
   color:var(--zacht);
 }
 
-/* ---- a card's extra step: the timers, the countdown, an outcome, a point ---- */
+/* ---- the instruction under a question, for the six categories that carry one ---- */
 
 .extra{
   margin-top:24px;
@@ -234,41 +234,6 @@ body.paneel-open{background:var(--nacht)}
 .extra-lijst li:last-child{margin-bottom:0}
 
 .extra-tekst{margin:0; font-size:1.1rem}
-
-.aftellen{
-  margin:8px 0 0;
-  text-align:center;
-  font-size:5.5rem;
-  line-height:1.1;
-  font-variant-numeric:tabular-nums;
-}
-
-.klok{
-  margin:6px 0 0;
-  text-align:center;
-  font-size:4rem;
-  line-height:1.1;
-  font-variant-numeric:tabular-nums;
-}
-
-.beurt{
-  margin:0;
-  text-align:center;
-  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
-  font-size:.78rem;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--gedempt);
-}
-
-/* The small pigeon that marks a point being scored. */
-.punt-duif{
-  display:block;
-  width:34px;
-  height:34px;
-  margin:0 auto 8px;
-  opacity:.8;
-}
 
 /* ---- the panels ---- */
 
@@ -525,11 +490,8 @@ body.paneel-open{background:var(--nacht)}
 .knop:disabled{opacity:.4; cursor:default}
 .knop:disabled:active{transform:none}
 
-/* The timer's start button: the target you must hit without looking away from the
-   person you are arguing with. */
-.knop-groot{min-height:100px; font-size:1.35rem}
-
-/* Secondary actions — present, but never competing with the main one. */
+/* Secondary actions — present, but never competing with the main one. Overslaan is one:
+   it is the third button under every card and it awards nothing. */
 .knop-stil{
   background:transparent;
   color:var(--gedempt);

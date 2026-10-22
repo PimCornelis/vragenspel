@@ -737,3 +737,94 @@ tagging lands. Tagging them now would put a field in the deck that nothing reads
 
 **Revisit when.** A third of the category shares an opening again, or the thumbs say one of the
 three shapes is carrying the other two.
+
+## D29 — The game mechanics are removed: a card, read aloud, and three buttons
+
+**Chosen 2026-10-22 (owner), asked for in these words:** *"Uit het vragenspel wil ik eigenlijk alle
+spelelementen verwijderen… Ik wil terug naar de basis van een kaart per categorie, waar de speler
+zelf de kaarten voorleest en de app alleen de kaart laat zien. Ik wil alleen drie opties: Punt voor
+speler A, punt voor speler B en overslaan. Mooie kaart en niet meer tonen mogen blijven."*
+
+**What the app does now.** A card appears. One of the two reads it aloud. The footer offers the
+same three actions under every card — a point for either player, or *Overslaan* — plus the two
+thumbs, which are unchanged. All three deal the next card immediately.
+
+**What was removed.** The one-minute timers and everything they drove (`TIMER_SECONDEN`,
+`stapTimers`, `startKlok`, `tekenKlok`, `klokTekst`, `stopKlok`, `klokAfgelopen`,
+`volgendeSpeler`); the three-second countdown for *Wie van ons?*; the beep (`piep`, a Web Audio
+oscillator) and the vibration (`trilling`); and all six per-category flows — `stapKiezen`,
+`stapMensen`, `stapWieAftellen`, `stapWieUitslag`, `stapWieRaak`, `stapWieMis`, `stapWeetWie`,
+`stapWeetNiemand`, `stapOvertuigd`, `stapGeenPunt`. With them went `geefPuntAllebei` (there is no
+"a point each" button any more) and `stapPuntGegeven`. 214 lines of `app.js`, and the CSS for the
+clock, the countdown and the large timer button.
+
+**The confirmation step went with them.** Awarding a point used to open a screen saying *"Een punt
+voor X."* and wait for a second tap on *Volgende kaart*. That is one tap too many for an app whose
+stated job is to show the card and nothing else, so a point now deals the next card straight away.
+
+This was the one call the original request did not make explicitly, so it was built as an inference
+and flagged as one at handover. **The owner confirmed it the same day, 2026-10-22: the instant next
+card stays and the confirmation screen does not come back.** Recorded so that a later session reads
+a decision here rather than an open question — the alternative was considered and rejected by the
+person whose game it is, not left unexamined.
+
+**The instruction did not disappear, it stopped being machinery.** The six categories that had a
+flow now show their rule as a quiet line of text under the question, rendered by the same
+`toonExtraLijst` the flows used. `soortVan` survives and does the same job it always did — it just
+selects a sentence instead of a flow. **Three of those lists ended in a sentence about the minute**
+(*"Daarna één minuut om de ander te overtuigen…"*, *"Eén minuut per persoon."*); those sentences
+went with the timer and the rest of the author's Dutch is unchanged. Nothing was reworded.
+
+**Alternatives.** Keep the timers behind a setting — rejected: a mechanic nobody can see is still a
+mechanic to maintain, and "one correct path" (CLAUDE.md) forbids two. Keep the flows for the
+categories whose rules name a procedure — rejected: that is the thing being removed, and it would
+leave the app doing six different things under eleven identical-looking cards. Leave the
+instruction out entirely — rejected: the rule still has to reach the players, and the printed deck
+is retired (D17), so the screen is the only place left that can say it.
+
+**D21 is superseded, on two points.**
+
+1. **Mensen kijken now scores.** D21 gave it no scoring tap, reasoning that rule 12 says *"Er is
+   nooit een goed antwoord"* and a category with no right answer that asked who won would be
+   inventing one. Three uniform buttons give it a score by default. **The owner was asked and chose
+   to let it score**, on the grounds that uniformity is the whole point of the change and an
+   exception would be a fourth code path under a footer that is otherwise identical everywhere. The
+   old reasoning is not wrong — it is outranked. Nothing stops the two of them tapping *Overslaan*
+   on a card that cannot be won.
+2. **The courtesy line is gone from the screen.** D21 showed *"Wees aardig: hij hoort het niet,
+   maar het gaat wel over een echt mens"* on the first *Mensen kijken* card of each sitting, which
+   needed a flag tracking whether it had been shown. **The owner was asked and chose to drop it.**
+   The sentence is not lost: it is still rule 12 in `cards.json`, untouched. D19 argued that a
+   category built on inventing lives for strangers needs that said out loud once — recorded here as
+   a known cost, not an oversight.
+
+**D16 is superseded on what scores, which the phase-4 brief did not expect.** D16 listed four
+scoring categories and argued that *"a scoring tap on all 118 cards would have put a toll on every
+card, which is the mistake the gate made"*. D21 made it five. **It is now all eleven**, and 178 of
+178 cards can score. The toll argument is answered rather than ignored: the tap is not a toll
+because there is no longer anything else to tap — the button that scores is the same button that
+deals the next card, so a scoring card and a conversation card cost exactly one tap each. The rest
+of D16 stands: the score runs until *Stoppen*, there are no rounds, and the names never leave the
+phone.
+
+**D13 and D16's other halves are untouched.** It is still a sitting with no gate and no guess step,
+the score and the end screen are unchanged, and Tijdcapsule (D20, D23) and the light/deep dial
+(D24) were not part of this and still work.
+
+**A *Weet jij dit?* card says nothing on screen.** There is no instruction line for it, by the
+owner's decision of 2026-10-22: with three buttons, *"a point for Speler 1"* already is the
+self-report, so a sentence asking who knew it would repeat what the footer says. **No answer is
+stored, now or ever** — D7, CLAUDE.md hard limit 2.
+
+**What this costs, stated plainly.** `APP_BRIEF.md` ranked *"Run the timers"* as reason 3 of 5 for
+building an app rather than using the paper deck, and required that the special categories' flows
+be respected. Both are now reversed, and they are annotated at the line per D18. What is left that
+paper cannot do: it deals without repeating, it retires cards you disliked, it keeps the score, it
+holds cards you wrote at the table, it sleeps a Tijdcapsule for a year, and it remembers all of it.
+Shorter than the list D13 left, and that is the honest price of getting the app out of the way.
+
+**The deck was not touched.** No card added, removed, reworded or renumbered; `cards.json` and
+`cards.js` are byte-identical and the build was deliberately not run.
+
+**Revisit when.** A sitting is played this way and the three buttons turn out to be two too many,
+or the missing minute is missed.

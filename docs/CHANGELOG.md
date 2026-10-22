@@ -7,6 +7,50 @@ project: vragenspel
 
 Newest at top. The *why* is the part that matters.
 
+## 2026-10-22 (phase 4) — The game mechanics are out: a card, read aloud, three buttons
+
+**Asked for by the owner**, who wanted the *spelelementen* gone and the app back to showing a
+card: one of the two reads it aloud, and the footer offers a point for either player or
+*Overslaan*. *Mooie kaart* and *Niet meer tonen* stay exactly as they were.
+
+**What went.** The one-minute timers and the whole clock around them, the three-second countdown
+for *Wie van ons?*, the beep, the vibration, and all six per-category flows. Also the screen that
+said *"Een punt voor X."* and waited for a second tap — 214 lines of `app.js`, plus the CSS for
+the clock, the countdown and the big timer button. `index.html` needed no change at all: the
+clock was built in JavaScript, never marked up.
+
+**Why the app got out of the way.** Every mechanic was a thing the app did *to* a conversation
+that was going fine without it. A minute that beeps ends an argument on the app's schedule rather
+than the players'; a countdown that vibrates turns pointing at each other into a drill. The deck
+was always the good part. What is left is the part only the app can do — deal without repeating,
+retire a card, keep the score, sleep a Tijdcapsule — with nothing in front of it.
+
+**The rules did not disappear; they stopped being machinery.** The six categories that had a flow
+now show their rule as a quiet line of text under the question, and the players run it
+themselves. Three of those lists ended in a sentence about the minute; that sentence went with
+the timer and **not one word of the author's Dutch was rewritten.** A *Weet jij dit?* card shows
+no line at all: with three buttons, a point for either player already *is* the self-report.
+
+**Two decisions the owner made when asked, both recorded in D29.** *Mensen kijken* now scores,
+which **supersedes D21** — uniform buttons everywhere beat an exception that would be a fourth
+code path. And the courtesy line *"Wees aardig…"* no longer appears on screen; it is still rule
+12 in `cards.json`, untouched, and D19's argument for it is recorded as the cost.
+
+**D16 is superseded too, which the phase-4 brief did not expect.** D16 argued only four
+categories should score, because a scoring tap on every card would be a toll. It is now all
+eleven, 178 of 178. The toll argument is answered rather than ignored: the button that scores is
+the same button that deals the next card, so every card costs exactly one tap.
+
+**`APP_BRIEF.md` is annotated at four places, never rewritten** (D18). *"Run the timers"* was
+reason 3 of 5 for building an app at all; that passage, the four-categories requirement, the
+self-reported-scoring line and *"a card with a timer"* each carry a marker now.
+
+**The deck was not touched and the build was not run.** No card added, removed, reworded or
+renumbered; `cards.json` and `cards.js` are unchanged. Verified at 390 px in a browser: a card
+dealt from each of the eleven categories, three buttons and two thumbs under every one, a point
+dealing the next card with no screen in between, *Overslaan* scoring nothing and retiring
+nothing, and *Stoppen*, Tijdcapsule and the empty-deck screen all still working.
+
 ## 2026-10-22 — Twenty cards added, and *Rode vlaggen* stops sounding like a form
 
 **The deck goes from 158 to 178**: ten *Wat kies je* (159–168) and ten *Rode vlaggen* (169–178),
