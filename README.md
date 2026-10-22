@@ -1,6 +1,6 @@
 # Vragenspel
 
-A Dutch question deck for two people — 158 cards in 11 categories — played on a phone at a table.
+A Dutch question deck for two people — 178 cards in 11 categories — played on a phone at a table.
 One card at a time, no accounts, no server, nothing leaves the browser.
 
 ## The mechanic

@@ -13,7 +13,7 @@ never build from it.
 
 A Dutch question deck for two people, played on a phone. One editable file, one generated one:
 
-- **`cards.json`** — 118 cards in 9 categories, plus the rules. **The only editable copy of the
+- **`cards.json`** — 178 cards in 11 categories, plus the rules. **The only editable copy of the
   deck.**
 - **`cards.js`** — the deck for the app, **generated** from `cards.json`. Never edit it by hand.
 - **`index.html`, `style.css`, `app.js`** — the browser app. Hand-written; these are the files to
