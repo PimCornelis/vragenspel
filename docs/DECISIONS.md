@@ -302,7 +302,11 @@ the ones the rules already score; ship the names in the code.
 are we" — a question that mattered when the deck was four months of dinners and stopped mattering
 when it became an evening. A score answers the question actually being asked at the table.
 
-**What scores, and why only that.** Not invented here — taken from the rules card in `cards.json`.
+**What scores, and why only that.** **[SUPERSEDED — D29. All eleven categories score as of
+2026-10-22, and 178 of 178 cards can. The toll argument below is answered rather than ignored:
+the button that scores is the same button that deals the next card, so every card costs one tap.
+The rest of this entry — the score, no rounds, the names — is unchanged.]**
+Not invented here — taken from the rules card in `cards.json`.
 *Weet jij dit?* has one right answer, so it asks who knew it. *Wat kies je* and *Onenigheid* end in
 a minute each of arguing, so they end in who did the convincing. *Wie van ons?* is a match or it is
 not; a match is a point each. The other five categories are conversation and score nothing, which
@@ -449,6 +453,12 @@ is already the mechanism and only the import ergonomics change.
 
 ## D21 — Rode vlaggen scores, Mensen kijken does not
 
+**[SUPERSEDED — D29, on both halves of this entry. As of 2026-10-22 there are no flows and no
+timers, so "runs the same flow" and "The timer is reused" below describe machinery that no longer
+exists. *Mensen kijken* now scores like every other category, by the owner's decision, and the
+courtesy line no longer appears on screen. What survives is the wording: the sentences of rules 12
+and 13 are still shown on the card, still copied rather than parsed.]**
+
 **Chosen 2026-08-28.** *Rode vlaggen* runs the same flow as *Wat kies je* — both choose, one
 minute each to argue the other chose wrong — and therefore ends in *"Wie heeft overtuigd?"* and a
 point. *Mensen kijken* has no scoring tap anywhere in its flow.
@@ -467,7 +477,10 @@ mistake the gate made (D13). **This changes D16's list from four scoring categor
 existing `stapTimers`, which is what [`PHASE_3_PROMPT.md`](PHASE_3_PROMPT.md) asked for and what
 "one correct path" requires: two clocks would drift into two behaviours.
 
-**The courtesy line is shown once per sitting.** *"Wees aardig: hij hoort het niet, maar het gaat
+**The courtesy line is shown once per sitting.** **[SUPERSEDED — D29. The owner was asked on
+2026-10-22 and chose to drop it; the app shows it nowhere now. The sentence is still rule 12 in
+`cards.json`, untouched. The reasoning below stands as the cost of that choice.]**
+*"Wees aardig: hij hoort het niet, maar het gaat
 wel over een echt mens."* Said once it is a reminder; said on all twenty cards it is nagging and
 gets skimmed past, which is the failure mode for the one line in the deck that exists to be read.
 It is tied to the first *Mensen kijken* card of the sitting, so leaving the panel and coming back
@@ -481,6 +494,12 @@ on-screen text depend on where the author happens to put a full stop, and it wou
 **Revisit when.** The thumbs say whether a scored *Rode vlaggen* is better than an unscored one.
 
 ## D22 — The memory file goes out through the share sheet, and comes back as a replacement
+
+**[SUPERSEDED — D30, on the route out only. The share sheet never worked: Chrome will not share a
+`.json` file at all, so the button failed on the owner's phone on 2026-10-22, the first time it was
+tried there. It is a download now. Everything else in this entry — replace never merge, the Dutch
+confirmation, refusing a file that is not ours, the hidden picker button — is unchanged and still
+live. Read the *"What was not verified"* paragraph below: it predicted this exactly.]**
 
 **Chosen 2026-08-28.** One button builds the whole private layer as
 `vragenspel-geheugen-YYYY-MM-DD.json` and hands it to `navigator.share({files:[…]})`. It is **not**
@@ -828,3 +847,63 @@ Shorter than the list D13 left, and that is the honest price of getting the app 
 
 **Revisit when.** A sitting is played this way and the three buttons turn out to be two too many,
 or the missing minute is missed.
+
+## D30 — The memory file goes out as a download. D22's share sheet never worked on the phone
+
+**Chosen 2026-10-22 (owner), after the back-up button failed on his phone.** `bewaarBackup` builds
+a `Blob` and clicks an `<a download>`. `navigator.share()` is gone from the app. There is still
+exactly one route.
+
+**What actually happened.** Tapping *Bewaar een back-up* in Chrome on the owner's phone showed
+*"Bewaren lukte niet"* with **no share sheet at all** — the failure was instant. That message is
+reached only when `navigator.canShare({files:[…]})` has already returned **true**, so the browser
+said it could share the file and then refused.
+
+**The cause, confirmed in Chromium's own source rather than guessed.**
+`third_party/blink/renderer/modules/webshare/FILE_TYPES.md` lists every file type Chrome will
+share. The whole Text category is `css`, `csv`, `ehtml`, `htm`, `html`, `shtm`, `shtml`, `text`,
+`txt`. **`.json` is not on the list, and neither is `application/json`.** The Web Share spec says a
+file type blocked for security reasons rejects with `NotAllowedError`, which is thrown before any
+sheet is drawn. That is exactly the observed behaviour, and it means the app could never have
+backed up a single time on this phone.
+
+**D22's premise was wrong, and this is the more useful half of the finding.** D22 chose the share
+sheet over a download because *"the game is played from a web app on the iOS home screen"*, where a
+download has nowhere to land. It is played in **Chrome on an Android phone, in an ordinary tab**,
+where a download lands in Downloads with a notification and can be found again. The objection that
+ruled downloads out does not apply to the device the game is actually played on.
+
+**And it inverted a written instruction.** [`PHASE_3_PROMPT.md`](PHASE_3_PROMPT.md) asked for the
+Blob download first, and said: *"THEN TEST IT ON MY PHONE from the home-screen app, not only in a
+desktop browser… If it fails there, switch to `navigator.share()`."* The download was never shipped
+and the phone test was never run — D22 records that plainly under *"What was not verified"* — so
+the switch to sharing was made on a theory about iOS rather than on the phone. **The lesson is the
+one D22 itself wrote down: the untested path is the one that breaks.** D22 also pre-authorised this
+exact remedy — *"If it fails there, the change is to swap the one `navigator.share` call for a
+download — not to add one beside it"* — so this is that instruction being carried out.
+
+**Alternatives.** Keep the share sheet and ship the file as `.txt` with `text/plain`, which is on
+Chromium's list — **rejected by the owner**: the back-up would stop looking like what it is, and
+the import picker's `accept=".json"` would have to be widened to match, so a working route would be
+traded for a cosmetic one. Offer a download beside the share sheet — rejected, and not a close
+call: two routes is what D22 and `CLAUDE.md` forbid, and it is how this bug stayed invisible.
+
+**What this costs, stated rather than discovered later.** D22 could promise that `laatsteExport` is
+stamped only when `share()` resolves, so the two-month nudge could never name a back-up that was
+never made. **A download has no "it finished" event, so the stamp is now made on the attempt.** If
+the phone refuses the download, the menu will claim a back-up that does not exist. That is a real
+regression in honesty, accepted because the alternative was a button that never worked at all.
+
+**`T.exportAf` was removed.** It said *"Afgebroken. Er is niets bewaard."* and existed for a share
+sheet the player could cancel; a download has no cancel to observe.
+
+**What was verified, and what was not.** Verified in a browser at phone width: the file is named
+`vragenspel-geheugen-YYYY-MM-DD.json`, carries `application/json`, is valid JSON with all sixteen
+fields and the `vragenspel_geheugen` marker; the anchor is in the document when clicked and removed
+after; **the download does not navigate the tab**, so the sitting is not lost; the exported file
+imports back and restores the state exactly; and a file that is not ours is still refused out loud.
+**Not verified: the owner's Android phone.** That is the only test that counts, it is the test D22
+skipped, and only he can run it.
+
+**Revisit when.** The phone says whether the download worked. If it did not, the next step is not a
+second route — it is to find out what Chrome did with it.

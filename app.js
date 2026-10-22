@@ -142,10 +142,9 @@ var T = {
                  'hebt: de gespeelde kaarten, de duimen, jullie eigen kaarten, de ' +
                  'tijdcapsules, de namen en de stand.',
   exportKnop:    'Bewaar een back-up',
-  exportGelukt:  'Bewaard. Kies "Bewaar in Bestanden" als je hem wilt terugvinden.',
-  exportAf:      'Afgebroken. Er is niets bewaard.',
-  exportKan:     'Deze browser kan geen bestand delen. De back-up werkt op de telefoon, ' +
-                 'in het spel dat op je beginscherm staat.',
+  exportGelukt:  'Bewaard in je map Downloads. Zet hem ergens veilig neer, ' +
+                 'want dit is de enige kopie.',
+  exportKan:     'Deze browser kan geen bestand opslaan.',
   exportFout:    'Bewaren lukte niet. Probeer het nog een keer.',
 
   backupNooit:   'Nog geen back-up gemaakt.',
@@ -1376,13 +1375,14 @@ function verwijderCapsule(id) {
    goes out as one file the players keep themselves, and comes back in as a replacement
    for what is on the phone.
 
-   ONE PATH, AND IT IS THE SHARE SHEET. The file is handed to navigator.share(), not
-   offered as a download. The game is played from a web app on the home screen, and that
-   is exactly where an iOS download has nowhere to land and nothing to show for itself;
-   the share sheet is the gesture that puts a file in Bestanden or Notities. Where sharing
-   a file is not possible the button says so in Dutch and does nothing else — there is no
-   second route, because a fallback that works on the laptop and not on the phone is a bug
-   that hides until the evening it matters. docs/DECISIONS.md D22.
+   ONE PATH, AND IT IS A DOWNLOAD. The file is written with a Blob and an <a download>,
+   and is NOT handed to navigator.share(). The share sheet was the original route (D22) and
+   it does not work: Chrome refuses to share a .json file at all — it is not in Chromium's
+   permitted list, so share() rejects before any sheet is drawn, which is what the owner
+   hit on 2026-10-22. The game is played in Chrome on a phone, where a download lands in
+   Downloads with a notification and can be found again. There is no second route, because
+   a fallback that works on the laptop and not on the phone is a bug that hides until the
+   evening it matters. docs/DECISIONS.md D30, which supersedes D22 on the route.
 
    REPLACE, NEVER MERGE. Two states merged is a class of bug nobody would ever find, and
    the game is played from one phone. docs/DECISIONS.md D10. */
@@ -1456,29 +1456,42 @@ function bewaarBackup() {
   var naam = 'vragenspel-geheugen-' + vandaag() + '.json';
   var tekst = JSON.stringify(geheugenObject(), null, 2);
 
-  var bestand;
-  try {
-    bestand = new File([tekst], naam, { type: 'application/json' });
-    if (!navigator.share || !navigator.canShare || !navigator.canShare({ files: [bestand] })) {
-      geheugenMelding = T.exportKan;
-      vulGeheugen();
-      return;
-    }
-  } catch (e) {
+  /* Asked before anything is built, so a browser that cannot save a file says so instead
+     of appearing to work. `download` is the attribute that decides whether the blob is
+     saved under our own filename or simply opened as a page of text. */
+  var anker = document.createElement('a');
+  if (!window.URL || !window.URL.createObjectURL || !('download' in anker)) {
     geheugenMelding = T.exportKan;
     vulGeheugen();
     return;
   }
 
-  navigator.share({ files: [bestand] }).then(function () {
-    stand.laatsteExport = vandaag();
-    bewaarStand();
-    geheugenMelding = T.exportGelukt;
+  var adres = null;
+  try {
+    adres = window.URL.createObjectURL(new Blob([tekst], { type: 'application/json' }));
+    anker.href = adres;
+    anker.download = naam;
+    document.body.appendChild(anker);
+    anker.click();
+    document.body.removeChild(anker);
+  } catch (e) {
+    if (adres) window.URL.revokeObjectURL(adres);
+    geheugenMelding = T.exportFout;
     vulGeheugen();
-  }, function (fout) {
-    geheugenMelding = (fout && fout.name === 'AbortError') ? T.exportAf : T.exportFout;
-    vulGeheugen();
-  });
+    return;
+  }
+
+  /* Hand the address back after a minute. Revoking it immediately can cancel the download
+     on a phone that has not finished reading the blob yet, and holding it forever would
+     keep the whole memory file in memory for as long as the page is open. */
+  window.setTimeout(function () { window.URL.revokeObjectURL(adres); }, 60000);
+
+  /* A download has no "it finished" event, so this is stamped on the attempt. D22 could
+     promise the nudge never names a back-up that was not made; this cannot. D30. */
+  stand.laatsteExport = vandaag();
+  bewaarStand();
+  geheugenMelding = T.exportGelukt;
+  vulGeheugen();
 }
 
 function kiesGeheugenBestand() {

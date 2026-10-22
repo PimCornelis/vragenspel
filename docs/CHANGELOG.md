@@ -7,6 +7,42 @@ project: vragenspel
 
 Newest at top. The *why* is the part that matters.
 
+## 2026-10-22 — The back-up button never worked; it is a download now
+
+**Found by using it.** Tapping *Bewaar een back-up* in Chrome on the phone showed *"Bewaren lukte
+niet"* with no share sheet at all. That message is only reachable after the browser has already
+said it *can* share the file, so it claimed yes and then refused.
+
+**The cause, read out of Chromium's source rather than guessed.** Chrome will only share file
+types on a fixed list, and the whole text category is `css`, `csv`, `ehtml`, `htm`, `html`,
+`shtm`, `shtml`, `text`, `txt`. **`.json` is not on it.** A blocked type rejects before any sheet
+is drawn. The back-up could never have worked on this phone, not once.
+
+**So the file is written as a download instead** — a Blob and an `<a download>`, landing in
+Downloads with a notification. `navigator.share()` is gone from the app; there is still exactly
+one route, which is the rule that matters here.
+
+**Why this is a return, not a new idea.** `PHASE_3_PROMPT.md` asked for the download first and
+said: test it on my phone, and *if it fails there*, switch to sharing. The download was never
+shipped and the phone test was never run — D22 says so itself, under "What was not verified" —
+so the switch to the share sheet was made on a theory about iOS home-screen apps. The game is
+played in Chrome on Android, in an ordinary tab, where a download has somewhere obvious to land.
+D22 also wrote down this exact remedy in advance, so this is that instruction being carried out.
+
+**One honest regression.** D22 could promise that the "last back-up" date was stamped only when
+sharing actually succeeded. A download has no "it finished" event, so the date is now stamped on
+the attempt. If the phone refuses the download, the menu will name a back-up that does not exist.
+Recorded in D30 rather than left to be discovered.
+
+**D16, D21 and D22 now carry their markers.** D22 is marked superseded on the route out only;
+everything else in it still stands. D16 and D21 should have been marked when phase 4 landed
+earlier today and were not — that omission is corrected here.
+
+**Verified at phone width, and what was not.** The file is named, typed and formed correctly, with
+all sixteen fields and the marker; the download does not navigate away, so the sitting survives;
+the exported file imports back and restores the state exactly; a foreign file is still refused in
+Dutch. **Not verified on the phone** — that is the test D22 skipped, and the only one that counts.
+
 ## 2026-10-22 (phase 4) — The game mechanics are out: a card, read aloud, three buttons
 
 **Asked for by the owner**, who wanted the *spelelementen* gone and the app back to showing a
