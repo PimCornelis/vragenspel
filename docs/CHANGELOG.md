@@ -7,6 +7,33 @@ project: vragenspel
 
 Newest at top. The *why* is the part that matters.
 
+## 2026-10-22 — Twenty cards added, and *Rode vlaggen* stops sounding like a form
+
+**The deck goes from 158 to 178**: ten *Wat kies je* (159–168) and ten *Rode vlaggen* (169–178),
+written and approved in a `Date-day Assistant` session and appended here unchanged. Counts updated
+in `meta.card_count` and on the two categories, which is what `build_vragenspel.py` checks;
+`cards.js` regenerated.
+
+**Why, and it is not about the card count.** All twenty original *Rode vlaggen* cards opened with
+the same three words, *"Wat is erger:"* — twenty out of twenty, counted. At twenty cards that was a
+category with a voice; at thirty it would have been a template, and the opening words are the first
+thing a player reads aloud. The ten new ones use two further shapes: the wording of rule 13 itself
+(*"Wat kun je nog net verdragen:"*), and a dilemma whose flag sits on an imaginary third person —
+a first date, new neighbours, a colleague. **All three shapes still offer exactly two options**, so
+rule 13 holds and the flow in `app.js` needed no change. See D28.
+
+**D19 is annotated, not rewritten** (D18). Its sentence *"Every card is wat is erger: X of Y"* was
+true of the first twenty and now carries `[SUPERSEDED — D28]` at the line.
+
+**Nothing existing was touched.** No card reworded, removed or renumbered — the phone keys its
+memory by card id, so renumbering would repoint every retirement and thumb silently, with nothing
+erroring. Verified: cards 1–158 are identical field for field to before the change, and the ids run
+1–178 without a gap.
+
+**One number corrected while writing this.** `docs/PHASE_4_PROMPT.md` was written earlier the same
+day and reserved D28 for the phase-4 work. D28 is this change, so that brief now says D29. Two
+documents claiming one decision number is the kind of drift that is only ever found late.
+
 ## 2026-08-28 (phase 3, fix) — The dates from testing can be wiped, from the phone
 
 **Asked for after D26.** Putting the deck back together deliberately leaves `gezienOp` alone — the

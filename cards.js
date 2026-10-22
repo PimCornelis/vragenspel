@@ -14,7 +14,7 @@ window.VRAGENSPEL_DECK = {
     "language": "nl",
     "extracted_from": "VRAGENSPEL.html (retired 2026-08-28)",
     "extracted": "2026-08-27",
-    "card_count": 158
+    "card_count": 178
   },
   "categories": [
     {
@@ -45,7 +45,7 @@ window.VRAGENSPEL_DECK = {
     {
       "name": "Wat kies je",
       "colour": "#8a5a1e",
-      "count": 20
+      "count": 30
     },
     {
       "name": "Weet jij dit?",
@@ -70,7 +70,7 @@ window.VRAGENSPEL_DECK = {
     {
       "name": "Rode vlaggen",
       "colour": "#8a2b2b",
-      "count": 20
+      "count": 30
     }
   ],
   "rules": [
@@ -878,6 +878,106 @@ window.VRAGENSPEL_DECK = {
       "id": 158,
       "category": "Rode vlaggen",
       "text": "Wat is erger: nooit een keuze maken in een restaurant, of hem in vier seconden maken en er de hele avond spijt van hebben?"
+    },
+    {
+      "id": 159,
+      "category": "Wat kies je",
+      "text": "Je kunt onzichtbaar worden, maar alleen als niemand kijkt. Of je kunt door muren lopen, maar alleen door die van je eigen huis."
+    },
+    {
+      "id": 160,
+      "category": "Wat kies je",
+      "text": "Je kunt de tijd stilzetten, maar alleen zolang je je adem inhoudt. Of je kunt terug in de tijd, maar telkens maar drie minuten."
+    },
+    {
+      "id": 161,
+      "category": "Wat kies je",
+      "text": "Je kunt gedachten lezen, maar alleen wat iemand vanavond gaat eten. Of je kunt de toekomst zien, maar alleen tien seconden vooruit."
+    },
+    {
+      "id": 162,
+      "category": "Wat kies je",
+      "text": "Je leven heeft een soundtrack die iedereen hoort, maar jij kiest de nummers niet. Of er klinkt een lachband na alles wat je zegt, ook als het niet grappig was."
+    },
+    {
+      "id": 163,
+      "category": "Wat kies je",
+      "text": "Alles wat je kookt smaakt perfect, maar is altijd knalblauw. Of alles wat je kookt ziet er perfect uit, maar knispert. Ook de soep."
+    },
+    {
+      "id": 164,
+      "category": "Wat kies je",
+      "text": "Je bent supersterk, maar alleen bij potjes die al open zijn. Of je staat altijd vooraan in de rij, maar het is altijd de verkeerde rij."
+    },
+    {
+      "id": 165,
+      "category": "Wat kies je",
+      "text": "Je mag elk weekend gratis op reis, maar je koffer kiest waarheen. Of je kiest zelf, maar je reist er altijd heen op een step."
+    },
+    {
+      "id": 166,
+      "category": "Wat kies je",
+      "text": "Je kleren passen zich aan het weer aan, maar ook aan je humeur, en iedereen ziet het. Of je hebt nooit meer een slechte haardag, maar je kapsel verandert elke nacht vanzelf."
+    },
+    {
+      "id": 167,
+      "category": "Wat kies je",
+      "text": "Je wint elk bordspel, maar niemand gelooft ooit dat het eerlijk ging. Of je verliest elk spel, maar altijd op de meest spectaculaire manier."
+    },
+    {
+      "id": 168,
+      "category": "Wat kies je",
+      "text": "Alles wat je tekent komt tot leven, maar wordt niet groter dan je duim. Of alles wat je boetseert komt tot leven, maar heeft altijd kritiek op hoe je het maakte."
+    },
+    {
+      "id": 169,
+      "category": "Rode vlaggen",
+      "text": "Wat kun je nog net verdragen: iemand die elke zin begint met 'eerlijk gezegd', of iemand die na elke zin 'toch?' zegt?"
+    },
+    {
+      "id": 170,
+      "category": "Rode vlaggen",
+      "text": "Wat kun je nog net verdragen: iemand die 'even' zegt en twee uur bedoelt, of iemand die 'twee uur' zegt en een week bedoelt?"
+    },
+    {
+      "id": 171,
+      "category": "Rode vlaggen",
+      "text": "Wat kun je nog net verdragen: iemand die op een terras een speaker aanzet, of iemand die hardop commentaar geeft op iedereen die langsloopt?"
+    },
+    {
+      "id": 172,
+      "category": "Rode vlaggen",
+      "text": "Wat kun je nog net verdragen: iemand die elk bordspel uitlegt alsof het een college is, of iemand die de regels pas uitlegt als jij een fout maakt?"
+    },
+    {
+      "id": 173,
+      "category": "Rode vlaggen",
+      "text": "Wat kun je nog net verdragen: iemand die binnen zijn schoenen aanhoudt, of iemand die op sokken het afval buiten zet?"
+    },
+    {
+      "id": 174,
+      "category": "Rode vlaggen",
+      "text": "Eerste date. De ander laat je na tien minuten zijn hele fotorol zien, of vraagt meteen naar je sterrenbeeld?"
+    },
+    {
+      "id": 175,
+      "category": "Rode vlaggen",
+      "text": "Nieuwe huisgenoot. Hij zet zijn naam op al zijn eten, of hij eet stiekem van alles een klein beetje?"
+    },
+    {
+      "id": 176,
+      "category": "Rode vlaggen",
+      "text": "Nieuwe buren. Ze zingen elke ochtend onder de douche, of ze stofzuigen elke avond om tien uur?"
+    },
+    {
+      "id": 177,
+      "category": "Rode vlaggen",
+      "text": "Weekendje weg met vrienden. Iemand neemt drie koffers mee, of iemand neemt niks mee en leent alles van jou?"
+    },
+    {
+      "id": 178,
+      "category": "Rode vlaggen",
+      "text": "Een collega reageert op elke mail met 'zie hieronder', of op alles met een duimpje, ook op slecht nieuws?"
     }
   ]
 };

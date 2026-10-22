@@ -399,7 +399,10 @@ phone at home — it needs the terrace the app is played on.
 niet, maar het gaat wel over een echt mens.* A category built on inventing lives for strangers
 needs that said out loud once, in the game, rather than assumed.
 
-**Why *Rode vlaggen* is a dilemma, not a list.** Every card is *"wat is erger: X of Y"* and both
+**Why *Rode vlaggen* is a dilemma, not a list.** **[SUPERSEDED — D28. "Every card" was true
+of the first twenty and is not true of the thirty: two further sentence shapes were added
+2026-10-22. What still holds is the dilemma — every card offers exactly two options.]**
+Every card is *"wat is erger: X of Y"* and both
 players choose, then argue for a minute — the same shape as *Wat kies je*, which is the
 best-performing existing category. They are deliberately domestic and comic: wekkers, vaatwassers,
 spraakberichten. **None of them is about a real person**, which is both a privacy rule and the
@@ -691,3 +694,46 @@ still says when it was written.
 **Revisit when.** Never. If wiping the dates turns out to be something done routinely rather than
 once after testing, that is evidence the year-old-card line is unwanted, not that this button needs
 changing.
+
+## D28 — *Rode vlaggen* gets two more sentence shapes, and still offers exactly two options
+
+**Chosen 2026-10-22 (owner).** The deck goes from 158 to **178 cards**: ten more *Wat kies je*
+(159–168) and ten more *Rode vlaggen* (169–178). The cards were written and approved in a
+`Date-day Assistant` session, which is where this deck's Dutch is authored, and appended here
+unchanged. No existing card was touched, reworded, removed or renumbered.
+
+**The problem, measured rather than assumed.** All twenty of the original *Rode vlaggen* cards
+opened with the same three words — *"Wat is erger:"*. Twenty out of twenty. D19 wrote that shape
+down as the category's definition, and at twenty cards it was the definition. At thirty it would
+have been a template: a category whose every card announces itself identically stops being a
+dilemma and starts being a form, and the opening words are the first thing read aloud.
+
+**The second shape, ids 169–173.** *"Wat kun je nog net verdragen: X, of Y?"* — which is the
+wording of **rule 13 itself**, the rule printed with the category. The question the category was
+built to ask was already written in its own rule and had never been used as a card opening.
+
+**The third shape, ids 174–178.** The flag sits on an **imaginary third person** rather than on
+either player: a first date, a new housemate, new neighbours, someone on a weekend away, a
+colleague. Four of the five open with a short scene sentence and then the dilemma; 178 names its
+third person without one. **D19's privacy point is unchanged and is the reason this shape is safe:
+none of them is about a real person.** Putting the flag on an invented stranger keeps the card
+comic rather than pointed, which is also why it is funny.
+
+**Why the app did not change.** All three shapes offer **exactly two options**, so the choice the
+player makes is the same shape it always was. Rule 13 requires two — *kiest ieder één van de twee*
+— and the *Rode vlaggen* flow in `app.js` is built on that, so nothing in the code, the rules or
+the generated `cards.js` structure needed a line. This was verified rather than assumed: all thirty
+cards contain the connector, and `build_vragenspel.py` accepted the deck unchanged.
+
+**Alternatives.** Replace the twenty originals with varied ones — rejected: renumbering or removing
+cards silently repoints everything the phone remembers, since `gezien`, `gezienOp` and the thumbs
+are all keyed by card id. Write forty more in the existing shape — rejected, it is the shape that
+was the problem, not the count. Add a fourth category instead — rejected: the dilemma works, and
+D19's own *Revisit when* said to write the next batch from `card_feedback.local.json` rather than
+from imagination, which is what happened.
+
+**No `diepte` field was added.** All twenty new cards are light and belong under *licht* when D24's
+tagging lands. Tagging them now would put a field in the deck that nothing reads yet.
+
+**Revisit when.** A third of the category shares an opening again, or the thumbs say one of the
+three shapes is carrying the other two.

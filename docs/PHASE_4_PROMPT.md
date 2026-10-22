@@ -156,12 +156,13 @@ comes.
 
 ## Bookkeeping this change owes
 
-- **A new decision, `D28`.** D27 is the highest in [`DECISIONS.md`](DECISIONS.md) as of
-  2026-10-22. It must say what was removed, that the owner asked for it, and that **D21 is
+- **A new decision, `D29`.** D28 is the highest in [`DECISIONS.md`](DECISIONS.md) as of
+  2026-10-22 — D28 is the twenty cards added that day, not this change. It must say what was
+  removed, that the owner asked for it, and that **D21 is
   superseded on whether *Mensen kijken* scores**. Check D13 and D16 while writing it: the sitting
   and the score both survive, so they are probably untouched, but read them rather than assuming.
 - **Annotate, never rewrite.** Per D18, any passage in [`APP_BRIEF.md`](APP_BRIEF.md) that argues
-  for the timers or the per-category flows gets `[SUPERSEDED — D28]` **at the line**. A banner at
+  for the timers or the per-category flows gets `[SUPERSEDED — D29]` **at the line**. A banner at
   the top is not enough.
 - **A changelog entry** in [`CHANGELOG.md`](CHANGELOG.md), newest at top, with the *why*.
 - **The commit summary and description**, ready to paste into GitHub Desktop. Never run git here.
